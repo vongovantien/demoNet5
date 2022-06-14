@@ -1,0 +1,159 @@
+<div class="m-subheader">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <app-breadcrumb></app-breadcrumb>
+        </div>
+        <div class="c-button-actions">
+            <app-permission-button title="add new" [routerLink]="['/home/commercial/customer/new']">
+            </app-permission-button>
+            <div class="dropdown m-dropdown m-dropdown--inline no-arrow">
+                <app-permission-button data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Import"
+                    type="import">
+                </app-permission-button>
+                <div class="dropdown-menu" aria-labelledby="">
+                    <a routerLink="/home/commercial/customer/import" class="dropdown-item"
+                        href="javascript:void(0)">Import
+                        Customer</a>
+                    <a routerLink="/home/commercial/customer/importContract" class="dropdown-item"
+                        href="javascript:void(0)">Import Contract</a>
+                </div>
+            </div>
+
+            <app-permission-button title="Export" type="export"(click)="export()">
+            </app-permission-button>
+            <!-- <app-dropdown #dropdownMenu>
+                <a class="dropdown-item pointer" (click)="export()">
+                    <span>
+                        Customer Info
+                    </span>
+                </a>
+                <a class="dropdown-item pointer" (click)="exportAgreementInfo()">
+                    <span>
+                        Agreement Info
+                    </span>
+                </a>
+            </app-dropdown> -->
+
+            <button (click)="onCustomerRequest()"
+                *ngIf="((menuSpecialPermission | async | specialPermission: 'CustomerRequest') === true )"
+                class="btn btn-success  m-btn--icon m-btn--uppercase m--margin-right-10">
+                <span>
+                    <i class="la la-exchange"></i>
+                    <span> Agreement Request </span>
+                </span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="m-content">
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <div class="m-form">
+                <app-search-options [configSearch]="configSearch" (search)="onSearch($event)"
+                    (reset_search)="resetSearch($event)"></app-search-options>
+            </div>
+        </div>
+    </div>
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <div class="table-wrapper" id="commercial-customer-list-table">
+                <table class="table table-striped table-brand dataTable table-hover">
+                    <thead app-table-header [headers]="headers"
+                        (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                        <th class="m--w-50 first table-actions-col">
+                            Actions
+                        </th>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngIf="!!customers.length">
+                            <ng-container *ngFor="let customer of customers; let i = index; trackBy: trackByFn">
+                                <tr class="collapse-toggle-row">
+                                    <td class="table-actions-col">
+                                        <div class="table-actions">
+                                            <button type="button" (click)="showSaleman(customer.id)"
+                                                class="btn btn-sm  m-btn--icon m-btn--icon-only collapsed"
+                                                data-toggle="collapse"
+                                                [attr.data-target]="'#commercial-customer-00' + customer.id | removeTrim"
+                                                title="Collapse">
+                                                <i class="la la-angle-up"></i>
+                                            </button>
+
+                                            <app-permission-button type="detail" (onClick)="showDetail(customer)">
+                                            </app-permission-button>
+                                            <ng-container *ngIf="!customer.active">
+                                                <app-permission-button type="delete" [user]="customer.userCreated"
+                                                    (onClick)="showConfirmDelete(customer)"></app-permission-button>
+                                            </ng-container>
+                                        </div>
+                                    </td>
+                                    <td>{{customer.accountNo}}</td>
+                                    <td>{{customer.shortName}}</td>
+                                    <td>{{customer.taxCode}}</td>
+                                    <td> <span class="text-success">{{customer.userCreatedName}}</span></td>
+
+                                    <td>{{customer.datetimeModified | date:'dd/MM/yyyy' }}</td>
+                                    <td [ngClass]="customer.active ? 'text-success' : 'text-danger'">
+                                        {{customer.active ? 'Active' : 'Inactive'}}</td>
+                                    <td>{{customer.addressVn}}</td>
+                                </tr>
+                                <tr class="collapse-toggle-row" class="collapse-panel-row" app-table-collapse-row
+                                    [id]="'commercial-customer-00' + customer.id | removeTrim "
+                                    [parentId]="'#commercial-customer-list-table'">
+                                    <table class="table table-secondary dataTable">
+                                        <thead app-table-header [headers]="headerSalemans"
+                                            (onClick)="sortBySaleman($event)">
+                                        </thead>
+                                        <tbody>
+                                            <ng-container>
+                                                <tr *ngFor="let sale of saleMans; let j = index;">
+                                                    <td><span>{{j + 1}}</span></td>
+                                                    <td>
+                                                        <span>{{sale.username}}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>{{sale.contractType}}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>{{sale.saleServiceName}}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>{{sale.officeNameAbbr}}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>{{sale.companyNameAbbr}}</span>
+                                                    </td>
+
+                                                    <td [ngClass]="sale.active ? 'text-success' : 'text-danger'">
+                                                        {{sale.active ? 'Active' : 'Inactive'}}</td>
+                                                    <td>
+                                                        <span>{{sale.datetimeCreated | date: 'dd/MM/yyyy'}}</span>
+                                                    </td>
+                                                </tr>
+                                                <tr *ngIf="saleMans.length == 0" app-table-none-record
+                                                    [colspan]="headerSalemans.length">
+                                                </tr>
+                                            </ng-container>
+                                        </tbody>
+                                    </table>
+                                </tr>
+                            </ng-container>
+                        </ng-container>
+                        <tr *ngIf="!isLoading && !customers.length" app-table-none-record></tr>
+                        <tr *ngIf="isLoading" app-table-row-loading></tr>
+                    </tbody>
+                </table>
+            </div>
+            <app-pagination [itemPerPage]="pageSize" [total]="totalItems" [pageNum]="page"
+                (onChange)="updatePagingData($event)"></app-pagination>
+        </div>
+    </div>
+</div>
+
+<confirm-popup body="You want to delete this customer ?" (onSubmit)="onDelete()"></confirm-popup>
+
+<permission-403-popup></permission-403-popup>
+<popup-form-contract-commercial-catalogue (onRequest)="onRequestContract($event)">
+</popup-form-contract-commercial-catalogue>
+
+<form-search-export-popup></form-search-export-popup>

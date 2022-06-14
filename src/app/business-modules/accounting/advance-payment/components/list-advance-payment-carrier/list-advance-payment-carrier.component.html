@@ -1,0 +1,191 @@
+<div class="list-advance-carrier-wrapper m--margin-top-20">
+    <div class="list-advance-carrier-content">
+        <perfect-scrollbar>
+            <div class="table-horizontal table-wrapper table-editable" style="height: 400px; max-height: 1800px">
+                <table class="table table-bordered dataTable-edit">
+                    <thead app-table-header [headers]="headers"
+                                (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                                <th class="m--w-50 first table-actions-col">
+                                </th>
+                            </thead>
+                    <tbody class="tbody-group">
+                        <ng-container>
+                            <tr *ngFor="let charge of listAdvanceCarrier; let i = index; trackBy: trackByFn">
+                                <td class="table-actions-col fixed-side">
+                                    <div class="table-actions" *ngIf="state === 'update'">
+                                        <button class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only text-white" title="Duplicate"
+                                            (click)="duplicateShipment(i)"><i class="la la-copy"></i>
+                                        </button>
+                                        <ng-container>
+                                            <button type="button" (click)="deleteShipment(i)" *ngIf="listAdvanceCarrier.length > 1"
+                                                class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only" title="Remove">
+                                                <i class="la la-trash"></i>
+                                            </button>
+                                        </ng-container>
+                                    </div>
+                                </td>
+                                <td>
+                                    <ng-container *ngIf="state !== 'update';else shipmentID">
+                                        <div class="form-group">
+                                            {{charge.jobId}}-{{charge.mbl}}-{{charge.hbl}}
+                                        </div>
+                                    </ng-container>
+                                    <ng-template #shipmentID>
+                                        <div class="form-group"
+                                            [ngClass]="{'m-form__group has-danger': isSubmitted && (!charge.hblid || charge.duplicateCharge)}">
+                                            <div class="list-master-charge">
+                                                <app-combo-grid-virtual-scroll [currentActiveItemId]="{field:'hblid', value:charge.hblid}"
+                                                    (itemSelected)="onSelectDataTableInfo($event, charge, 'shipment')"
+                                                    [dataSources]="configShipment.dataSource"
+                                                    [displayFields]="configShipment.displayFields" placeholder="Select shipment"
+                                                    [selectedDisplayFields]="configShipment.selectedDisplayFields" [height]="150">
+                                                </app-combo-grid-virtual-scroll>
+                                            </div>
+                                        </div>
+                                    </ng-template>
+                                </td>
+                                <td>
+                                    <div class="form-group"
+                                        [ngClass]="{'m-form__group has-danger': isSubmitted && (!charge.chargeId || charge.isDuplicate) }">
+                                        <div class="list-master-charge">
+                                            <app-combo-grid-virtual-scroll
+                                                [currentActiveItemId]="{field:'id', value:charge.chargeId}"
+                                                (itemSelected)="onSelectDataTableInfo($event, charge, 'charge')"
+                                                [dataSources]="listCharges"
+                                                [selectedDisplayFields]="['chargeNameEn']"
+                                                [displayFields]="configChargeDisplayFields" [height]="150"
+                                                placeholder="Please Select" (remove)="charge.chargeId = null"
+                                                [disabled]="state !== 'update'">
+                                            </app-combo-grid-virtual-scroll>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group "
+                                        [ngClass]="{'m-form__group has-danger': isSubmitted && (charge.quantity < 0 || charge.quantity === null)}">
+                                        <ng-container *ngIf="state === 'update';else qtyTpl ">
+                                            <input type="number" class="form-control"
+                                                [(ngModel)]="charge.quantity"
+                                                (ngModelChange)="calculateTotal(charge.vatrate, $event, charge.unitPrice, charge)"
+                                                placeholder="Quantity" min="0" autoFormatCurrency>
+                                        </ng-container>
+                                        <ng-template #qtyTpl>
+                                            <span style="cursor: not-allowed;">
+                                                {{charge.quantity}}
+                                            </span>
+                                        </ng-template>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group"
+                                        [ngClass]="{'m-form__group has-danger': isSubmitted  && !charge.unitId}">
+                                        <select class="form-control" [(ngModel)]="charge.unitId"
+                                            (ngModelChange)="onSelectUnit($event, charge)"
+                                            [disabled]="state !== 'update'">
+                                            <option value="null" disabled>Please select</option>
+                                            <option *ngFor="let unit of (listUnits | async)"
+                                                [ngValue]="unit.id">
+                                                {{unit.code}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group "
+                                        [ngClass]="{'m-form__group has-danger': isSubmitted && !charge.unitPrice}">
+                                        <ng-container *ngIf="state === 'update';else unitPriceTpl ">
+                                            <input type="number" class="form-control"
+                                                [(ngModel)]="charge.unitPrice"
+                                                (ngModelChange)="calculateTotal(charge.vatrate, charge.quantity, $event, charge)"
+                                                placeholder="Unit Price" autoFormatCurrency>
+                                        </ng-container>
+
+                                        <ng-template #unitPriceTpl>
+                                            <span style="cursor: not-allowed;">
+                                                {{charge.unitPrice}}
+                                            </span>
+                                        </ng-template>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group "
+                                        [ngClass]="{'m-form__group has-danger': isSubmitted  && (charge.vatrate > 100) }">
+                                        <ng-container *ngIf="state === 'update';else vatTpl ">
+                                            <input type="number" class="form-control"
+                                                [(ngModel)]="charge.vatrate"
+                                                (ngModelChange)="calculateTotal($event, charge.quantity, charge.unitPrice, charge)"
+                                                placeholder="%">
+                                        </ng-container>
+                                        <ng-template #vatTpl>
+                                            <span style="cursor: not-allowed;">
+                                                {{charge.vatrate}}
+                                            </span>
+                                        </ng-template>
+                                    </div>
+                                </td>
+                                <td class="text-right">{{charge.total| number:'1.0-3'}}</td>
+                                <td class="disabled">
+                                    <div class="form-group">
+                                    <input type="text" class="form-control" [(ngModel)]="charge.requestCurrency"
+                                                    placeholder="Currency" disabled>
+                                </div>
+                                </td>
+                                <td>{{charge.clearanceNo}}</td>
+                                <td>
+                                    <div class="form-group">
+                                        <ng-container *ngIf="state !== 'update'; else typeAdv">
+                                            <select class="form-control" disabled>
+                                                <option>{{charge.advanceType}}</option>
+                                            </select>
+                                        </ng-container>
+                                        <ng-template #typeAdv>
+                                            <select class="form-control" [(ngModel)]="charge.advanceType">
+                                                <option *ngFor="let type of types"
+                                                    [ngValue]="type.value">
+                                                    {{type.title}}
+                                                </option>
+                                            </select>
+                                        </ng-template>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" [(ngModel)]="charge.notes" name="notes">
+                                    </div>
+                                </td>
+                                <td [ngSwitch]="charge.statusPayment">
+                                    <ng-container *ngIf="this.statusApproval === '' else empty">
+                                        <div class="text-success" *ngSwitchCase="'Settled'">
+                                            {{charge.statusPayment}}
+                                        </div>
+                                        <div class="text-danger" *ngSwitchCase="'NotSettled'">
+                                            Not Settled
+                                        </div>
+                                        <div class="text-warning" *ngSwitchCase="'PartialSettlement'">
+                                            Partial Settlement
+                                        </div>
+                                        <div *ngSwitchCase="''">
+                                            -
+                                        </div>
+                                    </ng-container>
+                                    <ng-template #empty>-</ng-template>
+                                </td>
+                            </tr>
+                        </ng-container>
+                        <tr app-table-none-record *ngIf="!listAdvanceCarrier.length">
+                        </tr>
+                        <tr *ngIf="state === 'update'">
+                            <td colspan=1 class="fixed-side">
+                                <a class="btn m-btn--icon m-btn--icon-only m--font-primary" title="Add"
+                                    (click)="addShipment()">
+                                    <i class="fa fa-plus-circle fa-2x"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </perfect-scrollbar>
+    </div>
+
+</div>

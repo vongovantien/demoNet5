@@ -1,0 +1,470 @@
+<div class="row font-15">
+    <div class="col-lg-12">
+        <div class="row m--margin-top-20">
+            <div class="col-lg-7">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <h6 class="font-weight-bold">Partner Name (ABBR): </h6>
+                    </div>
+                    <div class="col-lg-8">
+                        <span class="text-info">{{accReceivableDetail.partnerNameAbbr}}</span>
+                        <span *ngIf="accReceivableDetail.partnerId">
+                            <a target="_blank" class="la la-link text-primary m--margin-left-10"
+                                [routerLink]="[ '/home/catalogue/partner-data/detail', accReceivableDetail.partnerId ]">
+                            </a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <h6 class="font-weight-bold">Tax Code: </h6>
+                    </div>
+                    <div class="col-lg-9">
+                        <span class="text-info">{{accReceivableDetail.taxCode}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row m--margin-top-20">
+            <div class="col-lg-7">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <h6 class="font-weight-bold">Partner Name (Local): </h6>
+                    </div>
+                    <div class="col-lg-8">
+                        <span class="text-info">{{accReceivableDetail.partnerNameLocal}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <h6 class="font-weight-bold">Status: </h6>
+                    </div>
+                    <div class="col-lg-9">
+                        <span class="badge"
+                            [ngClass]=" accReceivableDetail.partnerStatus === 'Active'  ? 'badge-success' : 'badge-danger'">
+                            {{accReceivableDetail.partnerStatus}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+
+        <div class="row m--margin-top-5">
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <div>
+                            <h6 class="font-weight-bold">Agreement No:</h6>
+
+                        </div>
+
+                    </div>
+                    <div class="col-lg-7">
+                        <div>
+                            <div>
+                                {{ accReceivableDetail.agreementNo }}
+                            </div>
+
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <div>
+                            <h6 class="font-weight-bold">
+                                {{accReceivableDetail.agreementType === "Guaranteed" ?
+                                "Salesman:" :"Effective Date:"}}
+                            </h6>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-7">
+                        <div>
+                            <div>{{accReceivableDetail.agreementType === "Guaranteed" ?
+                                accReceivableDetail.agreementSalesmanName
+                                : (accReceivableDetail.effectiveDate | date: 'dd/MM/yyyy')}}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div>
+                            <h6 class="font-weight-bold">
+                                {{accReceivableDetail.agreementType === "Guaranteed"
+                                ? "Credit Limit Rate:" :"Credit Limited:"}}
+                            </h6>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div>
+                            <div [ngClass]="accReceivableDetail.agreementType === 'Guaranteed' ? 'text-success': null ">
+                                {{ accReceivableDetail.agreementType === "Guaranteed" ?
+                                accReceivableDetail.creditRateLimit :
+                                accReceivableDetail.creditLimited | number: '.0-3'}}
+                                <span
+                                    *ngIf="(accReceivableDetail.creditLimited && accReceivableDetail.agreementType !== 'Guaranteed' )||
+                                    (accReceivableDetail.creditRateLimit && accReceivableDetail.agreementType === 'Guaranteed')">
+                                    {{ accReceivableDetail.agreementType === "Guaranteed" ? "%"
+                                    : accReceivableDetail.agreementCurrency }}
+                                </span>
+                                <span *ngIf="!!accReceivableDetail.isOverLimit" title="Contract is over credit limit">
+                                    <i class="la la-exclamation la-lg text-danger"></i>
+                                </span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row m--margin-top-5">
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <div>
+                            <h6 class="font-weight-bold">Type:</h6>
+                        </div>
+                    </div>
+                    <div class="col-lg-7">
+                        <span class="badge "
+                            [ngClass]="accReceivableDetail.agreementType === 'Trial' ? 'badge-warning' : 'badge-info'">
+                            {{ accReceivableDetail.agreementType }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <h6 class="font-weight-bold">
+                            {{accReceivableDetail.agreementType === "Guaranteed"
+                            ? "Sales Credit Limited:" :"Expired Date:"}}
+                        </h6>
+                    </div>
+                    <div class="col-lg-7">
+                        <div>
+                            {{accReceivableDetail.agreementType === "Guaranteed" ?
+                            (accReceivableDetail.saleCreditLimited | number: '.0-3')
+                            : (accReceivableDetail.expriedDate | date: 'dd/MM/yyyy')}}
+                            <span
+                                *ngIf="(accReceivableDetail.agreementType === 'Guaranteed' && accReceivableDetail.saleCreditLimited)">
+                                {{accReceivableDetail.agreementCurrency}}
+                            </span>
+                            <span *ngIf="accReceivableDetail.isExpired">
+                                <i class="la la-history la-lg"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h6 class="font-weight-bold">
+                            {{accReceivableDetail.agreementType === "Guaranteed"
+                            ? "Sales Debit Amount:" :"Credit Term (Days):"}}
+                        </h6>
+                    </div>
+                    <div class="col-lg-6">
+                        <div>
+                            {{ accReceivableDetail.agreementType === "Guaranteed" ?
+                            (accReceivableDetail.saleDebitAmount | number: '.0-3')
+                            : accReceivableDetail.creditTerm }}
+                            <span
+                                *ngIf="(accReceivableDetail.creditTerm && accReceivableDetail.agreementType !== 'Guaranteed' )||
+                                    (accReceivableDetail.saleDebitAmount && accReceivableDetail.agreementType === 'Guaranteed') ">
+                                {{accReceivableDetail.agreementType === "Guaranteed" ?
+                                accReceivableDetail.agreementCurrency : "days"}}
+                            </span>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row m--margin-top-5">
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <h6 class="font-weight-bold">Status:</h6>
+
+                    </div>
+                    <div class="col-lg-7">
+                        <span class="badge"
+                            [ngClass]=" accReceivableDetail.agreementStatus === 'Active'  ? 'badge-success' : 'badge-danger'">
+                            {{accReceivableDetail.agreementStatus}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <h6 class="font-weight-bold">
+                            {{accReceivableDetail.agreementType === "Guaranteed"
+                            ? "Credit Term (Days):" :"Expired Days:"}}
+                        </h6>
+                    </div>
+                    <div class="col-lg-7">
+                        <div [ngClass]="accReceivableDetail.agreementType === 'Guaranteed' ? null : 'text-danger'">
+                            {{ accReceivableDetail.agreementType === "Guaranteed" ?
+                            accReceivableDetail.creditTerm
+                            : accReceivableDetail.expriedDay }}
+                            <span
+                                *ngIf="(accReceivableDetail.expriedDay && accReceivableDetail.agreementType !== 'Guaranteed') ||
+                                (accReceivableDetail.creditTerm && accReceivableDetail.agreementType === 'Guaranteed')">
+                                days</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h6 class="font-weight-bold">
+                            {{accReceivableDetail.agreementType === "Guaranteed"
+                            ? "Sales Debit Rate:" :"Credit Rate Limit:"}}
+                        </h6>
+                    </div>
+                    <div class="col-lg-6">
+                        <div
+                            [ngClass]="accReceivableDetail.agreementType === 'Guaranteed' ? 'text-danger' : 'text-success' ">
+                            {{ accReceivableDetail.agreementType === "Guaranteed" ?
+                            (accReceivableDetail.saleDebitRate | number: '.0-3')
+                            : (accReceivableDetail.creditRateLimit | number: '.0-3') }}
+                            <span
+                                *ngIf="(accReceivableDetail.creditRateLimit && accReceivableDetail.agreementType !== 'Guaranteed') ||
+                                    (accReceivableDetail.saleDebitRate && accReceivableDetail.agreementType === 'Guaranteed')">
+                                %
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <!--Debit Info Section-->
+        <div class="row m--margin-top-20">
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <h6 class="font-weight-bold">Debit Amount:</h6>
+                    </div>
+                    <div class="col-lg-7">
+                        <div>{{ accReceivableDetail.debitAmount | number: '.0-3'}}
+                            <span *ngIf="accReceivableDetail.debitAmount">
+                                {{ accReceivableDetail.arCurrency }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <h6 class="font-weight-bold">Billing (Unpaid): </h6>
+                    </div>
+                    <div class="col-lg-7">
+                        <div>{{ (accReceivableDetail.billingAmount +
+                            accReceivableDetail.obhBillingAmount) | number: '.0-3'}}
+                            <span *ngIf="accReceivableDetail.billingAmount">
+                                {{ accReceivableDetail.arCurrency }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h6 class="font-weight-bold">Over 1-15 days:</h6>
+
+                    </div>
+                    <div class="col-lg-6">
+                        <span class="text-danger">{{ accReceivableDetail.over1To15Day |
+                            number: '.0-3' }}</span>
+                        <span *ngIf="accReceivableDetail.over1To15Day">
+                            {{ accReceivableDetail.arCurrency }}
+                            <span *ngIf="!!accReceivableDetail.isOverDue" title="Contract have overdued">
+                                <i class="la la-exclamation-triangle la-lg text-warning"></i>
+                            </span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row m--margin-top-5">
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <h6 class="font-weight-bold">OBH Amount:</h6>
+                    </div>
+                    <div class="col-lg-7">
+                        <div>{{ accReceivableDetail.obhAmount | number: '.0-3'}}
+                            <span *ngIf="accReceivableDetail.obhAmount">
+                                {{ accReceivableDetail.arCurrency }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <h6 class="font-weight-bold">OutStanding Balance:</h6>
+                    </div>
+                    <div class="col-lg-7">
+                        <div>{{ (accReceivableDetail.billingUnpaid + accReceivableDetail.obhUnPaidAmount) | number:
+                            '.0-3'}}
+                            <span *ngIf="accReceivableDetail.billingUnpaid">
+                                {{ accReceivableDetail.arCurrency }}
+                            </span>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h6 class="font-weight-bold">Over 16-30 days:</h6>
+                    </div>
+                    <div class="col-lg-6">
+                        <span class="text-danger">{{ accReceivableDetail.over16To30Day
+                            | number: '.0-3'}}</span>
+                        <span *ngIf="accReceivableDetail.over16To30Day">
+                            {{ accReceivableDetail.arCurrency }}
+                            <span *ngIf="!!accReceivableDetail.isOverDue" title="Contract have overdued">
+                                <i class="la la-exclamation-triangle la-lg text-warning"></i>
+                            </span>
+                        </span>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row m--margin-top-5">
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <div>
+                            <h6 class="font-weight-bold">Debit Rate (%):</h6>
+                        </div>
+                    </div>
+                    <div class="col-lg-7">
+                        <div>
+                            <div>
+                                <span
+                                    [ngClass]="accReceivableDetail.debitRate < 70 ? 'text-success' : accReceivableDetail.debitRate < 100 ? 'text-warning':'text-danger'">
+                                    {{ accReceivableDetail.debitRate | number: '.0-3'}}
+                                </span>
+                                <span *ngIf="accReceivableDetail.debitRate !== null">
+                                    %
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <div>
+                            <h6 class="font-weight-bold">Paid: </h6>
+                        </div>
+                    </div>
+                    <div class="col-lg-7">
+                        <div>
+                            <div><span class="text-success">{{ (accReceivableDetail.paidAmount +
+                                    accReceivableDetail.obhPaidAmount) |
+                                    number: '.0-3'}}</span>
+                                <span *ngIf="accReceivableDetail.paidAmount">
+                                    {{ accReceivableDetail.arCurrency }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div>
+                            <h6 class="font-weight-bold">Over 30 days:</h6>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <span class="text-danger">{{ accReceivableDetail.over30Day |
+                            number: '.0-3'}}</span>
+                        <span *ngIf="accReceivableDetail.over30Day">
+                            {{ accReceivableDetail.arCurrency }}
+                            <span *ngIf="!!accReceivableDetail.isOverDue" title="Contract have overdued">
+                                <i class="la la-exclamation-triangle la-lg text-warning"></i>
+                            </span>
+                        </span>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row m--margin-top-5">
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <h6 class="font-weight-bold">Cus Advance:</h6>
+                    </div>
+                    <div class="col-lg-7">
+                        <ng-container *ngIf="accReceivableDetail.arCurrency === 'VND'; else cusUsdTpl">
+                            <div>{{ accReceivableDetail.cusAdvanceVnd | number: '.0-3'}}
+                                <span *ngIf="accReceivableDetail.cusAdvanceVnd">
+                                    {{ accReceivableDetail.arCurrency }}
+                                </span>
+                            </div>
+                        </ng-container>
+                        <ng-template #cusUsdTpl>
+                            <div>{{ accReceivableDetail.cusAdvanceUsd | number: '.0-2'}}
+                                <span *ngIf="accReceivableDetail.cusAdvanceUsd">
+                                    {{ accReceivableDetail.arCurrency }}
+                                </span>
+                            </div>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <h6 class="font-weight-bold">Over Amount:</h6>
+                    </div>
+                    <div class="col-lg-7">
+                        <div><span class="text-danger">{{(accReceivableDetail.debitAmount -
+                                accReceivableDetail.creditLimited)| number: '.0-3'}}</span>
+                            <span *ngIf="accReceivableDetail.debitAmount -
+                            accReceivableDetail.creditLimited">
+                                {{ accReceivableDetail.arCurrency }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

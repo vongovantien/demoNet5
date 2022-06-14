@@ -1,0 +1,156 @@
+<div class="modal fade" id="edit-ware-house-modal" bsModal #popup="bs-modal">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ title }}</h5>
+                <button type="button" class="close" (click)="onCancel()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="m-form m-form m-form--state" [formGroup]="warehouseForm">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger': isSubmitted && code.invalid }">
+                                <label class="form-control-label">
+                                    Code <span class="m--font-danger">(*)</span>
+                                </label>
+                                <input type="text" class="form-control m-input" placeholder="Please enter code"
+                                    name="code" autocomplete="nope" minlength="3" formControlName="code">
+                                <div class="form-control-feedback" *ngIf="isSubmitted && code.invalid">
+                                    Code is required least 3 characters
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger': isSubmitted && warehouseNameEN.invalid }">
+                                <label class="form-control-label">
+                                    Name(EN) <span class="m--font-danger">(*)</span>
+                                </label>
+                                <input type="text" class="form-control m-input" placeholder="Please enter name"
+                                    name="warehouseNameEN" autocomplete="nope" minlength="3"
+                                    formControlName="warehouseNameEN">
+                                <div class="form-control-feedback" *ngIf="isSubmitted && warehouseNameEN.invalid">
+                                    Name(EN) is required least 3 characters
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger': isSubmitted && warehouseNameVN.invalid }">
+                                <label class="form-control-label">
+                                    Name(VN) <span class="m--font-danger">(*)</span>
+                                </label>
+                                <input type="text" class="form-control m-input" placeholder="Please enter name"
+                                    name="warehouseNameVN" autocomplete="nope" formControlName="warehouseNameVN"
+                                    minlength="3">
+                                <div class="form-control-feedback" *ngIf="isSubmitted && warehouseNameVN.invalid">
+                                    Name(VN) is required least 3 characters
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Name(Abbr)
+                                </label>
+                                <input type="text" class="form-control m-input" placeholder="Please enter name"
+                                    autocomplete="nope" formControlName="displayName">
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger': isSubmitted && country.invalid}">
+                                <label class="form-control-label">
+                                    Country <span class="m--font-danger">(*)</span>
+                                </label>
+                                <ng-select [clearable]="true" [items]="countries" class="custom" bindLabel="text"
+                                    (change)="onChange($event, 'country')" placeholder="Select country"
+                                    formControlName="country">
+                                </ng-select>
+                                <div class="form-control-feedback" *ngIf="isSubmitted && country.invalid">
+                                    Country is required
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger': isSubmitted && province.invalid }">
+                                <label class="form-control-label">
+                                    City/ Province <span class="m--font-danger">(*)</span>
+                                </label>
+                                <ng-select [clearable]="true" [items]="provinces" bindLabel="text" class="custom"
+                                    (change)="onChange($event, 'province')" placeholder="Select province"
+                                    formControlName="province">
+                                </ng-select>
+                                <div class="form-control-feedback" *ngIf="isSubmitted && province.invalid">
+                                    Province is required
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    District
+                                </label>
+                                <ng-select #chooseDistrict [clearable]="true" [items]="districts" bindLabel="text"
+                                    bindValue="id" class="custom" placeholder="Select district"
+                                    formControlName="district">
+                                </ng-select>
+
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger': isSubmitted && address.invalid }">
+                                <label class="form-control-label">
+                                    Address <span class="m--font-danger">(*)</span>
+                                </label>
+                                <input type="text" class="form-control m-input" placeholder="Please enter address"
+                                    name="address" autocomplete="nope" formControlName="address">
+                                <div class="form-control-feedback" *ngIf="isSubmitted && address.invalid">
+                                    Address is required
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Flight/Vessel No
+                                </label>
+                                <input type="text" class="form-control m-input" formControlName="flightVesselNo">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4" *ngIf="isUpdate">
+                            <div class="form-group">
+                                <label class="form-control-label"> Active </label>
+                                <div class="col-lg-8">
+                                    <app-switch formControlName="active">
+                                    </app-switch>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer m--align-center c-button-actions">
+                <ng-container *ngIf="isShowUpdate">
+                    <app-permission-button type="save" (onClick)="onSubmit()" title="Save"></app-permission-button>
+                </ng-container>
+
+                <app-default-button [buttonSetting]="cancelButtonSetting" (click)="onCancel()"></app-default-button>
+            </div>
+        </div>
+    </div>
+</div>

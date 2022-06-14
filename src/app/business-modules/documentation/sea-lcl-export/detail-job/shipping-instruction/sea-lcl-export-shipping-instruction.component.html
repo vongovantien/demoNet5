@@ -1,0 +1,82 @@
+<app-sub-header>
+    <div class="c-button-actions">
+        <span *ngIf="(isLocked | async) === true" class="m--margin-right-10 align-middle">
+            <i class="fa fa-lock text-danger fa-3x"></i>
+        </span>
+        <div *ngIf="displayPreview" class="dropdown m-dropdown m-dropdown--inline">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
+                Preview SI
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item pointer" (click)="previewSummaryReport()">Preview SI Summary</a>
+                <a class="dropdown-item pointer" (click)="previewSIReport()">Preview SI Detail</a>
+                <a class="dropdown-item pointer" (click)="previewSIContReport()">Preview SI Detail (Cont)</a>
+            </div>
+        </div>
+        <div *ngIf="displayPreview" class="dropdown m-dropdown m-dropdown--inline">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
+                Preview OCL
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item pointer" (click)="previewOCL()">Crystal
+                    Report</a>
+            </div>
+        </div>
+        <ng-container *ngIf="(isLocked | async) === false">
+            <ng-container *ngIf="(permissionShipments | async)?.allowUpdate">
+                <button type="button" class="btn btn-default  m-btn--icon m-btn--uppercase"
+                    (click)="confirmRefresh.show()">
+                    <span>
+                        <i class="la la-refresh"></i>
+                        <span>
+                            Refresh
+                        </span>
+                    </span>
+                </button>
+            </ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="(permissionShipments | async)?.allowUpdate">
+            <app-default-button [buttonSetting]="saveButtonSetting" (onClick)="save()"></app-default-button>
+        </ng-container>
+
+        <button type="button" class="btn  m-btn--icon m-btn--uppercase" (click)="back()">
+            <span>
+                <i class="la la-ban"></i>
+                <span>
+                    cancel
+                </span>
+            </span>
+        </button>
+    </div>
+</app-sub-header>
+
+<div class="m-content">
+    <div class="m-portlet__body">
+        <div class="row">
+            <div class="col-12">
+                <tabset class="custom-class-tab">
+                    <tab heading="Bill Instruction">
+                        <app-form-si-sea-export></app-form-si-sea-export>
+                    </tab>
+                    <tab heading="Bill detail">
+                        <bill-instruction-housebills-sea-export></bill-instruction-housebills-sea-export>
+                    </tab>
+                </tabset>
+            </div>
+        </div>
+    </div>
+</div>
+
+<confirm-popup #confirmRefresh body="All manually entered data will be refresh. Are you sure you want to perform this
+action?" (onSubmit)="confirmRefresh.hide(); refresh()"></confirm-popup>
+
+<ng-container *ngIf="dataReport">
+    <app-report-preview [data]="dataReport"></app-report-preview>
+</ng-container>
+
+<ul class="m-nav-sticky fms-shipment-sidebar">
+    <li class="m-nav-sticky__item">
+        <a title="Send Shipping Instruction" [routerLink]="['../send-si']">Send S.I</a>
+    </li>
+</ul>

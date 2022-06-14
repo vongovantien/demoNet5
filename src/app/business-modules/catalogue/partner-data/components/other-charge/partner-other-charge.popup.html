@@ -1,0 +1,146 @@
+<div class="modal m-animate-fade-in partner-other-charge-list-popup" role="dialog" bsModal #popup="bs-modal"
+    aria-hidden="true">
+    <div class="modal-dialog c-modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    Default Other Charge
+                </h5>
+                <button type="button" (click)="closePopup()" class="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="table-wrapper table-scrollable table-editable m--margin-top-20 m-h-300">
+                        <table class="table table-bordered dataTable-edit">
+
+                            <thead app-table-header [headers]="headers" (onClick)="sortBy($event.sortField)">
+                                <th class="first table-actions-col fixed-side">
+                                </th>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngIf="!!initCharges.length">
+                                    <tr *ngFor="let charge of initCharges; let i = index; trackBy: trackByFn"
+                                        class="m-form m-form--state text-center">
+                                        <ng-container>
+                                            <td class="table-actions-col fixed-side">
+                                                <div class="table-actions">
+                                                    <button type="button" (click)="deleteCharge(charge,i)"
+                                                        class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only"
+                                                        title="Remove">
+                                                        <i class="la la-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </ng-container>
+                                        <td>
+                                            <div class="form-group"
+                                                [ngClass]="{'m-form__group has-danger': isSubmitted && (!charge.chargeId)}">
+                                                <div class="list-master-charge">
+                                                    <app-combo-grid-virtual-scroll
+                                                        [currentActiveItemId]="{field:'id', value:charge.chargeId}"
+                                                        (itemSelected)="onSelectDataFormInfo($event, charge)"
+                                                        [selectedDisplayFields]="configComboGridCharge.selectedDisplayFields"
+                                                        [dataSources]="listCharges"
+                                                        [displayFields]="configComboGridCharge.displayFields"
+                                                        placeholder="Select charge" (remove)="charge.chargeId = null">
+                                                    </app-combo-grid-virtual-scroll>
+                                                </div>
+
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <div class="row quantity-hint">
+                                                    <ng-container *ngIf="charge.quantity !== null">
+                                                        <div class="col-md-6 p-r-none">
+                                                            <input type="number" class="form-control"
+                                                                [(ngModel)]="charge.quantity" placeholder="Quantity"
+                                                                disabled>
+                                                        </div>
+                                                    </ng-container>
+                                                    <div
+                                                        [ngClass]="!charge.quantity ? 'col-md-12' : 'col-md-6 p-l-none'">
+                                                        <select class="form-control border"
+                                                            [(ngModel)]="charge.quantityType"
+                                                            (ngModelChange)="onChangeQuantityHint($event,charge)">
+                                                            <option value="null">-</option>
+                                                            <option *ngFor="let hint of quantityHints"
+                                                                [ngValue]="hint.value">
+                                                                {{hint.displayName}}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group ">
+                                                <select class="form-control" [(ngModel)]="charge.unitId">
+                                                    <option value="null">Select Unit</option>
+                                                    <option *ngFor="let unit of (listUnits)" [ngValue]="unit.id">
+                                                        {{unit.code}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group ">
+                                                <input type="text" class="form-control" [(ngModel)]="charge.unitPrice"
+                                                    placeholder="Unit Price" numeric [decimals]="digitDecimal"
+                                                    autoFormatCurrency>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group ">
+                                                <select class="form-control" [(ngModel)]="charge.currencyId"
+                                                    placeholder="Currency">
+                                                    <option value="null">Select Currency</option>
+                                                    <option *ngFor="let currency of (listCurrency | async)"
+                                                        [ngValue]="currency.id">
+                                                        {{currency.id}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group "
+                                                [ngClass]="{'m-form__group has-danger': isSubmitted  && (charge.vatrate > 100) }">
+                                                <input type="number" class="form-control" [(ngModel)]="charge.vatrate"
+                                                    placeholder="%">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                                <tr app-table-none-record [colspan]="headers.length  + 1" *ngIf="!initCharges.length">
+                                </tr>
+                                <tr>
+                                    <td colspan=1 class="fixed-side">
+                                        <a class="btn m-btn--icon m-btn--icon-only m--font-primary" title="Add"
+                                            (click)="addCharge()">
+                                            <i class="fa fa-plus-circle fa-2x"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer m--align-center m--margin-top-10">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="m--align-center m--margin-top-20">
+                            <div class="c-button-actions">
+                                <app-default-button [buttonSetting]="saveButtonSetting"
+                                    (onClick)="onSavePartnerCharge()"></app-default-button>
+                                <app-default-button [buttonSetting]=" cancelButtonSetting" (onClick)="closePopup()">
+                                </app-default-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

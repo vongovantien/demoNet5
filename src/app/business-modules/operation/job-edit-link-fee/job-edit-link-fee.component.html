@@ -1,0 +1,61 @@
+
+<div class="m-content">
+    <div class="m-portlet__body">
+        <div class="row">
+            <div class="col-12">
+                <div class="m-portlet" style="position: relative;">
+                    <div class="m-portlet__body">
+                        <tabset class="custom-class-tab">
+                            <tab heading="Buying" (selectTab)="getSurCharges('BUY')"
+                                >
+                                <ng-container
+                                    *ngIf="!!opsTransaction && opsTransaction.hblid; else placeholder">
+                                    <buying-charge [showGetChargeStandart]="false" service="logistic"
+                                        [allowSaving]="!isDuplicate" *ngIf="selectedTabSurcharge === 'BUY'">
+                                    </buying-charge>
+                                </ng-container>
+                            </tab>
+                            <tab heading="Selling" (selectTab)="getSurCharges('SELL')" [active]="selectedTabSurcharge === 'SELL'">
+                                <ng-container
+                                    *ngIf="!!opsTransaction && opsTransaction.hblid; else placeholder">
+                                    <selling-charge service="logistic" [showSyncFreight]="false"
+                                        [showGetCharge]="true" [showSyncStandard]="false"
+                                        *ngIf="selectedTabSurcharge === 'SELL'" [allowSaving]="!isDuplicate">
+                                    </selling-charge>
+                                </ng-container>
+                            </tab>
+                            <tab heading="OBH" (selectTab)="getSurCharges('OBH')">
+                                <ng-container
+                                    *ngIf="!!opsTransaction && opsTransaction.hblid; else placeholder">
+                                    <obh-charge service="logistic" *ngIf="selectedTabSurcharge === 'OBH'"
+                                        [allowSaving]="!isDuplicate">
+                                    </obh-charge>
+                                </ng-container>
+                            </tab>
+                        </tabset>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<container-list-popup></container-list-popup>
+
+
+
+<ng-template #placeholder>
+    <div class="no-data">
+        <i class="flaticon-coins"></i>
+        <span class="no-data-text">No records found</span>
+    </div>
+</ng-template>
+
+<ng-template inject></ng-template>
+
+<ng-template #lockTpl>
+    <span *ngIf="!!opsTransaction && !!opsTransaction.isLocked" class="m--margin-right-10">
+        <i class="fa fa-lock text-danger fa-3x"></i>
+    </span>
+</ng-template>

@@ -1,0 +1,29 @@
+<div class="m-portlet form-sarch-company-wrapper">
+    <div class="m-portlet__body">
+        <div class="m-form">
+            <!-- <div class="row">
+                <div class="col">
+                    <form action="" class="form">
+                        <div class="input-group row">
+                            <select [(ngModel)]="selectedType" name="type" class="form-control col-1">
+                                <option *ngFor="let type of types" [ngValue]="type">{{type.title}}</option>
+                            </select>
+
+                            <input type="text" class="form-control" aria-label="Text input with dropdown button">
+                            <div class="input-group-append">
+                                <app-default-button [buttonSetting]="searchlButtonSetting" (click)="onSeach()">
+                                </app-default-button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-auto">
+                    <app-default-button [buttonSetting]="resetButtonSetting" (click)="onReset()">
+                    </app-default-button>
+                </div>
+            </div> -->
+            <app-search-options [configSearch]="configSearch" (search)="onSearchRequest($event)"
+                (reset_search)="onReset($event)"></app-search-options>
+        </div>
+    </div>
+</div>

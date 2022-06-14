@@ -1,0 +1,84 @@
+<div class="modal fade" role="dialog" bsModal #popup="bs-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{commodityGroup.id ? 'Edit Commodity Group' : 'Add New Commodity Group'}}</h5>
+                <button type="button" (click)="closePopup()" class="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form [formGroup]="formGroupCommodity">
+                <div class="modal-body">
+                    <!--begin::add-commodity-group-form-->
+                    <div class="m-form">
+                        <div class="m-form m-form--state">
+                            <div class="form-group row"
+                                [ngClass]="{ 'm-form__group has-danger': (groupNameEN.dirty && !groupNameEN.valid) || (isSubmited && !groupNameEN.valid) }">
+                                <label class="col-lg-4 col-form-label form-control-label">
+                                    Group Name(EN): <span class="m--font-danger">(*)</span>
+                                </label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control m-input m-input-group--square"
+                                        [ngClass]="{ 'm-input--square': isSubmited && groupNameEN.invalid }"
+                                        formControlName="groupNameEN" placeholder="Please enter group name (EN)">
+                                    <div class="form-control-feedback"
+                                        *ngIf="isSubmited && (groupNameEN.errors | equalError: 'required') || (groupNameEN.errors | equalError: 'required') && groupNameEN.dirty">
+                                        Group Name(EN) is required
+                                    </div>
+                                    <div class="form-control-feedback"
+                                        *ngIf="groupNameEN.errors | equalError: 'minlength'">
+                                        Min length must be greater than or equal to 3
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row"
+                                [ngClass]="{ 'm-form__group has-danger': (groupNameVN.dirty && !groupNameVN.valid) || (isSubmited && !groupNameVN.valid) }">
+                                <label class="col-lg-4 col-form-label form-control-label">Group Name(Local): <span
+                                        class="m--font-danger">(*)</span></label>
+                                <div class="col-lg-8">
+                                    <input type="input" class="form-control m-input m-input-group--square"
+                                        placeholder="Please enter group name (Local)" formControlName="groupNameVN"
+                                        [ngClass]="{ 'm-input--square': isSubmited && groupNameVN.invalid }">
+                                    <div class="form-control-feedback"
+                                        *ngIf="isSubmited && (groupNameVN.errors | equalError: 'required') || (groupNameVN.errors | equalError: 'required') && groupNameVN.dirty">
+                                        Group Name(Local) is required
+                                    </div>
+                                    <div class="form-control-feedback"
+                                        *ngIf="groupNameVN.errors | equalError: 'minlength'">
+                                        Min length must be greater than or equal to 3
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row" *ngIf="commodityGroup.id">
+                                <label class="col-lg-4 col-form-label form-control-label"> Active </label>
+                                <div class="col-lg-8">
+                                    <app-switch formControlName="commodityGroupActive">
+                                    </app-switch>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end:add-commodity-group-form -->
+                </div>
+                <div class="modal-footer m--align-center">
+                    <button class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="saveCommodityGroup()">
+                        <span>
+                            <i class="la la-save"></i>
+                            <span>
+                                Save
+                            </span>
+                        </span>
+                    </button>
+                    <button type="button" class="btn btn-cancel  m-btn--icon m-btn--uppercase" (click)="closePopup()">
+                        <span>
+                            <i class="la la-ban"></i>
+                            <span>
+                                cancel
+                            </span>
+                        </span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

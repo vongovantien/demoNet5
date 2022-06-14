@@ -1,0 +1,40 @@
+<div class="sea-lcl-export-create-job-page">
+    <app-sub-header>
+        <div class="c-button-actions">
+            <button (click)="showImportPopup()" type="button" class="btn btn-success  m-btn--icon m-btn--uppercase">
+                <span>
+                    <i class="la la-search-plus"></i>
+                    <span>
+                        Import Job
+                    </span>
+                </span>
+            </button>
+
+            <app-default-button [buttonSetting]="saveButtonSetting" (onClick)="onSaveJob()"></app-default-button>
+
+            <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="confirmCancelPopup.show()">
+            </app-default-button>
+
+        </div>
+    </app-sub-header>
+    <div class="m-content">
+        <div class="m-portlet__body">
+            <tabset class="custom-class-tab">
+                <tab heading="Shipment Detail">
+
+                    <app-form-create-sea-export type="SLE"></app-form-create-sea-export>
+
+                    <app-shipment-good-summary-lcl>Shipment Goods Summary</app-shipment-good-summary-lcl>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+</div>
+
+<import-job-detail-popup (onImport)="onImport($event)"> </import-job-detail-popup>
+
+<info-popup [body]="'Opps, It looks like you missed something, Please recheck the highlighted field below.'"
+    [title]="'Cannot Create Job'"></info-popup>
+
+<confirm-popup #confirmCancelPopup body="All entered data will be discard. Are you sure you want to leave?"
+    (onSubmit)="gotoList()"></confirm-popup>

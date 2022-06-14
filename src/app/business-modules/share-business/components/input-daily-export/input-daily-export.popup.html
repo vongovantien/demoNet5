@@ -1,0 +1,51 @@
+<div class="modal fade" role="dialog" bsModal #popup="bs-modal" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Daily Export</h5>
+                <button type="button" (click)="closePopup()" class="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="m-form m-form--state">
+                    <form [formGroup]="form">
+                        <div class="row align-items-center">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label>Issued Date</label>
+                                    <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                        <input type="text" class="form-control m-input m-input--square po-rel"
+                                            ngxDaterangepickerMd [locale]="{format: 'DD/MM/YYYY'}" [autoApply]="true"
+                                            [singleDatePicker]="true" [alwaysShowCalendars]="true" name="daterange"
+                                            placeholder="Select Issued Date" readonly formControlName="issuedDate"
+                                            calendar />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer m--align-center">
+                <button class="btn btn-brand m-btn--square m-btn--icon m-btn--uppercase" (click)="apply()">
+                    <span>
+                        <i class="la la-check-square"></i>
+                        <span>
+                            Apply
+                        </span>
+                    </span>
+                </button>
+                <button type="button" class="btn btn-cancel m-btn--square m-btn--icon m-btn--uppercase"
+                    (click)="closePopup()">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span>
+                            cancel
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

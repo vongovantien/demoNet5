@@ -1,0 +1,18 @@
+<div class="m-subheader">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <app-breadcrumb></app-breadcrumb>
+        </div>
+    </div>
+</div>
+<form-add-office></form-add-office>
+
+<div class="row">
+    <div class="col-12">
+        <div class="text-center c-button-actions">
+            <app-default-button [buttonSetting]="saveButtonSetting" (onClick)="create()"></app-default-button>
+            <app-default-button [buttonSetting]="cancelButtonSetting" routerLink="/home/system/office">
+            </app-default-button>
+        </div>
+    </div>
+</div>

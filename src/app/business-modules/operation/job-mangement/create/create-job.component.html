@@ -1,0 +1,18 @@
+<div class="h-100vh m--margin-bottom-100">
+
+    <app-sub-header>
+        <div class="c-button-actions">
+            <app-default-button [buttonSetting]="saveButtonSetting" (onClick)="onSave()"></app-default-button>
+            <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="confirmCancel.show()">
+            </app-default-button>
+        </div>
+    </app-sub-header>
+
+    <job-mangement-form-create></job-mangement-form-create>
+
+</div>
+
+<confirm-popup #confirmCancel [body]="confirmCancelFormText" (onSubmit)="confirmCancel.hide();gotoList()">
+</confirm-popup>
+
+<info-popup [body]="invalidFormText" [title]="'Cannot Create Job'"></info-popup>

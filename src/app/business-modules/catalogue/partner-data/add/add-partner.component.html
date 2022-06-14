@@ -1,0 +1,55 @@
+<form name="formAddEdit" #formAddEdit="ngForm" novalidate (ngSubmit)="formAddEdit.form.valid">
+    <!--begin:: subheader-->
+    <div class="m-subheader">
+        <div class="d-flex align-items-center">
+            <div class="mr-auto">
+                <app-breadcrumb></app-breadcrumb>
+            </div>
+            <div class="c-button-actions">
+                <button type="" class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="onSubmit()">
+                    <span>
+                        <i class="la la la-save"></i>
+                        <span>
+                            Save
+                        </span>
+                    </span>
+                </button>
+                <button type="button" class="btn  m-btn--icon m-btn--uppercase"
+                    routerLink="/home/catalogue/partner-data">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span>
+                            cancel
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!--end:: subheader-->
+    <!--begin::m-content of Partner-data-addnew-->
+    <div class="m-content">
+        <form-add-partner></form-add-partner>
+        <div class="m-portlet__body">
+            <tabset class="custom-class-tab">
+                <tab heading="Agreement">
+                    <commercial-contract-list [openOnPartner]="true"></commercial-contract-list>
+                </tab>
+                <tab heading="Branch/Sub">
+                    <app-commercial-branch-sub-list [openOnPartner]="true"></app-commercial-branch-sub-list>
+                </tab>
+                <tab heading="Email">
+                    <app-commercial-email-list></app-commercial-email-list>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+    <!--end::m-content of Partner-data-addnew-->
+</form>
+
+<popup-form-contract-commercial-catalogue (onRequest)="onRequestContract($event)">
+</popup-form-contract-commercial-catalogue>
+
+<confirm-popup #internalReferenceConfirmPopup (onSubmit)="onFocusInternalReference()" [body]="deleteMessage"
+    [labelConfirm]="'Ok'" [labelCancel]="'Cancel'" [align]="'left'"></confirm-popup>
+<info-popup #duplicatePartnerPopup [body]="deleteMessage"></info-popup>

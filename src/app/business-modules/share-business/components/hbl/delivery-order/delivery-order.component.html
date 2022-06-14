@@ -1,0 +1,96 @@
+<div class="delivery-order-wrapper m-animate-fade-in">
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <div class="row form-delivery-order m-form m-form--state m--margin-bottom-20">
+                <div class="col-md-6">
+                    <div class="form-group"
+                        [ngClass]="{'m-form__group has-danger': isSubmitted && !deliveryOrder.deliveryOrderNo}">
+                        <label *ngIf="!isAir" required>Delivery Order No</label>
+                        <label *ngIf="isAir" required>Authorize No</label>
+                        <input type="text" class="form-control" placeholder="Delivery Order No"
+                            [(ngModel)]="deliveryOrder.deliveryOrderNo">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label *ngIf="!isAir">Delivery Order Printed Date</label>
+                        <label *ngIf="isAir">Authorize Letter Printed Date</label>
+                        <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                            <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" name="daterange"
+                                placeholder="Please Select" readonly [autoApply]="true" [singleDatePicker]="true"
+                                [alwaysShowCalendars]="true" [(ngModel)]="deliveryOrder.deliveryOrderPrintedDate"
+                                calendar [allowRemove]="deliveryOrder.deliveryOrderPrintedDate"
+                                (remove)="deliveryOrder.deliveryOrderPrintedDate = null" />
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="m-portlet">
+                <div class="alert-block__heading">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="alert-block__title">
+                            Header
+                        </h3>
+                        <div *ngIf="(isLocked | async) === false">
+                            <button type="button" class="btn btn-info m-btn--pill m-btn--icon m-btn--uppercase"
+                                (click)="setDefaultHeadeFooter()">
+                                <span><i class="la la-save"></i>
+                                    <span> Set Default </span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="m-portlet__body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Sent to (1)</label>
+                                <input type="text" class="form-control" [(ngModel)]="deliveryOrder.doheader1">
+                            </div>
+                        </div>
+                        <div [ngClass]="{'col-md-3':isAir, 'col-md-6':!isAir}">
+                            <div class="form-group">
+                                <label for="">Sent to (2)</label>
+                                <input type="text" class="form-control" [(ngModel)]="deliveryOrder.doheader2">
+                            </div>
+                        </div>
+                        <div class="col-md-3" *ngIf="isAir">
+                            <div class="form-group">
+                                <label for="">Sub Abbr</label>
+                                <input type="text" class="form-control" [(ngModel)]="deliveryOrder.subAbbr">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="m-portlet">
+                <div class="alert-block__heading">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="alert-block__title">
+                            Footer
+                        </h3>
+                        <div *ngIf="(isLocked | async) === false">
+                            <button type="button" class="btn btn-info m-btn--pill m-btn--icon m-btn--uppercase"
+                                (click)="setDefaultHeadeFooter()">
+                                <span><i class="la la-save"></i>
+                                    <span> Set Default </span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="m-portlet__body">
+                    <div class="row">
+                        <div [froalaEditor]="optionEditor" [(froalaModel)]="deliveryOrder.dofooter">
+                            {{ deliveryOrder.dofooter }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

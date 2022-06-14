@@ -1,0 +1,114 @@
+<div class="m-portlet">
+    <div class="m-portlet__body">
+        <div [formGroup]="formSearch" class="m-form m-form--state">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="form-control-label">Payment Ref No</label>
+                        <input type="text" class="form-control" formControlName="refNo">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="form-control-label">Payment Type</label>
+                        <ng-select [items]="paymentTypes" formControlName="paymentType" class="custom"
+                            placeholder="All">
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="form-control-label">Customer</label>
+                        <app-combo-grid-virtual-scroll [currentActiveItemId]=" {  field:'id', value: customerID.value}"
+                            (itemSelected)="onSelectDataFormInfo($event, 'partner')"
+                            [selectedDisplayFields]="['shortName']" [dataSources]="customerIDs |async"
+                            [displayFields]="displayFilesPartners" (remove)="resetFormControl(customerID)"
+                            placeholder="Select Customer/Agent">
+                        </app-combo-grid-virtual-scroll>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="form-control-label">Currency</label>
+                        <ng-select formControlName="currency" class="custom" [items]="Currencys | async" bindLabel="id"
+                            bindValue="id" (change)="onSelectDataFormInfo($event,'currency')" placeholder="All">
+                        </ng-select>
+
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="form-control-label">Date Type</label>
+                        <ng-select [items]="dateTypes" formControlName="dateType" class="custom" placeholder="All">
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="form-control-label">Date</label>
+                        <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                            <input type="text" ngxDaterangepickerMd class="form-control"
+                                [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" name="daterange"
+                                placeholder="Select request date" [autoApply]="true" formControlName="date"
+                                [alwaysShowCalendars]="true" [ranges]="ranges" readonly calendar
+                                [allowRemove]="!!date.value && !!date.value.startDate"
+                                (remove)="resetFormControl(date)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="form-control-label">Type Receipt</label>
+                        <ng-select [items]="typesReceipt" formControlName="typeReceipt" class="custom"
+                            placeholder="All">
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="form-control-label">Status</label>
+                        <ng-select [items]="statusRecepit" formControlName="status" class="custom" placeholder="All">
+                            <ng-template ng-label-tmp let-item="item">
+                                <ng-container [ngSwitch]="item">
+                                    <ng-container *ngSwitchCase="'Done'">
+                                        <span class="text-success"> {{item}} </span>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'Draft'">
+                                        <span class="text-danger"> {{item}}</span>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'Cancel'">
+                                        <span class="text-dark"> {{item}}</span>
+                                    </ng-container>
+                                </ng-container>
+                            </ng-template>
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="form-control-label">Sync Status</label>
+                        <ng-select [items]="syncStatuss" formControlName="syncStatus" class="custom" placeholder="All">
+                            <ng-template ng-label-tmp let-item="item">
+                                <div class="text-{{item | classStatusSync}}"> {{item}} </div>
+                            </ng-template>
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <div class="row ">
+                    <div class="col-lg-6"></div>
+                    <div class="col-lg-6  m--align-right">
+                        <div class="c-button-actions">
+                            <app-default-button [buttonSetting]="searchlButtonSetting" (click)="search()">
+                            </app-default-button>
+                            <app-default-button [buttonSetting]="resetButtonSetting" (click)="reset()">
+                            </app-default-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

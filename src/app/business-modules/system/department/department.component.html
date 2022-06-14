@@ -1,0 +1,103 @@
+<div class="department-page">
+    <app-sub-header>
+        <div class="c-button-actions">
+            <button type="button" class="btn btn-success  m-btn--icon m-btn--uppercase"
+                [routerLink]="'/home/system/department/new'">
+                <span>
+                    <i class="la la-plus"></i>
+                    <span>
+                        create
+                    </span>
+                </span>
+            </button>
+            <button type="button" class="btn btn-danger  m-btn--icon m-btn--uppercase" (click)="export()">
+                <span>
+                    <i class="la la-upload"></i>
+                    <span>
+                        export
+                    </span>
+                </span>
+            </button>
+        </div>
+    </app-sub-header>
+    <div class="m-content">
+        <department-form-search (onSearch)="onSearchDepartment($event)"></department-form-search>
+        <div class="m-portlet">
+            <div class="m-form">
+                <div class="m-portlet__body">
+                    <div class="table-wrapper table-scrollabler" id="department-list-table">
+                        <table class="table table-striped table-brand table-hover dataTable">
+                            <thead app-table-header [headers]="headers"
+                                (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                                <th class="m--w-50 first table-actions-col">
+                                    Action
+                                </th>
+                            </thead>
+                            <tbody class="tbody-group">
+                                <ng-container *ngIf="!!departments.length">
+                                    <tr *ngFor="let department of departments; let i = index; trackBy: trackByFn">
+                                        <td class="table-actions-col">
+                                            <div class="table-actions" style="width: 70px">
+                                                <button type="button" title="Detail"
+                                                    class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only pointer"
+                                                    (click)="gotoDetailDepartment(department.id)">
+                                                    <i class="la la-edit"></i>
+                                                </button>
+                                                <!-- <ng-container *ngIf="!department.active"> -->
+                                                <button type="button" [disabled]="department.active" title="Delete"
+                                                    class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only pointer"
+                                                    (click)="showDeletePopup(department)">
+                                                    <i class="la la-trash"></i>
+                                                </button>
+                                                <!-- </ng-container> -->
+                                            </div>
+                                        </td>
+                                        <td class="text-primary pointer">
+                                            <a (click)="gotoDetailDepartment(department.id)">{{department.code}}</a>
+                                        </td>
+                                        <td>{{department.deptNameEn}}</td>
+                                        <td>{{department.deptName}}</td>
+                                        <td>{{department.deptNameAbbr}}</td>
+                                        <td>{{department.officeName}}</td>
+                                        <td [ngClass]="department.active ? 'text-success' : 'text-danger'">
+                                            {{department.active ? 'Active' : 'Inactive'}}</td>
+                                    </tr>
+                                </ng-container>
+                                <tr *ngIf="!departments.length" app-table-none-record [colspan]="headers.length + 1">
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination-nav ">
+                        <div class="row">
+                            <div *ngIf="!!departments.length" class="col-sm-6">
+                                <div class="tatable__pager-size">
+                                    <div class="select-box">
+                                        <select class="form-control" id="" aria-label="" [(ngModel)]="pageSize"
+                                            (change)="selectPageSize(pageSize, dataSearch)" name="pagesize">
+                                            <ng-container
+                                                *ngFor="let item of numberToShow; let i = index; trackBy: trackByFn">
+                                                <option [ngValue]="item">{{item}} line / screen</option>
+                                            </ng-container>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6" *ngIf="totalItems > pageSize">
+                                <div class="float-right">
+                                    <pagination [boundaryLinks]="true" [totalItems]="totalItems"
+                                        [itemsPerPage]="pageSize" (pageChanged)="pageChanged($event)"
+                                        [(ngModel)]="page">
+                                    </pagination>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<confirm-popup [body]="'Do you want to delete?'" [labelConfirm]="'Yes'" (onSubmit)="onDeleteDepartment()">
+</confirm-popup>

@@ -1,0 +1,164 @@
+<app-sub-header></app-sub-header>
+
+<div class="m-content add-new-soa-wp">
+    <soa-form-create (onApply)="searchChargeWithDataSearch($event)"
+        (onChange)="updateDataSearch($event.key, $event.data)"></soa-form-create>
+
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <div class="m-form m--margin-bottom-10">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="m-input-icon m-input-icon--right">
+                            <input type="text" class="form-control m-input m-input--square" placeholder="Search"
+                                [(ngModel)]="keyword" name="keyword">
+                            <span class="m-input-icon__icon m-input-icon__icon--right">
+                                <span>
+                                    <i class="la la-search"></i>
+                                </span>
+                            </span>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="m--margin-top-15">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <span class="m--font-bolder">Total Shipment/Charge:</span><span
+                                        class="m--font-brand m--margin-left-5">{{totalShipment | number:
+                                        '.0-3'}}/{{listCharges.length | number: '.0-3'}}</span>
+                                </div>
+                                <!-- <div class="col-md-6">
+                                    <span class="m--font-bolder">Total Charge:</span><span
+                                        class="m--font-brand m--margin-left-5">{{totalCharge}}</span>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5 m--align-right">
+                        <button type="reset" class="btn btn-danger  m-btn--icon m-btn--uppercase"
+                            (click)="removeCharge()">
+                            <span>
+                                <i class="la la-trash"></i>
+                                <span>
+                                    remove charge
+                                </span>
+                            </span>
+                        </button>
+                        <button type="button" class="btn btn-success  m-btn--icon m-btn--uppercase m--margin-left-10"
+                            (click)="addMoreCharge()">
+                            <span>
+                                <i class="la la-plus"></i>
+                                <span>
+                                    add more charge
+                                </span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <perfect-scrollbar style="max-height: 900px">
+                <div class="table-wrapper" [ngClass]="listCharges.length > 20 ? 'table-30-row' : ''">
+                    <table class="table table-brand dataTable table-bordered">
+                        <thead app-table-header [headers]="headers" (onClick)="sortBy($event.sortField)">
+                            <th class="first">
+                                <label class="m-checkbox">
+                                    <input type="checkbox" [(ngModel)]="isCheckAllCharge"
+                                        (change)="checkUncheckAllCharge()">
+                                    <span></span>
+                                </label>
+                            </th>
+                        </thead>
+                        <tbody class="tbody-group">
+                            <tr *ngIf="!isLoading && !listCharges.length" app-table-none-record
+                                [colspan]="headers.length + 1"></tr>
+                            <tr
+                                *ngFor="let charge of listCharges | filter: keyword:[ 'jobId', 'chargeCode', 'hbl', 'chargeName', 'hbl',  'mbl', 'currency'] ; let i = index; trackBy: trackByFn">
+                                <td class="table-actions-col">
+                                    <div class="table-actions">
+                                        <label class="m-checkbox">
+                                            <input type="checkbox" (change)="onChangeCheckBoxCharge($event)"
+                                                value="{{charge}}" [(ngModel)]="charge.isSelected"
+                                                name="{{charge.code}}">
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </td>
+                                <td class="text-center">{{i + 1}}</td>
+                                <td>
+                                    <span>{{charge.chargeCode}}</span>
+                                </td>
+                                <td>
+                                    <span>{{charge.chargeName}}</span>
+                                </td>
+                                <td>
+                                    <span class="pointer text-primary text-underline"
+                                        (click)="selectJobId(charge)">{{charge.jobId}}</span>
+                                </td>
+                                <td>
+                                    <span>{{charge.hbl}}</span>
+                                </td>
+                                <td>
+                                    <span>{{charge.mbl}}</span>
+                                </td>
+                                <td>
+                                    <span>{{charge.customNo}}</span>
+                                </td>
+                                <td class="text-right">
+                                    <span>{{charge.debit | number: '.0-3'}}</span>
+                                </td>
+                                <td class="text-right">
+                                    <span>{{charge.credit | number: '.0-3'}}</span>
+                                </td>
+                                <td>
+                                    <span>{{charge.currency}}</span>
+                                </td>
+                                <td>
+                                    <span>{{charge.invoiceNo}}</span>
+                                </td>
+                                <td [ngClass]="charge.cdNote ? '' : 'bg-red'">
+                                    <span>{{charge.cdNote}}</span>
+                                </td>
+                                <td>
+                                    <span>{{!!charge.serviceDate ? (charge.serviceDate | date: 'dd/MM/yyyy') :
+                                        ''}}</span>
+                                </td>
+                                <td>
+                                    <span>{{charge.note}}</span>
+                                </td>
+                            </tr>
+                            <tr class="loading-wrapper" *ngIf="isLoading" app-table-row-loading>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </perfect-scrollbar>
+        </div>
+    </div>
+    <!-- /list charge -->
+
+    <soa-summary [data]="dataCharge"></soa-summary>
+    <!-- /summary -->
+
+    <div class="form-actions m--align-center">
+        <button class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="onCreateSOA()">
+            <span>
+                <i class="la la-save"></i>
+                <span>
+                    Save
+                </span>
+            </span>
+        </button>
+        <button type="button" class="btn btn-cancel  m-btn--icon m-btn--uppercase" (click)="back()">
+            <span>
+                <i class="la la-ban"></i>
+                <span>
+                    cancel
+                </span>
+            </span>
+        </button>
+    </div>
+</div>
+
+<soa-add-charge-popup [searchInfo]="dataSearch" (onChange)="onUpdateMoreSOA($event)"></soa-add-charge-popup>

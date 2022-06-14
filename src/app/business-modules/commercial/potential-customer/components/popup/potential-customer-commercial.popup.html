@@ -1,0 +1,184 @@
+<div class="modal fade" role="dialog" bsModal #popup="bs-modal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{isUpdate ? 'Update' : 'Add'}} Potential Customer</h5>
+                <button type="button" class="close" aria-label="Close" (click)=hide()>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="m-form m-form--state" [formGroup]="formPotential">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group row"
+                                [ngClass]="{ 'm-form__group has-danger': isSubmitted && !nameEn.valid}">
+                                <label class="col-lg-4 col-form-label form-control-label" required> English Name
+                                </label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        formControlName="nameEn" placeholder="Please enter English Name">
+                                    <div class="form-control-feedback text-danger" *ngIf="isSubmitted && !nameEn.valid">
+                                        English name field was required!
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label form-control-label"> Local Name
+                                </label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        formControlName="nameLocal" placeholder="Please enter Local Name">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group row"
+                                [ngClass]="{ 'm-form__group has-danger': isSubmitted && !taxcode.valid}">
+                                <label class="col-lg-4 col-form-label form-control-label" required> Taxcode
+                                </label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        formControlName="taxcode" placeholder="Please enter Taxcode">
+                                    <div class="form-control-feedback text-danger"
+                                        *ngIf="isSubmitted && !taxcode.value">
+                                        Taxcode field was required!
+                                    </div>
+                                    <div class="form-control-feedback"
+                                        *ngIf="isSubmitted && 
+                                        ((taxcode.errors | equalError:'maxlength') || (taxcode.errors | equalError:'minlength'))">
+                                        Tax Code include 8 - 14 characters!
+                                    </div>
+                                    <div class="form-control-feedback"
+                                        *ngIf="isSubmitted && taxcode.errors  | equalError:'pattern'">
+                                        Tax Code invalid
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label form-control-label"> Tel
+                                </label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        formControlName="tel" placeholder="Please enter Tel">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label form-control-label"> Address
+                                </label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        formControlName="address" placeholder="Please enter Address">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label form-control-label"> Email
+                                </label>
+                                <div class="col-lg-8"
+                                    [ngClass]="{ 'm-form__group has-danger': isSubmitted && !email.valid}">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        formControlName="email" placeholder="Please enter Email">
+                                    <div class="form-control-feedback"
+                                        *ngIf="isSubmitted && email.errors  | equalError:'pattern'">
+                                        Email field invalid!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group row"
+                                [ngClass]="{ 'm-form__group has-danger': isSubmitted && !margin.valid}">
+                                <label class="col-lg-4 col-form-label form-control-label"> Margin
+                                </label>
+                                <div class="col-lg-8">
+                                    <input type="number" class="form-control m-input m-input--square"
+                                        formControlName="margin" placeholder="Please enter Margin">
+
+                                    <div class="form-control-feedback" *ngIf="isSubmitted && 
+                                        ((margin.errors | equalError:'max') || (margin.errors | equalError:'min'))">
+                                        Margin must be from 0 to 100 %
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group row"
+                                [ngClass]="{ 'm-form__group has-danger': isSubmitted && !quotation.valid}">
+                                <label class="col-lg-4 col-form-label form-control-label"> Quotation
+                                </label>
+                                <div class="col-lg-8">
+                                    <input type="number" class="form-control m-input m-input--square"
+                                        formControlName="quotation" placeholder="Please enter Quotation">
+                                    <div class="form-control-feedback"
+                                        *ngIf="isSubmitted && quotation.errors  | equalError:'pattern'">
+                                        Quotation invalid
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label form-control-label"> Type
+                                </label>
+                                <div class="col-lg-8">
+                                    <ng-select class="custom" [items]="potentialTypes" bindLabel="text"
+                                        [clearable]="false" formControlName="potentialType">
+                                    </ng-select>
+                                </div>
+
+                            </div>
+                        </div>
+                        <ng-container *ngIf="isUpdate">
+                            <div class="col-lg-6">
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label form-control-label"> Active </label>
+                                    <div class="col-lg-8">
+                                        <app-switch formControlName="active">
+                                        </app-switch>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                    <div class="row">
+                        <ng-container *ngIf="isUpdate">
+
+                            <div class="col-6">
+                                Created: {{datetimeCreated | date: 'dd/MM/yyyy HH:mm'}} by <span
+                                    class="text-success">{{userCreatedName}}</span>
+                            </div>
+                            <div class="col-6">
+                                Modified: {{datatimeModified | date: 'dd/MM/yyyy HH:mm'}} by <span
+                                    class="text-success">{{userModifiedName}}</span>
+                            </div>
+
+
+                        </ng-container>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer m--align-center c-button-actions">
+                <app-default-button [buttonSetting]="saveButtonSetting" (click)="handleSubmit()"></app-default-button>
+                <app-default-button [buttonSetting]="cancelButtonSetting" (click)="hide()"></app-default-button>
+            </div>
+        </div>
+    </div>
+</div>

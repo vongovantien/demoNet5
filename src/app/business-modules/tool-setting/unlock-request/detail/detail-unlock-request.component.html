@@ -1,0 +1,180 @@
+<app-sub-header> </app-sub-header>
+<div class="m-content">
+    <div class="m-portlet">
+        <div class="m-form m-form--state">
+            <div class="m-portlet__body">
+                <div class="row m--padding-top-10">
+                    <div class="col-6">
+                        <h3 class="c-block-title m--margin-left-10">Edit Unlock Request</h3>
+                    </div>
+                    <div class="col-6">
+                        <div class="m--align-right">
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <form [formGroup]="formDetail">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger': (subject.dirty && !subject.valid) || (isSubmited && !subject.valid) }">
+                                <label class="form-control-label">
+                                    Subject
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input [attr.disabled]="action === 'read' ? '' : null" type="text"
+                                    class="form-control m-input m-input--square" formControlName="subject">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger': (requester.dirty && !requester.valid) || (isSubmited && !requester.valid) }">
+                                <label class="form-control-label" for="form-control-label">
+                                    Requester
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" disabled=true class="form-control m-input m-input--square"
+                                    formControlName="requester">
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label class="form-control-label" for="form-control-label">
+                                    Unlock Type
+                                </label>
+                                <ng-select [disabled]="action === 'read'" formControlName="unlockType" class="custom"
+                                    [items]="unlockTypeList" (change)="selectedUnlockType($event)">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-4" *ngIf="unlockTypeEnum === 4">
+                            <div class="form-group">
+                                <label class="form-control-label" for="">New Service Date</label>
+                                <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                    <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                        [autoApply]="true" [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}"
+                                        [singleDatePicker]="true" [alwaysShowCalendars]="true" name="daterange"
+                                        formControlName="serviceDate" placeholder="   /   /   " readonly calendar
+                                        [attr.disabled]="action === 'read' ? '' : null" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <list-job-unlock-request [state]="action" [unlockType]="unlockTypeEnum">
+                    </list-job-unlock-request>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label>General Reason:</label>
+                                <div id="textEditor" [froalaEditor]="optionEditor" formControlName="generalReason">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label>
+                                    Created By: <span *ngIf="!!unlockRequest"
+                                        class="text-success">{{unlockRequest.userNameCreated}}</span>&nbsp;
+                                    <span
+                                        *ngIf="!!unlockRequest">{{unlockRequest.datetimeCreated | date: 'dd/MM/yyyy HH:mm'}}</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label>
+                                    Modified By: <span *ngIf="!!unlockRequest"
+                                        class="text-success">{{unlockRequest.userNameModified}}</span>&nbsp;
+                                    <span
+                                        *ngIf="!!unlockRequest">{{unlockRequest.datetimeModified | date: 'dd/MM/yyyy HH:mm'}}</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label>
+                                    Request Date: <span
+                                        *ngIf="!!unlockRequest">{{unlockRequest.requestDate | date: 'dd/MM/yyyy HH:mm'}}</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <process-approve-unlock-request></process-approve-unlock-request>
+                </form>
+                <div class="row" *ngIf="!!unlockRequest">
+                    <div class="col-12">
+                        <div class="m--align-center m--margin-top-20">
+                            <div class="c-button-actions">
+                                <button title="Save" type="button"
+                                    *ngIf="(unlockRequest.statusApproval === 'New' || unlockRequest.statusApproval === 'Denied') && unlockRequest.isRequester"
+                                    class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="save()">
+                                    <span>
+                                        <i class="la la-save"></i>
+                                        <span>
+                                            Save
+                                        </span>
+                                    </span>
+                                </button>
+                                <button title="Send Request" type="button"
+                                    *ngIf="(unlockRequest.statusApproval === 'New' || unlockRequest.statusApproval === 'Denied') && unlockRequest.isRequester"
+                                    class="btn btn-success  m-btn--icon m-btn--uppercase" (click)="sendRequest()">
+                                    <span>
+                                        <i class="la la-download"></i>
+                                        <span>
+                                            Send Request
+                                        </span>
+                                    </span>
+                                </button>
+                                <button title="Cancel Request" type="button"
+                                    *ngIf="unlockRequest.statusApproval === 'Request Approval' && unlockRequest.isRequester"
+                                    class="btn btn-danger  m-btn--icon m-btn--uppercase"
+                                    (click)="confirmCancelRequest()">
+                                    <span>
+                                        <i class="la la-download"></i>
+                                        <span>
+                                            Cancel Request
+                                        </span>
+                                    </span>
+                                </button>
+                                <button title="Confirm" type="button"
+                                    *ngIf="unlockRequest.statusApproval !== 'New' && unlockRequest.statusApproval !== 'Denied' && unlockRequest.statusApproval !== 'Done' && unlockRequest.isManager && !unlockRequest.isApproved"
+                                    class="btn btn-primary  m-btn--icon m-btn--uppercase" (click)="confirmRequest()">
+                                    <span>
+                                        <i class="la la-download"></i>
+                                        <span>
+                                            Confirm
+                                        </span>
+                                    </span>
+                                </button>
+                                <button title="Deny" type="button" *ngIf="unlockRequest.isShowBtnDeny"
+                                    class="btn btn-danger  m-btn--icon m-btn--uppercase"
+                                    (click)="showInputCommentDeny()">
+                                    <span>
+                                        <i class="la la-download"></i>
+                                        <span>
+                                            Deny
+                                        </span>
+                                    </span>
+                                </button>
+                                <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="confirmCancel()">
+                                </app-default-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input-denied-comment-popup (onComment)="sendDeny($event)"></input-denied-comment-popup>
+<confirm-popup #confirmCancelPopup [body]="'Do you want to exit without saving?'" [labelConfirm]="'Yes'"
+    (onSubmit)="onCancelUnlock()">
+</confirm-popup>
+
+<confirm-popup #confirmCancelRequestPopup [body]="'Are you sure you want to cancel this unlock request?'"
+    [labelConfirm]="'Yes'" (onSubmit)="onCancelRequest()">
+</confirm-popup>

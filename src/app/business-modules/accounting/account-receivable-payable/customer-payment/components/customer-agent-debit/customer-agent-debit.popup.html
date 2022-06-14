@@ -1,0 +1,523 @@
+<div class="modal fade" role="dialog" bsModal #popup="bs-modal">
+    <div class="modal-dialog c-modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Get {{type === 'CUSTOMER' ? "Customer's" : "Agency's"}} Debit</h5>
+                <button type="button" class="close" aria-label="Close" (click)=hide()>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form-search-customer-agent-cd-invoice></form-search-customer-agent-cd-invoice>
+                <div class="m--margin-top-20">
+                    <ng-container *ngIf="type === 'CUSTOMER'">
+                        <div class="table-horizontal" style="max-height:400px">
+                            <table class="table table-bordered table-brand dataTable table-hover pointer">
+                                <thead app-table-header [headers]="headers"
+                                    (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                                    <th class="m--w-50 first">
+                                        <label class="m-checkbox">
+                                            <input type="checkbox" name="" [(ngModel)]="isCheckAll"
+                                                (change)="onChangeCheckAll('CUSTOMER')">
+                                            <span></span>
+                                        </label>
+                                    </th>
+                                </thead>
+                                <tbody>
+                                    <ng-container *ngIf="!!listDebit.length">
+                                        <tr *ngFor="let debit of listDebit;let i = index;trackBy: trackByFn">
+                                            <td class="table-actions-col">
+                                                <div class="table-actions">
+                                                    <label class="m-checkbox">
+                                                        <input type="checkbox" name="" [(ngModel)]="debit.isSelected"
+                                                            (change)="onChangeItemCheck('CUSTOMER');">
+                                                        <span></span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="text-primary">{{debit.refNo}}</span>
+                                            </td>
+                                            <td>
+                                                {{!!debit.voucherId ? debit.voucherId : (!!debit.voucherIdre ?
+                                                debit.voucherIdre: '')}}
+                                            </td>
+                                            <td>
+                                                <span>{{debit.paymentType}}</span>
+                                            </td>
+                                            <td [class.text-right]="debit.paymentType === 'OBH'">
+                                                <span class="text-primary">
+                                                    {{debit.invoiceNo}}
+                                                    <ng-container
+                                                        *ngIf="debit.paymentType === 'DEBIT' || debit.paymentType === 'OBH'">
+                                                        <ng-container [ngSwitch]="debit.paymentStatus">
+                                                            <span class="m-badge m-badge--success m-badge--wide"
+                                                                *ngSwitchCase="'Paid'">
+                                                                {{debit.paymentStatus}}
+                                                            </span>
+                                                            <span
+                                                                class="m-badge m-badge--warning m-badge--wide text-white"
+                                                                *ngSwitchCase="'Paid A Part'">
+                                                                {{debit.paymentStatus}}
+                                                            </span>
+                                                            <span class="m-badge m-badge--danger m-badge--wide"
+                                                                *ngSwitchDefault>
+                                                                {{debit.paymentStatus}}
+                                                            </span>
+                                                        </ng-container>
+                                                    </ng-container>
+                                                </span>
+                                            </td>
+                                            <td ALIGN="right">
+                                                <ng-container *ngIf="debit.paymentType === 'CREDIT';else notCredit1">
+                                                    {{(-debit.unpaidAmountVnd) | number}}
+                                                </ng-container>
+                                                <ng-template #notCredit1>
+                                                    {{debit.unpaidAmountVnd | number}}
+                                                </ng-template>
+                                            </td>
+                                            <td ALIGN="right">
+                                                <ng-container *ngIf="debit.paymentType === 'CREDIT';else notCredit2">
+                                                    {{(-debit.unpaidAmountUsd) | number: '1.2-2'}}
+                                                </ng-container>
+                                                <ng-template #notCredit2>
+                                                    {{debit.unpaidAmountUsd | number: '1.2-2'}}
+                                                </ng-template>
+                                            </td>
+                                            <td>
+                                                <span>{{debit.taxCode}}</span>
+                                            </td>
+                                            <td>
+                                                <span>{{debit.partnerName}}</span>
+                                            </td>
+                                            <td>
+                                                <span>{{debit.invoiceDate | date :'dd/MM/yyyy'}} </span>
+                                            </td>
+                                            <td>
+                                                <span>{{debit.paymentTerm}} </span>
+                                            </td>
+                                            <td>
+                                                <span>{{debit.dueDate | date: 'dd/MM/yyyy'}} </span>
+                                            </td>
+                                            <td>
+                                                <span class="text-success">{{debit.departmentName}} </span>
+                                            </td>
+                                            <td>
+                                                <span class="text-success">{{debit.officeName}} </span>
+                                            </td>
+                                        </tr>
+                                    </ng-container>
+                                    <tr app-table-none-record *ngIf="!listDebit.length"></tr>
+                                </tbody>
+                                <tfoot *ngIf="!!listDebit.length">
+                                    <tr class="font-weight-bold bg-locked font-15">
+                                        <td rowspan="6" colspan="5" ALIGN="right">Total</td>
+                                        <td class="text-right" rowspan="6" ALIGN="center">
+                                            <ng-container
+                                                *ngIf="sumTotalObj.totalBalanceVnd >= 0;else TplTotalObjectBalanceVndNegative">
+                                                {{sumTotalObj.totalBalanceVnd | number:'1.0-2'}} VND
+                                            </ng-container>
+                                        </td>
+                                        <td class="text-right" rowspan="6" ALIGN="center">
+                                            <ng-container
+                                                *ngIf="sumTotalObj.totalBalanceUsd >= 0;else TplTotalObjectBalanceUsdNegative">
+                                                {{sumTotalObj.totalBalanceUsd | number:'1.2-2'}} USD
+                                            </ng-container>
+                                        </td>
+                                        <td rowspan="6" colspan="7"></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="type === 'AGENT'">
+                        <div class="m-form m--margin-bottom-10">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="m--align-right foat-right">
+                                        <a class="pointer icon-switch" (click)="switchToGroup()">
+                                            <i class="la la-list" *ngIf="TYPELIST === 'GROUP' else list"></i>
+                                            <ng-template #list> <i class="la la-sitemap"></i></ng-template>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-horizontal" style="max-height:400px">
+                            <table class="table table-bordered table-brand dataTable table-hover pointer">
+                                <thead app-table-header [headers]="headersAgency"
+                                    (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                                    <th class="m--w-50 first">
+                                        <label class="m-checkbox">
+                                            <input type="checkbox" name="" [(ngModel)]="isCheckAllAgent"
+                                                (change)="onChangeCheckAll('AGENT')">
+                                            <span></span>
+                                        </label>
+                                    </th>
+                                </thead>
+                                <tbody>
+                                    <ng-container *ngIf="TYPELIST === 'GROUP'">
+                                        <ng-container
+                                            *ngFor="let groupShipment of agencyDebitModel.groupShipmentsAgency ; let i = index; trackBy: trackByFn">
+                                            <tr class="collapse-toggle-row tgroup">
+                                                <td colspan="19">
+                                                    <div class="row align-items-center">
+                                                        <div class='col-1'>
+                                                            <label class="m-checkbox">
+                                                                <input type="checkbox" name=""
+                                                                    [(ngModel)]="groupShipment.isSelected"
+                                                                    (change)="onChecItemInGroupAgent(groupShipment)">
+                                                                <span></span>
+                                                            </label>
+                                                        </div>
+                                                        <div class="col-2">
+                                                            Job No:
+                                                            <span class='text-info'>
+                                                                {{groupShipment.jobNo}}
+                                                            </span>
+                                                        </div>
+                                                        <div class="col-2">MBL: <span
+                                                                class='text-success'>{{groupShipment.mbl}}</span>
+                                                        </div>
+                                                        <div class="col-2">HBL: <span
+                                                                class='text-danger'>{{groupShipment.hbl}}</span>
+                                                        </div>
+                                                        <div class="col-2">Unpaid VND: <span
+                                                                class='text-primary'>{{groupShipment.unpaidAmountVnd
+                                                                |
+                                                                number}}</span>
+                                                        </div>
+                                                        <div class="col-2">Unpaid USD: <span class='text-primary'>
+                                                                {{groupShipment.unpaidAmountUsd | number:
+                                                                '1.2-2'}}</span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr class="child"
+                                                *ngFor="let invoice of groupShipment.invoices; let j = index; trackBy: trackByFn">
+                                                <td class="table-actions-col">
+                                                    <div class="table-actions">
+                                                        <label class="m-checkbox">
+                                                            <input type="checkbox" name=""
+                                                                [(ngModel)]="invoice.isSelected"
+                                                                (change)="onChangeItemCheck('AGENT','GROUP',groupShipment);">
+                                                            <span></span>
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="text-primary">{{invoice.refNo}}</span>
+                                                </td>
+                                                <td>
+                                                    {{!!invoice.voucherId ? invoice.voucherId :
+                                                    (!!invoice.voucherIdre ?
+                                                    invoice.voucherIdre: '')}}
+                                                </td>
+                                                <td>
+                                                    <span>{{invoice.paymentType}}</span>
+                                                </td>
+                                                <td [class.text-right]="invoice.paymentType === 'OBH'">
+                                                    <span class="text-primary">
+                                                        {{invoice.invoiceNo}}
+                                                        <ng-container *ngIf="invoice.paymentType === 'DEBIT'">
+                                                            <ng-container [ngSwitch]="invoice.paymentStatus">
+                                                                <span class="m-badge m-badge--success m-badge--wide"
+                                                                    *ngSwitchCase="'Paid'">
+                                                                    {{invoice.paymentStatus}}
+                                                                </span>
+                                                                <span
+                                                                    class="m-badge m-badge--warning m-badge--wide text-white"
+                                                                    *ngSwitchCase="'Paid A Part'">
+                                                                    {{invoice.paymentStatus}}
+                                                                </span>
+                                                                <span class="m-badge m-badge--danger m-badge--wide"
+                                                                    *ngSwitchDefault>
+                                                                    {{invoice.paymentStatus}}
+                                                                </span>
+                                                            </ng-container>
+                                                        </ng-container>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span>{{invoice.jobNo}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{invoice.hbl}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{invoice.mbl}}</span>
+                                                </td>
+                                                <td ALIGN="right">
+                                                    <span>{{invoice.unpaidAmountVnd | number}} </span>
+                                                </td>
+                                                <td ALIGN="right">
+                                                    <span>{{invoice.unpaidAmountUsd | number: '1.2-2'}} </span>
+                                                </td>
+                                                <td>
+                                                    <span>{{invoice.taxCode}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{invoice.partnerName}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{invoice.invoiceDate | date :'dd/MM/yyyy'}} </span>
+                                                </td>
+                                                <td>
+                                                    <span>{{invoice.paymentTerm}} </span>
+                                                </td>
+                                                <td>
+                                                    <span>{{invoice.dueDate | date: 'dd/MM/yyyy'}} </span>
+                                                </td>
+                                                <td class="text-success">{{invoice.departmentName}}</td>
+                                                <td class="text-success">{{invoice.officeName}}</td>
+                                            </tr>
+                                        </ng-container>
+                                        <tr app-table-none-record
+                                            *ngIf="agencyDebitModel.groupShipmentsAgency.length === 0"></tr>
+                                    </ng-container>
+
+                                    <ng-container *ngIf="TYPELIST === 'LIST'">
+                                        <ng-container
+                                            *ngFor="let groupShipment of agencyDebitModel.groupShipmentsAgency ; let i = index; trackBy: trackByFn">
+                                            <tr
+                                                *ngFor="let invoice of groupShipment.invoices ; let i = index; trackBy: trackByFn">
+                                                <td class="table-actions-col">
+                                                    <div class="table-actions">
+                                                        <label class="m-checkbox">
+                                                            <input type="checkbox" name=""
+                                                                [(ngModel)]="invoice.isSelected"
+                                                                (change)="onChangeItemCheck('AGENT','LIST',agencyDebitModel.groupShipmentsAgency);">
+                                                            <span></span>
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="text-primary">{{invoice.refNo}}</span>
+                                                </td>
+                                                <td>
+                                                    {{!!invoice.voucherId ? invoice.voucherId :
+                                                    (!!invoice.voucherIdre ?
+                                                    invoice.voucherIdre: '')}}
+                                                </td>
+                                                <td>
+                                                    <span>{{invoice.paymentType}}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="text-primary"
+                                                        [class.text-right]="invoice.paymentType === 'OBH'">
+                                                        {{invoice.invoiceNo}}
+                                                        <ng-container
+                                                            *ngIf="invoice.paymentType === 'DEBIT' || invoice.paymentType === 'OBH'">
+                                                            <ng-container [ngSwitch]="invoice.paymentStatus">
+                                                                <span class="m-badge m-badge--success m-badge--wide"
+                                                                    *ngSwitchCase="'Paid'">
+                                                                    {{invoice.paymentStatus}}
+                                                                </span>
+                                                                <span
+                                                                    class="m-badge m-badge--warning m-badge--wide text-white"
+                                                                    *ngSwitchCase="'Paid A Part'">
+                                                                    {{invoice.paymentStatus}}
+                                                                </span>
+                                                                <span class="m-badge m-badge--danger m-badge--wide"
+                                                                    *ngSwitchDefault>
+                                                                    {{invoice.paymentStatus}}
+                                                                </span>
+                                                            </ng-container>
+                                                        </ng-container>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span>{{invoice.jobNo}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{invoice.hbl}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{invoice.mbl}}</span>
+                                                </td>
+                                                <td ALIGN="right">
+                                                    <ng-container
+                                                        *ngIf="invoice.paymentType === 'CREDIT';else notCreditVndTpl">
+                                                        {{(-invoice.unpaidAmountVnd) | number}}
+                                                    </ng-container>
+                                                    <ng-template #notCreditVndTpl>
+                                                        {{invoice.unpaidAmountVnd | number}}
+                                                    </ng-template>
+                                                </td>
+                                                <td ALIGN="right">
+                                                    <ng-container
+                                                        *ngIf="invoice.paymentType === 'CREDIT';else notCreditUsdTpl">
+                                                        {{(-invoice.unpaidAmountUsd) | number: '1.2-2'}}
+                                                    </ng-container>
+                                                    <ng-template #notCreditUsdTpl>
+                                                        {{invoice.unpaidAmountUsd | number: '1.2-2'}}
+                                                    </ng-template>
+                                                </td>
+                                                <td>
+                                                    <span>{{invoice.taxCode}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{invoice.partnerName}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{invoice.invoiceDate | date :'dd/MM/yyyy'}} </span>
+                                                </td>
+                                                <td>
+                                                    <span>{{invoice.paymentTerm}} </span>
+                                                </td>
+                                                <td>
+                                                    <span>{{invoice.dueDate | date: 'dd/MM/yyyy'}} </span>
+                                                </td>
+                                                <td>
+                                                    <span class="text-success">{{invoice.departmentName}} </span>
+                                                </td>
+                                                <td>
+                                                    <span class="text-success">{{invoice.officeName}} </span>
+                                                </td>
+                                            </tr>
+                                        </ng-container>
+                                        <tr app-table-none-record *ngIf="!agencyDebitModel.groupShipmentsAgency.length">
+                                        </tr>
+                                    </ng-container>
+                                </tbody>
+                            </table>
+                        </div>
+                    </ng-container>
+
+                    <div class="table-horizontal m--margin-top-30">
+                        <table class="table table-bordered table-brand dataTable table-hover pointer">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th class="text-center" colspan="2">In Receipt
+                                        <span class="badge badge-success"
+                                            *ngIf="!!currentPaymentReceiptCurrent.length">{{currentPaymentReceiptCurrent.length}}
+                                        </span>
+                                    </th>
+                                    <th class="text-center" colspan="2">In Get Debit/Invoice/Credit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="font-weight-bold text-center">
+                                    <td class="font-weight-normal text-left">
+                                        Debit (Debit + OBH)
+                                    </td>
+                                    <td style="border-right-color:#d5d5d5">
+                                        {{(sumTotalObjectPaymentReceipt.totalDebitVnd +
+                                        sumTotalObjectPaymentReceipt.totalDebitOBHVnd)
+                                        | number:'1.0-2'}}
+                                        VND
+                                    </td>
+                                    <td>
+                                        {{(sumTotalObjectPaymentReceipt.totalDebitUsd +
+                                        sumTotalObjectPaymentReceipt.totalDebitOBHUsd)
+                                        | number:'1.2-2'}}
+                                        USD
+                                    </td>
+                                    <td style="border-right-color:#d5d5d5">
+                                        {{(sumTotalObj.totalDebitVnd + sumTotalObj.totalDebitOBHVnd)
+                                        | number:'1.0-2'}}
+                                        VND
+                                    </td>
+                                    <td>
+                                        {{(sumTotalObj.totalDebitUsd + sumTotalObj.totalDebitOBHUsd)
+                                        | number:'1.2-2'}}
+                                        USD
+                                    </td>
+                                </tr>
+                                <tr class="font-weight-bold text-center">
+                                    <td class="font-weight-normal text-left">
+                                        Credit
+                                    </td>
+                                    <td style="border-right-color:#d5d5d5">
+                                        {{sumTotalObjectPaymentReceipt.totalCreditVnd | number:'1.0-2'}}
+                                        VND
+                                    </td>
+                                    <td>
+                                        {{sumTotalObjectPaymentReceipt.totalCreditUsd | number:'1.2-2'}}
+                                        USD
+                                    </td>
+                                    <td style="border-right-color:#d5d5d5">
+                                        {{sumTotalObj.totalCreditVnd | number:'1.0-2'}}
+                                        VND
+                                    </td>
+                                    <td>
+                                        {{sumTotalObj.totalCreditUsd | number:'1.2-2'}}
+                                        USD
+                                    </td>
+                                </tr>
+                                <tr class="font-weight-bold text-center">
+                                    <td class="font-weight-normal text-left">
+                                        Balance
+                                    </td>
+                                    <td style="border-right-color:#d5d5d5">
+                                        <ng-container
+                                            *ngIf="sumTotalObjectPaymentReceipt.totalBalanceVnd >= 0;else TplTotalObjectPaymentReceiptBalanceVndNegative">
+                                            {{sumTotalObjectPaymentReceipt.totalBalanceVnd | number:'1.0-2'}} VND
+                                        </ng-container>
+                                    </td>
+                                    <td>
+                                        <ng-container
+                                            *ngIf="sumTotalObjectPaymentReceipt.totalBalanceUsd >= 0;else TplTotalObjectPaymentReceiptBalanceUsdNegative">
+                                            {{sumTotalObjectPaymentReceipt.totalBalanceUsd | number:'1.0-2'}} USD
+                                        </ng-container>
+                                    </td>
+                                    <td style="border-right-color:#d5d5d5">
+                                        <ng-container
+                                            *ngIf="sumTotalObj.totalBalanceVnd >= 0;else TplTotalObjectBalanceVndNegative">
+                                            {{sumTotalObj.totalBalanceVnd | number:'1.0-2'}} VND
+                                        </ng-container>
+                                    </td>
+                                    <td>
+                                        <ng-container
+                                            *ngIf="sumTotalObj.totalBalanceUsd >= 0;else TplTotalObjectBalanceUsdNegative">
+                                            {{sumTotalObj.totalBalanceUsd | number:'1.0-2'}} USD
+                                        </ng-container>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="modal-footer m--align-center">
+                <button class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="addToReceipt()">
+                    <span>
+                        <i class="la la-plus"></i>
+                        <span>
+                            Add To Receipt
+                        </span>
+                    </span>
+                </button>
+                <button type="button" class="btn btn-default  m-btn--icon m-btn--uppercase" (click)="this.hide()">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span>
+                            Close
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #TplTotalObjectBalanceVndNegative>
+    {{sumTotalObj.totalBalanceVnd | negativeNumber:'1.0-2' }}
+</ng-template>
+
+<ng-template #TplTotalObjectBalanceUsdNegative>
+    {{sumTotalObj.totalBalanceUsd | negativeNumber:'1.2-2' }}
+</ng-template>
+<ng-template #TplTotalObjectPaymentReceiptBalanceVndNegative>
+    {{sumTotalObjectPaymentReceipt.totalBalanceVnd | negativeNumber:'1.0-2' }}
+</ng-template>
+
+<ng-template #TplTotalObjectPaymentReceiptBalanceUsdNegative>
+    {{sumTotalObjectPaymentReceipt.totalBalanceUsd | negativeNumber:'1.2-2' }}
+</ng-template>

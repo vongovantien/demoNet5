@@ -1,0 +1,79 @@
+<div class="create-commercial-page">
+    <app-sub-header> </app-sub-header>
+
+    <div class="m-content">
+        <div class="m-portlet">
+            <div class="m-portlet__body">
+                <div class="d-flex align-items-center justify-content-between p-1">
+                    <h3 class="w-75">
+                        {{isAddSubPartner ? (type == 'Customer'? 'Customer': 'Agent') : partner?.partnerNameEn}}
+                        <ng-container *ngIf="!!partner && !isAddSubPartner">
+                            <ng-container *ngIf="partner.active else inactive">
+                                <span class="m-badge m-badge--success m-badge--wide">
+                                    Active
+                                </span>
+                            </ng-container>
+                            <ng-template #inactive>
+                                <span class="m-badge m-badge--danger m-badge--wide">
+                                    Inactive
+                                </span>
+                            </ng-template>
+                        </ng-container>
+                    </h3>
+                    <div>
+                        <div class="c-button-actions">
+                            <app-default-button *ngIf="!isAddSubPartner && !!partner && partner.permission.allowUpdate"
+                                [buttonSetting]="saveButtonSetting" (onClick)="onSaveDetail()">
+                            </app-default-button>
+                            <app-default-button *ngIf="isAddSubPartner && !!partner && partner.permission.allowUpdate"
+                                [buttonSetting]="saveButtonSetting" (onClick)="onSave()">
+                            </app-default-button>
+                            <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="gotoList()">
+                            </app-default-button>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <form-create-commercial [isUpdate]="true" (partnerLocationString)="onChangePartnerLocation($event)" [isActive]="partner?.active">
+                </form-create-commercial>
+                <div class="row" *ngIf="!!partner && !isAddSubPartner">
+                    <div class="col-6">
+                        <div class="m--align-left">
+                            Created: {{partner.datetimeCreated | date: 'dd/MM/yyyy HH:mm'}}
+                            &nbsp;
+                            By <span class="text-success">{{partner.userCreatedName}}</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="m--align-left">
+                            Modified: {{partner.datetimeModified | date: 'dd/MM/yyyy HH:mm'}}
+                            &nbsp;
+                            By <span class="text-success">{{partner.userModifiedName}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="m-content">
+    <div class="m-portlet__body">
+        <tabset class="custom-class-tab">
+            <tab heading="Agreement">
+                <commercial-contract-list (onActiveContract)="updateStatusPartner($event)"></commercial-contract-list>
+            </tab>
+            <tab heading="Branch/Sub">
+                <app-commercial-branch-sub-list></app-commercial-branch-sub-list>
+            </tab>
+            <tab heading="Email">
+                <app-commercial-email-list></app-commercial-email-list>
+            </tab>
+        </tabset>
+    </div>
+</div>
+
+<info-popup [body]="invalidFormText"></info-popup>
+
+<info-popup #taxCodeInfo [body]="invalidTaxCode"></info-popup>
+<confirm-popup #internalReferenceConfirmPopup (onSubmit)="onFocusInternalReference()" [body]="invalidTaxCode"
+    [labelConfirm]="'Ok'" [labelCancel]="'Cancel'" [align]="'left'"></confirm-popup>

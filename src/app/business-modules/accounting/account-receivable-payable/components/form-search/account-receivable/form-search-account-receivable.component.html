@@ -1,0 +1,148 @@
+<div class="m-portlet">
+    <div class="m-portlet__body">
+        <form [formGroup]="formSearch"  class="m-form m-form--state">
+            <div class="row">
+                <div class="col-lg-8">
+                    <label>Partner</label>
+                    <app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event, 'partner')"
+                        (remove)="resetFormControl(partnerId)"
+                        [currentActiveItemId]="{field:'id', value: partnerId.value}"
+                        [selectedDisplayFields]="['shortName']" [dataSources]="partners | async"
+                        [displayFields]="displayFieldsPartner" placeholder="Select Partner">
+                    </app-combo-grid-virtual-scroll>
+                </div>
+                <div class="col-lg-4">
+                    <label>Partner Type</label>
+                    <ng-select [items]="partnerTypes" formControlName="partnerType" class="custom" placeholder="All" bindLabel="text" bindValue="id">
+                    </ng-select>
+                </div>
+            </div>
+
+            <div class="collapse" [collapse]="isCollapsed" [isAnimated]="true" (collapsed)="collapsed()"
+                (expanded)="expanded()">
+                <div class="div-inside bg-secondary">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <label>Over Due Days</label>
+                            <ng-select [items]="overDueDays" formControlName="overdueDays" class="custom"
+                                (change)="onSelectBindingInput($event, 'OverDueDays')" bindLabel="text" bindValue="id">
+                            </ng-select>
+                        </div>
+                        <div class="col-lg-1">
+                            <label></label>
+                            <div class="form-group">
+                                <input type="text" class="form-control" formControlName="fromOverdueDays">
+                            </div>
+
+                        </div>
+                        <div class="col-lg-1">
+                            <label></label>
+                            <div class="form-group">
+                                <input type="text" class="form-control" formControlName="toOverdueDays">
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+
+                            <label>Debit Rate</label>
+                            <ng-select [items]="debitRates" formControlName="debitRate" class="custom"
+                                (change)="onSelectBindingInput($event, 'DebitRates')" bindLabel="text" bindValue="id">
+                            </ng-select>
+                        </div>
+
+                        <div class="col-lg-3">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <label></label>
+                                    <div class="form-group">
+                                        <input type="number" min="0" class="form-control"
+                                            formControlName="fromDebitRate">
+                                    </div>
+
+                                </div>
+                                <div class="col-lg-6">
+                                    <label></label>
+                                    <div class="form-group">
+                                        <input type="number" min="0" class="form-control" formControlName="toDebitRate">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Agreement Expired Days</label>
+                                <ng-select [items]="agreementExpiredDayList" formControlName="agreementExpiredDays"
+                                    class="custom" bindLabel="text" bindValue="id">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Agreement Status</label>
+                                <ng-select [items]="agreementStatusList" formControlName="agreementStatus"
+                                    class="custom" bindLabel="text" bindValue="id">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Salesman</label>
+                                <ng-select [multiple]='true' formControlName="staff" class="custom"
+                                    (change)="onSelectDataFormInfo($event, 'staff')" [items]="staffList"
+                                    bindLabel="text" bindValue="id">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Office</label>
+                                <ng-select [items]="offices" formControlName="officeIds" class="custom"
+                                    [multiple]="true" bindLabel="shortName" bindValue="id">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <a class="btn btn-link collapsed" role="button" aria-expanded="false" data-toggle="collapse"
+                            (click)="isCollapsed = !isCollapsed">
+                            <span>
+                                <i class="la"
+                                    [ngClass]="{'la-angle-up': !isCollapsed, 'la-angle-down': isCollapsed}"></i>
+                                <span>Advance Search</span>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="col-lg-6 m--align-right">
+                        <button type="submit" class="btn btn-brand  m-btn--icon m-btn--uppercase"
+                            (click)="onSearchRequest()">
+                            <span>
+                                <i class="la la-search"></i>
+                                <span>
+                                    Search
+                                </span>
+                            </span>
+                        </button>
+                        <button type="button" class="btn btn-default  m-btn--icon m-btn--uppercase"
+                            (click)="resetSearch()">
+                            <span>
+                                <i class="la la-refresh"></i>
+                                <span>
+                                    Reset
+                                </span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

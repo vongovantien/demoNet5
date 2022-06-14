@@ -1,0 +1,98 @@
+<div class="m-subheader">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <app-breadcrumb></app-breadcrumb>
+        </div>
+        <div class="c-button-actions">
+            <app-default-button [buttonSetting]="addButtonSetting" [dataTarget]="addButtonSetting.dataTarget"
+                routerLink="/home/system/office/addnew">
+            </app-default-button>
+            <app-default-button [buttonSetting]="exportButtonSetting" (onClick)="export()"></app-default-button>
+        </div>
+    </div>
+</div>
+<div class="m-content">
+    <!--begin:: m-portlet of search-form-->
+    <form-search-office (onSearch)="onSearchOffice($event)"></form-search-office>
+    <!--end::m-portlet of search-form-->
+    <!--begin:: m-portlet of charge-table-->
+    <div class="m-portlet">
+        <div class="m-form">
+            <div class="m-portlet__body">
+                <div class="table-wrapper table-scrollabler" id="office-list-table">
+                    <table class="table table-striped table-brand table-hover dataTable">
+                        <thead app-table-header [headers]="headers"
+                            (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                            <th class="m--w-50 first table-actions-col">
+                                Action
+                            </th>
+                        </thead>
+                        <tbody class="tbody-group">
+                            <ng-container *ngIf="!isLoading && !!offices.length">
+                                <tr *ngFor="let office of offices; let i = index; trackBy: trackByFn">
+                                    <td class="table-actions-col">
+                                        <div class="table-actions" style="width: 70px">
+                                            <button type="button"
+                                                class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only"
+                                                [routerLink]="office.id" title="Detail">
+                                                <i class="la la-edit"></i>
+                                            </button>
+                                            <button type="button" [disabled]="office.active"
+                                                class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only"
+                                                title="Remove" (click)="showDeletePopup(office)">
+                                                <i class="la la-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td class="text-underline text-primary pointer"><a
+                                            (click)="gotoDetailOffice(office.id)">{{office.code}}</a> </td>
+                                    <td>{{office.branchNameEn}}</td>
+                                    <td>{{office.branchNameVn}}</td>
+                                    <td>{{office.shortName}}</td>
+                                    <td>{{office.addressEn}}</td>
+                                    <td>{{office.addressVn}}</td>
+                                    <td>{{office.taxcode}}</td>
+                                    <td>{{office.companyName}}</td>
+                                    <td [ngClass]="office.active ? 'text-success' : 'text-danger'">
+                                        {{office.active ? 'Active' : 'Inactive'}}</td>
+                                </tr>
+                            </ng-container>
+                            <tr *ngIf="!isLoading && !offices.length" app-table-none-record
+                                [colspan]="headers.length + 1">
+                            </tr>
+                            <tr *ngIf="isLoading" app-table-row-loading></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination-nav ">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="tatable__pager-size">
+                                <div class="select-box">
+                                    <select class="form-control" id="" aria-label="" [(ngModel)]="pageSize"
+                                        (change)="selectPageSize(pageSize, dataSearch)" name="pagesize">
+                                        <ng-container
+                                            *ngFor="let item of numberToShow; let i = index; trackBy: trackByFn">
+                                            <option [ngValue]="item">{{item}} line / screen</option>
+                                        </ng-container>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6" *ngIf="totalItems > pageSize">
+                            <div class="float-right">
+                                <pagination [boundaryLinks]="true" [totalItems]="totalItems" [itemsPerPage]="pageSize"
+                                    (pageChanged)="pageChanged($event)" [(ngModel)]="page">
+                                </pagination>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<confirm-popup [body]="'Do you want to delete this office ?'" [labelCancel]="'No'" (onSubmit)="onDeleteOffice()">
+</confirm-popup>

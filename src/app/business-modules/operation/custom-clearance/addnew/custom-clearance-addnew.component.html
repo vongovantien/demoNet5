@@ -1,0 +1,35 @@
+<div class="m-subheader">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <app-breadcrumb></app-breadcrumb>
+        </div>
+        <div class="c-button-actions">
+            <app-permission-button (onClick)="addClearance()" type="save"></app-permission-button>
+
+            <app-permission-button title="save and convert" type="save" class="success"
+                [dpToggle]="dropdownMenuClearance" mode="dropdown" position="bottomCenter">
+            </app-permission-button>
+
+            <app-default-button [buttonSetting]="cancelButtonSetting" *ngIf="customDeclaration.permission.allowUpdate"
+                routerLink="/home/operation/custom-clearance">
+            </app-default-button>
+
+
+        </div>
+    </div>
+</div>
+
+<div class="m-content h-100vh">
+    <custom-clearance-form-detail></custom-clearance-form-detail>
+</div>
+<app-dropdown #dropdownMenuClearance>
+    <a class="dropdown-item pointer" (click)="convertClearance(true)" title="Create clearance with replicate">
+        <i class="la la-copy"></i>
+        <span> Replicate</span>
+    </a>
+
+    <a class="dropdown-item pointer" (click)="convertClearance(false)" title="Create clearance with non-replicate">
+        <i class="la la-save"></i>
+        <span> Non-Replicate </span>
+    </a>
+</app-dropdown>

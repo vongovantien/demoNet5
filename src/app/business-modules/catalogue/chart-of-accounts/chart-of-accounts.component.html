@@ -1,0 +1,68 @@
+<app-sub-header>
+    <div class="c-button-actions">
+        <app-permission-button (onClick)="showAdd()" type="add" title="Add New"></app-permission-button>
+        <app-permission-button routerLink="/home/catalogue/chart-of-accounts/import" title="Import" type="import">
+        </app-permission-button>
+        <app-permission-button type="export" (onClick)="export()" title="Export"></app-permission-button>
+    </div>
+</app-sub-header>
+<div class="m-content">
+    <div class="m-portlet">
+        <form-search-chart-of-accounts (onSearch)="onSearchCharge($event)"> </form-search-chart-of-accounts>
+        <div class="m-form">
+            <div class="m-portlet__body">
+                <div class="table-wrapper" id="">
+                    <table class="table table-striped table-brand dataTable table-hover">
+                        <thead app-table-header [headers]="headers"
+                            (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                            <th class="m--w-50 first">Actions
+                            </th>
+                        </thead>
+                        <tbody *ngIf="chartOfAccounts">
+                            <ng-container *ngIf="!!chartOfAccounts.length">
+                                <tr *ngFor="let item of chartOfAccounts">
+                                    <td class="table-actions-col">
+                                        <div class="table-actions" style="width: 70px">
+                                            <app-permission-button type="detail" (click)="showDetail(item)"
+                                                [user]="item.userCreated">
+                                            </app-permission-button>
+                                            <app-permission-button type="delete" (onClick)="showConfirmDelete(item)"
+                                                [user]="item.userCreated">
+                                            </app-permission-button>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span>{{item.accountCode}}</span>
+                                    </td>
+                                    <td>
+                                        <span>{{item.accountNameLocal}}</span>
+                                    </td>
+                                    <td>
+                                        <span>{{item.accountNameEn}}</span>
+                                    </td>
+                                    <td>
+                                        <span [ngClass]="item.active ? 'text-success' : 'text-danger'">
+                                            {{ item.active ? 'Active' : 'Inactive'}}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                            <tr *ngIf="!chartOfAccounts.length && !isLoading" app-table-none-record
+                                [colspan]="headers.length + 1">
+                            </tr>
+                            <tr *ngIf="isLoading" app-table-row-loading>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+                <app-pagination [total]="totalItems" [pageNum]="page" [itemPerPage]="pageSize"
+                    (onChange)="updatePagingData($event)"></app-pagination>
+            </div>
+        </div>
+
+    </div>
+</div>
+<form-create-chart-of-accounts-popup (onChange)="resetSearch($event)"></form-create-chart-of-accounts-popup>
+<confirm-popup body="You want to delete this chart" (onSubmit)="onDelete()"></confirm-popup>
+<permission-403-popup></permission-403-popup>

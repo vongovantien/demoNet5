@@ -1,0 +1,73 @@
+<div class="modal fade" id="pl-sheet-popup" bsModal #popup="bs-modal" role="dialog" (onHide)="onHide($event)"
+    (onShow)="onShow($event)">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Select Currency</h5>
+                <button type="button" class="close" aria-label="Close" (click)="hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="">Currency</label>
+                    <select [(ngModel)]="selectedCurrency" class="form-control">
+                        <option *ngFor="let currency of currencyList; let i = index" [ngValue]="currency">
+                            {{currency.id}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer m--align-center c-button-actions">
+                <button type="button" class="btn btn-success  m-btn--icon m-btn--uppercase" data-dismiss="modal"
+                    (click)="previewPL()">
+                    <span>
+                        <i class="la la-print"></i>
+                        <span>
+                            PL Sheet
+                        </span>
+                    </span>
+                </button>
+                <button type="button" class="btn btn-default  m-btn--icon m-btn--uppercase" (click)="hide()">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span>
+                            Cancel
+                        </span>
+                    </span>
+                </button>
+            </div>
+
+            <div class="modal fade" role="dialog" bsModal #popupReport="bs-modal" (onHide)="onHide($event)">
+                <div class="modal-dialog modal-report" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Preview</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                                (click)="hidePreview()">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form #formPL method="POST" [action]="scr" (onsubmit)="onSubmitForm($event)"
+                                (ngSubmit)="onSubmitForm($event)" target="reportFrame">
+                                <input name="crystal" [value]="dataReport" type="hidden">
+                            </form>
+                            <iframe name="reportFrame" src="" type="application/pdf" height="1200px" width="100%"
+                                allowfullscreen frameborder="0"></iframe>
+                        </div>
+                        <div class="modal-footer m--align-center" (click)="hidePreview()">
+                            <button type="button" class="btn  m-btn--icon m-btn--uppercase" data-dismiss="modal">
+                                <span>
+                                    <i class="la la-ban"></i>
+                                    <span>
+                                        cancel
+                                    </span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

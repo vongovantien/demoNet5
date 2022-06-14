@@ -1,0 +1,204 @@
+<div class="m-subheader">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <app-breadcrumb></app-breadcrumb>
+
+        </div>
+        <div class="c-button-actions">
+
+            <app-default-button [buttonSetting]="saveButtonSetting" (onClick)="handleUpdateUser()">
+            </app-default-button>
+
+            <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="cancel()"></app-default-button>
+        </div>
+    </div>
+</div>
+<div class="m-content mb-3">
+    <div class="form" [formGroup]="formUser">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="p-3 border-radius-15 bg-white box-shadow">
+                    <div class="row">
+                        <div class="col-lg-12 text-center py-3">
+                            <img #image [src]="photoUrl" onerror="this.src = 'assets/app/media/img/emptydata.png'"
+                                class="rounded-circle auto_image" alt="Cinque Terre">
+                        </div>
+                        <h4 class="col-lg-12 text-center font-weight-bold" style="color: #5a7391; font-weight: 600;">
+                            {{employeeNameVn.value}}</h4>
+                        <h6 class="col-lg-12 text-center font-weight-bold py-2" style="color: #5b9bd1;">
+                            {{title.value | uppercase}}</h6>
+                        <div class="col-lg-12 text-center">
+                            <label for="upload" type="button" class=" custom-label btn btn-info mb-0 border-radius-15"
+                                style="min-width: 100px; " (click)="image.click()">
+                                UPLOAD
+                            </label>
+                        </div>
+
+                        <div class="col-lg-12 mt-3">
+                            <div class="row px-3 py-2 font-weight-bold">
+                                <div class="col-lg-5">Employee code:</div>
+                                <div class="col-lg-7">{{staffCode.value}}</div>
+                            </div>
+                            <div class="row px-3 py-2 font-weight-bold">
+                                <div class="col-lg-5">User Name:</div>
+                                <div class="col-lg-7">{{username.value}}</div>
+                            </div>
+                            <div class="row px-3 py-2 font-weight-bold">
+                                <div class="col-lg-5">Working status:</div>
+                                <div class="col-lg-7" [class.text-success]="workingStatus.value === 'Working'">
+                                    {{workingStatus.value}}</div>
+                            </div>
+                            <div class="row px-3 py-2 font-weight-bold">
+                                <div class="col-lg-5">Credit Limit:</div>
+                                <div class="col-lg-7">{{creditLimit.value | number: '.0-3'}} VND</div>
+                            </div>
+                            <div class="row px-3 py-2 font-weight-bold">
+                                <div class="col-lg-5">Credit Rate:</div>
+                                <div class="col-lg-7">{{creditRate.value | number: '.0-3'}} VND</div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-lg-8 border-radius-15 bg-white box-shadow">
+                <div class="p-3">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': (employeeNameVn.dirty && !employeeNameVn.valid) || (isSubmitted && !employeeNameVn.valid)}">
+                                <label required>Full name: </label>
+                                <input type="input" class="form-control m-input m-input--square"
+                                    formControlName="employeeNameVn" placeholder="Please Enter Full Name">
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmitted && (employeeNameVn.errors | equalError: 'required') || (employeeNameVn.errors | equalError: 'required') && employeeNameVn.dirty">
+                                    Full Name is required!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': (employeeNameEn.dirty && !employeeNameEn.valid) || (isSubmitted && !employeeNameEn.valid)}">
+                                <label required>English name: </label>
+                                <input type="input" class="form-control m-input m-input--square"
+                                    formControlName="employeeNameEn" placeholder="Please Enter Staff Code">
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmitted && (employeeNameEn.errors | equalError: 'required') || (employeeNameEn.errors | equalError: 'required') && employeeNameEn.dirty">
+                                    English Name is required!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Title: </label>
+                                <input type="input" class="form-control m-input m-input--square" formControlName="title"
+                                    placeholder="Please Enter Title">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': (email.dirty && !email.valid) || (isSubmitted && !email.valid)}">
+                                <label required>Email: </label>
+                                <input type="email" class="form-control m-input m-input--square" formControlName="email"
+                                    placeholder="Please Enter Email">
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmitted && (email.errors | equalError: 'required') || (email.errors | equalError: 'required') && email.dirty">
+                                    Email is required!
+                                </div>
+                                <div class="form-control-feedback" *ngIf="email.errors | equalError:'pattern'">
+                                    Email not valid.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Bank Account No: </label>
+                                <input type="input" class="form-control m-input m-input--square"
+                                    formControlName="bankAccountNo" placeholder="Please Enter Bank Account No">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label> Bank Name : </label>
+                                <app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event)"
+                                    [selectedDisplayFields]="['bankNameEn']" [dataSources]="banks | async"
+                                    [displayFields]="displayFieldPort" (remove)="resetFormControl(bankCode)"
+                                    placeholder="Please Select Bank Name" allowFreeText formControlName="bankName">
+                                </app-combo-grid-virtual-scroll>
+
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Bank Code: </label>
+                                <input type="input" class="form-control m-input m-input--square"
+                                    formControlName="bankCode" placeholder="Please Enter Bank Code">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Phone Number: </label>
+                                <input type="input" class="form-control" formControlName="tel"
+                                    placeholder="Please Enter Phone Number">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Personal ID: </label>
+                                <input type="input" class="form-control" formControlName="personalId"
+                                    placeholder="Please Enter Personal ID">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Description: </label>
+                                <textarea class="form-control" rows="5" formControlName="description"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <label>Default Office: </label>
+                            <div class="m-portlet__body">
+
+                                <div class="bg-white">
+                                    <div class="table-wrapper table-scrollabler" id="department-list-table">
+                                        <table class="table table-striped table-brand table-hover dataTable">
+                                            <thead app-table-header [headers]="headersuslv">
+                                            </thead>
+                                            <tbody class="tbody-group">
+                                                <ng-container *ngIf="!!this.userLevels.length">
+                                                    <tr (click)="onSelectUserLevel(lv)"
+                                                        *ngFor="let lv of userLevels; let i = index; trackBy: trackByFn">
+                                                        <td style="width: 70px">
+                                                            <!-- <app-switch size="md" [ngModel]="lv.isDefault"></app-switch> -->
+                                                            <div class="icon-check">
+                                                                <i class="la la-check-circle-o"
+                                                                    *ngIf="lv.isDefault"></i>
+                                                            </div>
+                                                        </td>
+                                                        <td>{{lv.groupAbbrName}}</td>
+                                                        <td>{{lv.companyAbbrName}}</td>
+                                                        <td>{{lv.officeAbbrName}}</td>
+                                                        <td>{{lv.departmentAbbrName}}</td>
+                                                        <td>{{lv.position}}</td>
+                                                    </tr>
+                                                </ng-container>
+                                                <tr *ngIf="!this.userLevels.length" app-table-none-record
+                                                    [colspan]="headersuslv.length + 1">
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="col-lg-12 my-3 text-center">
+                        <button type="button" class="btn btn-success border-radius-15" (click)="handleUpdateUser()"
+                            style="min-width: 100px;">UPDATE</button>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,50 @@
+:host /deep/ {
+    .arrival-note-wrapper {
+        .m--w-90 {
+            min-width: 90px;
+        }
+        .fixed-side {
+            left: -1px;
+            background: #fff;
+        }
+        .cdk-virtual-scroll-content-wrapper {
+            position: initial;
+        }
+        .table-editable {
+            padding-bottom: 175px;
+            .e--combogrid {
+                .form-control {
+                    background: inherit;
+                    padding: 4px 8px;
+                    border: unset;
+                }
+                table {
+                    white-space: pre-wrap;
+                    th:first-child {
+                        min-width: 130px;
+                    }
+                }
+                tr {
+                    td:first-child {
+                        min-width: 130px;
+                    }
+                }
+            }
+        }
+
+        .dropdown-charge {
+            position: relative;
+        }
+
+        .combogrid-charge {
+            position: absolute;
+            z-index: 2;
+        }
+
+        .list-master-unit {
+            .e--combogrid-content {
+                min-width: 265px;
+            }
+        }
+    }
+}

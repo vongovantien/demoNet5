@@ -1,0 +1,59 @@
+<div class="m-portlet">
+    <div class="alert-block__heading">
+        <div class="d-flex justify-content-between align-items-center">
+            <h3 class="alert-block__title">
+                <ng-content></ng-content>
+            </h3>
+        </div>
+    </div>
+    <div class="m-portlet__body">
+        <div class="shipment-good-summary-wrapper">
+            <div class="form">
+                <div class="row m--margin-bottom-10">
+                    <div class="col-md-4">
+                        <label for="">Commodities:</label>
+                        <textarea rows="10" class="form-control" name="commodities"
+                            [(ngModel)]="commodities"></textarea>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="">Package Type:</label>
+                        <div class="pos-rel">
+                            <ng-select class="custom" [multiple]="true" [items]="packages | async"
+                                placeholder="Please Select" [(ngModel)]="packageTypes" name="packageTypes"
+                                bindLabel="unitNameEn" bindValue="code">
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row m-form m-form--state">
+                            <div class="col-md-12">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger': isSubmitted  && (gw === null || gw < 0) }">
+                                    <label required>Total Gross Weight (GW) </label>
+                                    <input type="number" class="form-control" [(ngModel)]="gw" name="gw" min="0" numeric
+                                        [decimals]="digitDecimal" autoFormatCurrency>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger': isSubmitted  && (cbm === null || cbm < 0) }">
+                                    <label required>Total CBM </label>
+                                    <input type="number" class="form-control" [(ngModel)]="cbm" name="cbm" min="0"
+                                        numeric [decimals]="digitDecimal" autoFormatCurrency>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger': isSubmitted  && (packageQuantity === null || packageQuantity < 0) }">
+                                    <label required>Total Package Quantity </label>
+                                    <input type="number" class="form-control" [(ngModel)]="packageQuantity" min="0"
+                                        name="packageQuantity" integer autoFormatCurrency>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

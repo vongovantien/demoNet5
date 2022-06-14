@@ -1,0 +1,32 @@
+<div class="sea-fcl-detail-hbl-page">
+    <app-sub-header>
+        <div class="c-button-actions">
+            <app-menu-preview-hbl-sea-import hblDetail="hblDetail"></app-menu-preview-hbl-sea-import>
+
+            <app-default-button (click)="onSaveHBLDetail()" [buttonSetting]="saveButtonSetting"
+                *ngIf=" (permissionHblDetail | async)?.allowUpdate"></app-default-button>
+            <app-default-button (click)="combackToHBLList()" [buttonSetting]="cancelButtonSetting"></app-default-button>
+        </div>
+    </app-sub-header>
+    <div class="m-content">
+        <div class="m-portlet__body">
+            <tabset class="custom-class-tab">
+                <tab heading="HBL Detail" (selectTab)="onSelectTab('DETAIL')">
+                    <app-form-create-hbl-sea-import [isUpdate]="true" [type]="'SCI'"></app-form-create-hbl-sea-import>
+                    <hbl-goods-summary-fcl>HBL Goods Summary</hbl-goods-summary-fcl>
+                </tab>
+                <tab heading="Arrival Notice" (selectTab)="onSelectTab('ARRIVAL')" [active]="selectedTab === 'ARRIVAL'">
+                    <hbl-arrival-note-sea></hbl-arrival-note-sea>
+                </tab>
+                <tab heading="Delivery Order (D/O)" (selectTab)="onSelectTab('DELIVERY')">
+                    <hbl-delivery-order></hbl-delivery-order>
+                </tab>
+                <tab heading="Proof Of Delivery" (selectTab)="onSelectTab('PROOF')">
+                    <hbl-proof-of-delivery></hbl-proof-of-delivery>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+</div>
+
+<ng-template inject></ng-template>

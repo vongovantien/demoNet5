@@ -1,0 +1,23 @@
+<ng-container [ngSwitch]="type">
+    <ng-container *ngSwitchCase="'BOOLEAN'">
+        <span [ngClass]="item[field] ? 'text-success' : 'text-danger'">
+            {{item[field] ? 'Active' : 'Inactive'}}
+        </span>
+    </ng-container>
+    <ng-container *ngSwitchCase="'LINK'">
+        <a class="text-underline pointer" [title]="item[field]" (click)="onCLickLink()">
+            {{item[field]}}
+        </a>
+    </ng-container>
+    <ng-container *ngSwitchCase="'DATE'">
+        <span class="text-underline pointer" [title]="item[field]">
+            {{item[field] | date: 'dd/MM/yyyy'}}
+        </span>
+    </ng-container>
+    <ng-container *ngSwitchCase="'CURRENCY'">
+        {{item[field] | number: '.0-3'}}
+    </ng-container>
+    <span *ngSwitchDefault>
+        {{item[field]}}
+    </span>
+</ng-container>

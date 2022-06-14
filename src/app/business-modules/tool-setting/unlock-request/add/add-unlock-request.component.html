@@ -1,0 +1,114 @@
+<app-sub-header> </app-sub-header>
+<div class="m-content">
+    <div class="m-portlet">
+        <div class="m-form m-form--state">
+            <div class="m-portlet__body">
+                <div class="row m--padding-top-10">
+                    <div class="col-6">
+                        <h3 class="c-block-title m--margin-left-10">Create Unlock Request</h3>
+                    </div>
+                    <div class="col-6">
+                        <div class="m--align-right">
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <form [formGroup]="formAdd">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger': (subject.dirty && !subject.valid) || (isSubmited && !subject.valid) }">
+                                <label class="form-control-label">
+                                    Subject
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control m-input m-input--square"
+                                    formControlName="subject">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger': (requester.dirty && !requester.valid) || (isSubmited && !requester.valid) }">
+                                <label class="form-control-label" for="form-control-label">
+                                    Requester
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" disabled=true class="form-control m-input m-input--square"
+                                    formControlName="requester">
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label class="form-control-label" for="form-control-label">
+                                    Unlock Type
+                                </label>
+                                <ng-select class="custom" formControlName="unlockType" [items]="unlockTypeList"
+                                    (change)="getUnlockTypeEnumAndSetValue($event)">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <ng-container *ngIf="unlockTypeEnum === 4">
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="">New Service Date</label>
+                                    <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                        <input type="text" class="form-control m-input m-input--square"
+                                            ngxDaterangepickerMd [autoApply]="true"
+                                            [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}"
+                                            [singleDatePicker]="true" [alwaysShowCalendars]="true" name="daterange"
+                                            formControlName="serviceDate" placeholder="   /   /   " readonly calendar />
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                    <list-job-unlock-request [unlockType]="unlockTypeEnum"></list-job-unlock-request>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label>General Reason:</label>
+                                <div [froalaEditor]="optionEditor" formControlName="generalReason">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="m--align-center m--margin-top-20">
+                            <div class="c-button-actions">
+                                <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase"
+                                    (click)="save()">
+                                    <span>
+                                        <i class="la la-save"></i>
+                                        <span>
+                                            Save
+                                        </span>
+                                    </span>
+                                </button>
+                                <button type="button" class="btn btn-success  m-btn--icon m-btn--uppercase"
+                                    (click)="sendRequest()">
+                                    <span>
+                                        <i class="la la-download"></i>
+                                        <span>
+                                            Send Request
+                                        </span>
+                                    </span>
+                                </button>
+                                <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="confirmCancel()">
+                                </app-default-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<confirm-popup #confirmCancelPopup [body]="'Do you want to exit without saving?'" [labelConfirm]="'Yes'"
+    (onSubmit)="onCancelUnlock()">
+</confirm-popup>

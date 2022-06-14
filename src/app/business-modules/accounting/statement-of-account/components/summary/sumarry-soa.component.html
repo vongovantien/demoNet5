@@ -1,0 +1,64 @@
+<div class="m-portlet">
+    <div class="m-portlet__head">
+        <div class="m-portlet__head-caption">
+            <div class="m-portlet__head-title">
+                <h3 class="m-portlet__head-text collapse-toggle" data-toggle="collapse" data-target="#data-summary">
+                    <i class="la la-angle-up m--margin-right-5"></i> Summary
+                </h3>
+            </div>
+        </div>
+    </div>
+    <div class="m-portlet__body" *ngIf="!!data">
+        <div class="collapse show" id="data-summary">
+            <div class="table-wrapper" id="">
+                <table class="table table-striped table-brand">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th class="text-right">
+                                <span>Total Debit</span>
+                            </th>
+                            <th class="text-right">
+                                <span>Total Credit</span>
+                            </th>
+                            <th class="text-right">
+                                <span>Balance</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span>VNĐ</span>
+                            </td>
+                            <td class="text-right">
+                                <span>{{data.amountDebitLocal | number: '.0-3'}}</span>
+                            </td>
+                            <td class="text-right">
+                                <span>{{data.amountCreditLocal | number: '.0-3'}}</span>
+                            </td>
+                            <td class="text-right">
+                                <span>{{data.amountBalanceLocal | number: '.0-3'}}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span>USD</span>
+                            </td>
+                            <td class="text-right">
+                                <span>{{data.amountDebitUSD | number: '.0-3'}}</span>
+                            </td>
+                            <td class="text-right">
+                                <span>{{data.amountCreditUSD | number: '.0-3'}}</span>
+                            </td>
+                            <td class="text-right">
+                                <span>{{data.amountBalanceUSD | number: '.0-3'}}</span>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

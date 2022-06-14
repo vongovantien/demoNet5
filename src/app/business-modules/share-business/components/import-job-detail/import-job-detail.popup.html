@@ -1,0 +1,112 @@
+<div class="modal fade" role="dialog" bsModal #popup="bs-modal" aria-hidden="true">
+    <div class="modal-dialog c-modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Import Job Detail</h5>
+                <button type="button" (click)="onCancel()" class="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="bg-secondary m--padding-10 m--margin-bottom-10">
+                    <div class="m-form m-form--state">
+                        <form-search-import-job (onSearch)="onSearchShippment($event)" [service]="service">
+                        </form-search-import-job>
+                    </div>
+                </div>
+
+                <div class="table-wrapper table-scrollable" id="">
+                    <table class="table table-hover table-brand dataTable">
+                        <thead app-table-header [headers]="headers"
+                            (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                            <th class="m--w-50 first table-actions-col">
+                                Select
+                            </th>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngIf="!isLoading && !!shippments.length">
+                                <tr *ngFor="let sm of shippments; let i = index; trackBy: trackByFn">
+                                    <td class="table-actions-col">
+                                        <div class="table-actions">
+                                            <label class="m-checkbox">
+                                                <input [checked]="selected === i &&  pageChecked === page"
+                                                    (change)="onSelected(i,sm)" type="checkbox">
+                                                <span></span>
+
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td>{{sm.jobNo}}</td>
+                                    <td>{{sm.mawb}}</td>
+                                    <td>{{sm.supplierName}}</td>
+                                    <td>{{sm.etd | date : 'dd/MM/yyyy'}}</td>
+                                </tr>
+                            </ng-container>
+                            <tr *ngIf="!isLoading && !shippments.length" app-table-none-record
+                                [colspan]="headers.length + 1">
+                            </tr>
+                            <tr *ngIf="isLoading" app-table-row-loading></tr>
+                        </tbody>
+
+                    </table>
+                </div>
+                <div class="pagination-nav">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="tatable__pager-size">
+                                <div class="select-box">
+                                    <select class="form-control" id="" aria-label="" [(ngModel)]="pageSize"
+                                        (change)="selectPageSize(pageSize)" name="pagesize">
+                                        <ng-container
+                                            *ngFor="let item of numberToShow; let i = index; trackBy: trackByFn">
+                                            <option [ngValue]="item">{{item}} line / screen</option>
+                                        </ng-container>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6" *ngIf="totalItems > pageSize">
+                            <div class="float-right">
+                                <pagination [boundaryLinks]="true" [totalItems]="totalItems" [itemsPerPage]="pageSize"
+                                    (pageChanged)="pageChanged($event)" [(ngModel)]="page" [maxSize]="10">
+                                </pagination>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <div class="row">
+                        <div class="col-lg-6"></div>
+                        <div class="col-lg-6 m--align-right">
+                            <button type="button" (click)="onImportShippment()"
+                                class="btn btn-brand  m-btn--icon m-btn--uppercase">
+                                <span>
+                                    <i class="la la-save"></i>
+                                    <span>
+                                        Import
+                                    </span>
+                                </span>
+                            </button>
+                            <button (click)="onCancel()" type="button"
+                                class="btn btn-default  m-btn--icon m-btn--uppercase">
+                                <span>
+                                    <i class="la la-ban"></i>
+                                    <span>
+                                        Cancel
+                                    </span>
+                                </span>
+                            </button>
+                        </div>
+
+                    </div>
+
+
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- <shipment-good-summary></shipment-good-summary> -->

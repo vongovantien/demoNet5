@@ -1,0 +1,27 @@
+.list-template-wp {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-flow: wrap;
+    flex-flow: wrap;
+    .list-template-item-wp {
+        margin: 0px 5px;
+        border-radius: 10px;
+        list-style-type: none;
+        .list-template__item {
+            width: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 1px #ffffff inset, 0 1px 3px rgba(34, 25, 25, 0.4);
+            border-radius: 12px;
+            cursor: pointer;
+            &:hover {
+                box-shadow: 0 1px #ffffff inset, 0 1px 10px green;
+            }
+            &.active {
+                box-shadow: 0 1px #ffffff inset, 0 1px 10px green;
+            }
+        }
+    }
+}

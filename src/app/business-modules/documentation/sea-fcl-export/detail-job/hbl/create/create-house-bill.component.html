@@ -1,0 +1,40 @@
+<div class="sea-fcl-create-hbl-page">
+    <app-sub-header>
+        <div class="c-button-actions">
+            <app-default-button (click)="showImportPopup()" *ngIf="(permissionShipments | async)?.allowUpdate"
+                [buttonSetting]="importButtonSetting">
+            </app-default-button>
+            <app-default-button (click)="showCreatepoup()" *ngIf="(permissionShipments | async)?.allowUpdate"
+                [buttonSetting]="saveButtonSetting">
+            </app-default-button>
+            <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="gotoList()"></app-default-button>
+        </div>
+    </app-sub-header>
+</div>
+
+<div class="m-content">
+    <div class="m-portlet__body">
+        <tabset class="custom-class-tab">
+            <tab heading="HAWB Detail">
+                <app-form-create-hbl-sea-export></app-form-create-hbl-sea-export>
+                <hbl-goods-summary-fcl type="export">HBL Goods Summary</hbl-goods-summary-fcl>
+            </tab>
+            <tab heading="Attach List">
+                <attach-list-house-bill></attach-list-house-bill>
+            </tab>
+            <tab heading="Proof Of Delivery">
+                <hbl-proof-of-delivery></hbl-proof-of-delivery>
+            </tab>
+        </tabset>
+    </div>
+</div>
+
+<import-house-bill-detail (onImport)="onImport($event)" [jobId]="jobId" [typeTransaction]="6">
+</import-house-bill-detail>
+
+
+<confirm-popup [body]="'Are you sure you want to create HBL?'" [labelCancel]="'No'" (onSubmit)="onSaveHBL()"
+    [labelConfirm]="'Yes'" [title]="'Save HBL'">
+</confirm-popup>
+
+<ng-template inject></ng-template>

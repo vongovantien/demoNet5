@@ -1,0 +1,72 @@
+<div class="m-portlet">
+    <div class="m-portlet__body list-userlevel">
+        <div class="m-form m--margin-bottom-10">
+            <div class="m--align-right c-button-actions">
+                <app-default-button [buttonSetting]="saveButtonSetting" (onClick)="saveUserLevel()">
+                </app-default-button>
+                <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="cancelSave()"></app-default-button>
+            </div>
+        </div>
+        <div class="table-wrapper table-editable m--margin-bottom-20">
+            <table class="table table-bordered dataTable-edit">
+                <thead app-table-header [headers]="headers">
+                    <th class="m--w-90 first table-actions-col fixed-side">
+                    </th>
+                </thead>
+                <tbody>
+                    <ng-container>
+                        <tr *ngFor="let item of userLevelTemp;let i = index; trackBy: trackByFn">
+                            <td class="table-actions-col fixed-side">
+                                <button *ngIf="!!item.id" (click)="gotoUserPermission(item.userId,item.officeId)"
+                                    class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only text-white"
+                                    title="Detail"><i class="la la-list"></i>
+                                </button>
+                                <button (click)="deleteUserLevel(i,item.id)" type="button"
+                                    class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only" title="Remove">
+                                    <i class="la la-trash"></i>
+                                </button>
+                            </td>
+                            <td>
+                                <div class="form-group "
+                                    [ngClass]="{'m-form__group has-danger': isSubmitted  && (item.userId === null || item.isDup )}">
+                                    <app-combo-grid-virtual-scroll (itemSelected)="selectedUser(item,$event)"
+                                        [currentActiveItemId]="{ field: 'id', value: item.userId, hardValue: item.userName}"
+                                        [selectedDisplayFields]="['username']" [dataSources]="users"
+                                        [displayFields]="[{field: 'username', label: 'User Name'}]" [disabled]="item.id"
+                                        (remove)="item.userId = null" placeholder="Please select user" size="15">
+                                    </app-combo-grid-virtual-scroll>
+                                </div>
+                            </td>
+                            <td class="disabled">
+                                <input class="form-control" [(ngModel)]="item.employeeName" readonly />
+                            </td>
+                            <td>
+                                <div class="form-group "
+                                    [ngClass]="{'m-form__group has-danger': isSubmitted  && !item.position}">
+                                    <select class="form-control" [(ngModel)]="item.position" [disabled]="item.id">
+                                        <option value="null" disabled>Please select</option>
+                                        <option *ngFor="let position of positions" [ngValue]="position.id">
+                                            {{position.text}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr app-table-none-record *ngIf="!userLevelTemp.length"></tr>
+                        <tr>
+                            <td colspan=1 class="fixed-side">
+                                <a (click)="addNewLine()" class="btn m-btn--icon m-btn--icon-only m--font-primary"
+                                    title="Add">
+                                    <i class="fa fa-plus-circle fa-2x"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<confirm-popup [body]="'Are you sure want to delete this user level'" (onSubmit)="onDeleteUserLevel()">
+</confirm-popup>

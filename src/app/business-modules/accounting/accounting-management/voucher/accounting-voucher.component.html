@@ -1,0 +1,100 @@
+<div class="voucher-wrapper  m-animate-fade-in">
+    <app-sub-header> </app-sub-header>
+    <div class="m-content">
+        <div class="m-portlet__body">
+            <tabset class="custom-class-tab">
+                <tab heading="Invoice List" (selectTab)="onSelectTab('cdi')">
+                </tab>
+                <tab *ngIf="menuSpecialPermission | async | specialPermission: 'Invoice'" heading="VAT Invoice"
+                    (selectTab)="onSelectTab('vat')"> </tab>
+                <tab *ngIf="menuSpecialPermission | async | specialPermission: 'Voucher'" heading="Voucher"
+                    [active]="true">
+
+                    <form-search-vat-voucher [accountType]="'Voucher'" (onSearch)="onSearchVoucher($event)">
+                    </form-search-vat-voucher>
+
+                    <div class="m-portlet">
+                        <div class="m-portlet__body">
+                            <div class="m-form m--margin-bottom-10">
+                                <div class="row">
+                                    <div class="col-lg-8 m--align-left">
+                                        <div class="form-group">
+                                            <div class="c-button-actions">
+                                                <app-permission-button type="add" title="Issue Voucher"
+                                                    routerLink="/home/accounting/management/voucher/new">
+                                                </app-permission-button>
+                                                <app-permission-button type="export" (onClick)="exportVoucher()">
+                                                </app-permission-button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-wrapper">
+                                <table class="table table-striped table-brand dataTable table-hover">
+                                    <thead app-table-header [headers]="headers"
+                                        (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                                        <th class="first table-actions-col"></th>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container *ngIf="!!vouchers.length">
+                                            <tr *ngFor="let voucher of vouchers; let i = index; trackBy: trackByFn"
+                                                [class.invalid-row]="voucher.syncStatus === 'Rejected'">
+                                                <td class="table-actions-col">
+                                                    <div class="table-actions">
+                                                        <ng-container
+                                                            *ngIf="!voucher.syncStatus || voucher.syncStatus !== 'Synced'">
+                                                            <app-permission-button
+                                                                (onClick)="prepareDeleteVoucher(voucher)" type="delete"
+                                                                [user]="voucher.userCreated">
+                                                            </app-permission-button>
+                                                        </ng-container>
+                                                    </div>
+                                                </td>
+                                                <td class="text-primary pointer">
+                                                    <a (click)="viewDetail(voucher)">{{voucher.voucherId}}</a>
+                                                </td>
+                                                <td>{{voucher.partnerName}}</td>
+                                                <td class="text-right">{{voucher.totalAmount | number: '.0-3'}}</td>
+                                                <td>{{voucher.currency}}</td>
+                                                <td>{{voucher.date | date: 'dd/MM/yyyy'}}</td>
+                                                <td>{{voucher.datetimeCreated | date: 'dd/MM/yyyy'}}</td>
+                                                <td class="text-success">
+                                                    {{voucher.lastSyncDate | date: 'dd/MM/yyyy HH:mm:ss'}}
+                                                </td>
+                                                <td [ngSwitch]="voucher.syncStatus">
+                                                    <span *ngSwitchCase="'Synced'" class="text-success">
+                                                        {{voucher.syncStatus}}</span>
+                                                    <span *ngSwitchCase="'Rejected'" class="text-danger">
+                                                        {{voucher.syncStatus}}
+                                                        {{voucher.reasonReject ? ' - ' + voucher.reasonReject : ''}}
+                                                    </span>
+                                                    <span *ngSwitchDefault>
+                                                        {{voucher.syncStatus}}
+                                                    </span>
+                                                </td>
+                                                <td class="text-success">{{voucher.creatorName}}</td>
+                                            </tr>
+                                        </ng-container>
+                                        <tr app-table-none-record *ngIf="!(isLoading| async) && !vouchers.length"
+                                            [colspan]="headers.length + 1">
+                                        </tr>
+                                        <tr app-table-row-loading *ngIf="(isLoading | async)"></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <app-pagination [total]="totalItems" [pageNum]="page" [itemPerPage]="pageSize"
+                                (onChange)="updatePagingData($event)"> </app-pagination>
+
+                        </div>
+                    </div>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+</div>
+
+<confirm-popup [body]="confirmDeleteVoucherText" (onSubmit)="onDeleteVoucher()"></confirm-popup>
+
+<permission-403-popup></permission-403-popup>

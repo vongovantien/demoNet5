@@ -1,0 +1,58 @@
+<div class="m-portlet form-search-permission-wrapper">
+    <div class="m-portlet__body">
+        <div class="m-form">
+            <form [formGroup]="formSearch">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Permission Name</label>
+                            <input type="text" class="form-control" formControlName="permissionName">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Role</label>
+                            <select class="form-control" formControlName="role">
+                                <option *ngFor="let role of roles" [ngValue]="role">{{role.name}}</option>
+                                <option [ngValue]="null">All</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select class="form-control" formControlName="status">
+                                <option [ngValue]="null">All</option>
+                                <option *ngFor="let item of statuss" [ngValue]="item">{{item.displayName}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="form-actions">
+                <div class="row">
+                    <div class="col-lg-6"></div>
+                    <div class="col-lg-6 m--align-right">
+                        <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase"
+                            (click)="onSearchRequest()">
+                            <span>
+                                <i class="la la-search"></i>
+                                <span>
+                                    Search
+                                </span>
+                            </span>
+                        </button>
+                        <button type="button" class="btn btn-default  m-btn--icon m-btn--uppercase" (click)="reset()">
+                            <span>
+                                <i class="la la-refresh"></i>
+                                <span>
+                                    Reset
+                                </span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

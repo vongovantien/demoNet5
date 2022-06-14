@@ -1,0 +1,304 @@
+<div class="pre-alert-page">
+    <app-sub-header>
+        <div class="c-button-actions">
+            <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="cancelPreAlert()"></app-default-button>
+        </div>
+    </app-sub-header>
+</div>
+<div class="m-content">
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <form [formGroup]="formMail" class="m-form m-form--state">
+                <div class="row">
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <button *ngIf="(isLocked | async) === false"
+                                class="btn btn-default  m-btn--icon m-btn--uppercase" (click)="sendMailSubmit()">
+                                <i class="fa fa-envelope fa-2x" aria-hidden="true"></i>
+                                <span style="margin-top: 5px;">{{sendMailButtonName}}</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-11">
+                        <div class="row">
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    <button style="width:54px;" type="label"
+                                        class="btn btn-default  m-btn--icon m-btn--uppercase ">
+                                        from...
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-11">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger': (from.dirty && !from.valid) || (isSubmited && !from.valid)}">
+                                    <input class="form-control" [attr.disabled]="serviceId !== 'AI' ? true : null" formControlName="from" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    <button style="width:54px;" class="btn btn-default  m-btn--icon m-btn--uppercase ">
+                                        to...
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-11">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger': (to.dirty && !to.valid) || (isSubmited && !to.valid)}">
+                                    <input class="form-control" formControlName="to" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    <button style="width:54px;" class="btn btn-default  m-btn--icon m-btn--uppercase ">
+                                        cc...
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-11">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger': (cc.dirty && !cc.valid) || (isSubmited && !cc.valid)}">
+                                    <input class="form-control" formControlName="cc" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    <button style="width:54px;" class="btn  m-btn--icon m-btn--uppercase">
+                                        subject:
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-11">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger': (subject.dirty && !subject.valid) || (isSubmited && !subject.valid)}">
+                                    <input class="form-control" formControlName="subject" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div [froalaEditor]="optionEditor" formControlName="body"></div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6"></div>
+        <div class="col-lg-6 m--align-right">
+            <div class="">
+                <button *ngIf="(isLocked | async) === false" style="float:right"
+                    class="btn btn-success  m-btn--icon m-btn--uppercase" (click)="showPopup()">
+                    <span>
+                        <i class="la la-plus"></i>
+                        <span>
+                            Add Attachment...
+                        </span>
+                    </span></button>
+            </div>
+        </div>
+    </div>
+    <div class="m-portlet m--margin-top-10">
+        <div class="alert-block__heading">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="alert-block__title">
+                    Attached File
+                </h3>
+            </div>
+        </div>
+        <div class="m-portlet__body">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group m-form__group"
+                        *ngIf="serviceId === 'AI' || serviceId === 'SFI' || serviceId === 'SLI'">
+                        <div class="m-checkbox-inline">
+                            <ng-container *ngIf="isExitsArrivalNotice else NotArrivalNotice">
+                                <label class="m-checkbox m-checkbox--bold" style="display: initial;">
+                                    <input type="checkbox" [(ngModel)]="isCheckedArrivalNotice"
+                                        (change)="onChangeCheckBox()">
+                                    <span></span>
+                                </label>
+                                <span>
+                                    <a class="pointer" (click)="previewArrivalNotice()">Arrival Notice</a>
+                                </span>
+                            </ng-container>
+                            <ng-template #NotArrivalNotice>
+                                <label class="m-checkbox m-checkbox--bold m-checkbox--disabled"
+                                    style="display: initial; margin-right: 40px;">
+                                    <input type="checkbox" disabled="true">
+                                    Arrival Notice
+                                    <span></span>
+                                </label>
+                            </ng-template>
+                        </div>
+
+                    </div>
+                    <div class="form-group m-form__group"
+                        *ngIf="isPreAlert && (serviceId === 'AE' || serviceId === 'SFE' || serviceId === 'SLE')">
+                        <div class="m-checkbox-inline">
+                            <ng-container *ngIf="isExitsManifest else NotManifest">
+                                <label class="m-checkbox m-checkbox--bold" style="display: initial;">
+                                    <input type="checkbox" [(ngModel)]="isCheckedManifest"
+                                        (change)="onChangeCheckBox()">
+                                    <span></span>
+                                </label>
+                                <span style="margin-right: 40px;"><a class="pointer"
+                                        (click)="previewManifest()">Manifest</a></span>
+                            </ng-container>
+                            <ng-template #NotManifest>
+                                <label class="m-checkbox m-checkbox--bold m-checkbox--disabled"
+                                    style="display: initial; margin-right: 40px;">
+                                    <input type="checkbox" disabled="true">
+                                    Manifest
+                                    <span></span>
+                                </label>
+                            </ng-template>
+
+                            <ng-container *ngIf="isExitsHawb else NotHawb">
+                                <label class="m-checkbox m-checkbox--bold" style="display: initial;">
+                                    <input type="checkbox" [(ngModel)]="isCheckedHawb" (change)="onChangeCheckBox()">
+                                    <span></span>
+                                </label>
+                                <span><a class="pointer" (click)="previewHawb()">{{hblRptName}}</a></span>
+                            </ng-container>
+                            <ng-template #NotHawb>
+                                <label class="m-checkbox m-checkbox--bold m-checkbox--disabled"
+                                    style="display: initial; margin-right: 40px;">
+                                    <input type="checkbox" disabled="true">
+                                    HAWB
+                                    <span></span>
+                                </label>
+                            </ng-template>
+                        </div>
+                    </div>
+
+                    <div class="form-group m-form__group"
+                        *ngIf="!isPreAlert && (serviceId === 'SFE' || serviceId === 'SLE')">
+                        <div class="m-checkbox-inline">
+                            <ng-container *ngIf="isExitsSISummary else NotSISummary">
+                                <label class="m-checkbox m-checkbox--bold" style="display: initial;">
+                                    <input type="checkbox" [(ngModel)]="isCheckedSISummary"
+                                        (change)="onChangeCheckBox()">
+                                    <span></span>
+                                </label>
+                                <span style='margin-right: 20px;'>
+                                    <a class="pointer" (click)="previewSISummary()">SI Summary</a>
+                                </span>
+                            </ng-container>
+                            <ng-template #NotSISummary>
+                                <label class="m-checkbox m-checkbox--bold m-checkbox--disabled"
+                                    style="display: initial; margin-right: 40px;">
+                                    <input type="checkbox" disabled="true">
+                                    SI Summary
+                                    <span></span>
+                                </label>
+                            </ng-template>
+
+                            <ng-container *ngIf="isExitsSI else NotSI">
+                                <label class="m-checkbox m-checkbox--bold" style="display: initial;">
+                                    <input type="checkbox" [(ngModel)]="isCheckedSI" (change)="onChangeCheckBox()">
+                                    <span></span>
+                                </label>
+                                <span style='margin-right: 20px;'>
+                                    <a class="pointer" (click)="previewSI()">SI HBL Detail</a>
+                                </span>
+                            </ng-container>
+                            <ng-template #NotSI>
+                                <label class="m-checkbox m-checkbox--bold m-checkbox--disabled"
+                                    style="display: initial; margin-right: 40px;">
+                                    <input type="checkbox" disabled="true">
+                                    SI HBL Detail
+                                    <span></span>
+                                </label>
+                            </ng-template>
+
+                            <ng-container *ngIf="isExitsSIDetailCont else NotSIDetailCont">
+                                <label class="m-checkbox m-checkbox--bold" style="display: initial;">
+                                    <input type="checkbox" [(ngModel)]="isCheckedSIDetailCont"
+                                        (change)="onChangeCheckBox()">
+                                    <span></span>
+                                </label>
+                                <span style='margin-right: 20px;'>
+                                    <a class="pointer" (click)="previewSIDetailCont(serviceId)">SI Detail (Cont)</a>
+                                </span>
+                            </ng-container>
+                            <ng-template #NotSIDetailCont>
+                                <label class="m-checkbox m-checkbox--bold m-checkbox--disabled"
+                                    style="display: initial; margin-right: 40px;">
+                                    <input type="checkbox" disabled="true">
+                                    SI Detail (Cont)
+                                    <span></span>
+                                </label>
+                            </ng-template>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12" *ngFor="let file of files; trackBy:trackByFn">
+                    <div class="form-group m-form__group">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <div class="file-item__icon">
+                                    <ng-container [ngSwitch]="file.extension">
+                                        <ng-container *ngSwitchCase="'pdf'">
+                                            <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="'doc'">
+                                            <i class="fa fa-file-word-o fa-2x" aria-hidden="true"></i>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="'docx'">
+                                            <i class="fa fa-file-word-o fa-2x" aria-hidden="true"></i>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="'xlsx'">
+                                            <i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="'xls'">
+                                            <i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="'txt'">
+                                            <i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="'jpg'">
+                                            <i class="fa fa-file-image-o fa-2x" aria-hidden="true"></i>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="'png'">
+                                            <i class="fa fa-file-image-o fa-2x" aria-hidden="true"></i>
+                                        </ng-container>
+                                        <ng-container *ngSwitchDefault>
+                                            <i class="fa fa-file fa-2x" aria-hidden="true"></i>
+                                        </ng-container>
+                                    </ng-container>
+                                </div>
+                                <div class="file-item__name m--margin-left-20">
+                                    <a [href]="file.url" target="_blank" [title]="file.name" download>{{file.name}}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<add-attachment-popup (onAdd)="onAddFile($event)"></add-attachment-popup>
+
+<form class="hidden" #formReportPDF target="framePDF" method="POST" [action]="srcReportPDF | safe:'resourceUrl'">
+    <input name="crystal" type="hidden" [value]="valuePDF">
+</form>
+<iframe style="display: none;" #framePDF id="framePDF" name="framePDF" src="" type="application/pdf" height="1080px"
+    width="100%" allowfullscreen frameborder="0"></iframe>
+
+<ng-container *ngIf="dataReport">
+    <app-report-preview [data]="dataReport"></app-report-preview>
+</ng-container>

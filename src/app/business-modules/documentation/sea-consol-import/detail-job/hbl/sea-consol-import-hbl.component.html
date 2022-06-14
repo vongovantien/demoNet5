@@ -1,0 +1,226 @@
+<div class="sea-consol-import-hbl-page">
+    <app-sub-header>
+        <div class="c-button-actions">
+            <span *ngIf="(isLocked | async)" class="m--margin-right-10 align-middle">
+                <i class="fa fa-lock text-danger fa-3x"></i>
+            </span>
+            <div class="dropdown m-dropdown m-dropdown--inline">
+                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                    <i class="la la-print"></i>P/L Sheet<span class="caret"></span>
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item pointer" (click)="previewPLsheet('USD')">Preview with USD</a>
+                    <a class="dropdown-item pointer" (click)="previewPLsheet('VND')">Preview with VND</a>
+                </div>
+            </div>
+
+            <ng-container *ngIf="(isLocked | async) === false">
+                <button type="button" class="btn btn-success  m-btn--icon m-btn--uppercase"
+                    (click)="duplicateConfirm()">
+                    <span>
+                        <i class="la la-search-plus"></i>
+                        <span>
+                            Duplicate
+                        </span>
+                    </span>
+                </button>
+
+                <button type="button" class="btn btn-danger  m-btn--icon m-btn--uppercase" (click)="prepareDeleteJob()"
+                    *ngIf="!!shipmentDetail && shipmentDetail.permission.allowDelete">
+                    <span>
+                        <i class="la la-trash"></i>
+                        <span>
+                            Delete
+                        </span>
+                    </span>
+                </button>
+
+
+                <button type="button" class="btn btn-primary  m-btn--icon m-btn--uppercase" disabled>
+                    <span>
+                        <i class="la la-save"></i>
+                        <span>
+                            save
+                        </span>
+                    </span>
+                </button>
+            </ng-container>
+
+
+            <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="gotoList()"></app-default-button>
+
+        </div>
+    </app-sub-header>
+    <div class="m-content">
+        <div class="m-portlet__body">
+            <tabset class="custom-class-tab">
+                <tab heading="Shipment Detail" (selectTab)="onSelectTab('shipment')">
+                </tab>
+                <tab heading="House Bills List" (selectTab)="onSelectTab('hbl')" [active]="true">
+                    <div class="m-portlet">
+                        <div class="m-portlet__body">
+                            <div class="m-portlet">
+                                <div class="alert-block__heading">
+                                    <h3 class="alert-block__title"> HBL List</h3>
+                                </div>
+                                <div class="m-portlet__body">
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <div class="m-input-icon m-input-icon--right">
+                                                    <input type="text" class="form-control m-input m-input--square"
+                                                        placeholder="Search" [(ngModel)]="keyword" name=keyword>
+                                                    <span class="m-input-icon__icon m-input-icon__icon--right">
+                                                        <span>
+                                                            <i class="la la-search"></i>
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8">
+                                            <div class="form-group">
+                                                <div class="float-right">
+                                                    <ng-container
+                                                        *ngIf="!!shipmentDetail && shipmentDetail.isLocked === false">
+                                                        <app-permission-button title="Add New House Bill"
+                                                            (onClick)="gotoCreate()"
+                                                            *ngIf="!!shipmentDetail && shipmentDetail.permission.allowUpdate">
+                                                        </app-permission-button>
+                                                    </ng-container>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="table-wrapper table-scrollabler" id="hoursebill-list-table">
+                                        <table class="table table-striped table-brand table-hover dataTable">
+                                            <thead app-table-header [headers]="headers"
+                                                (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                                                <th class="m--w-50 first table-actions-col">
+                                                    Action
+                                                </th>
+                                            </thead>
+                                            <tbody class="tbody-group">
+                                                <ng-container *ngIf="!(isLoading | async) && !!houseBills.length">
+                                                    <tr (click)="selectHBL(house, $event)" class="pointer"
+                                                        title="Select House Bill"
+                                                        [class.selected-row]="selectedHbl.id === house.id"
+                                                        *ngFor="let house of houseBills | filter : keyword : ['hwbno','customerName','saleManName','notifyParty','finalDestinationPlace','containers','packages','gw','cbm','group','department']; let i = index; trackBy: trackByFn">
+                                                        <td class="table-actions-col">
+                                                            <div class="table-actions" style="width: 70px">
+                                                                <app-permission-button type="detail"
+                                                                    (onClick)="gotoDetail(house.id)">
+                                                                </app-permission-button>
+                                                                <ng-container *ngIf="(isLocked | async) === false">
+                                                                    <app-permission-button
+                                                                        *ngIf="shipmentDetail.permission.allowUpdate === true"
+                                                                        (onClick)="showDeletePopup(house, $event,i)"
+                                                                        type="delete">
+                                                                    </app-permission-button>
+                                                                </ng-container>
+                                                            </div>
+                                                        </td>
+                                                        <td class=" text-primary pointer"><a
+                                                                (click)="gotoDetail(house.id)">
+                                                                {{house.hwbno}}</a>
+                                                        </td>
+                                                        <td>{{house.customerName}}</td>
+                                                        <td>{{house.saleManName}}</td>
+                                                        <td>{{house.notifyParty}}</td>
+                                                        <td>{{house.podName}}</td>
+                                                        <td>{{house.packageContainer}}</td>
+                                                        <td>{{house.packages}}</td>
+                                                        <td>{{house.gw}}</td>
+                                                        <td>{{house.cbm}}</td>
+                                                        <td>{{house.group}}</td>
+                                                        <td>{{house.department}}</td>
+                                                    </tr>
+                                                    <tr class="font-weight-bold">
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>Total</td>
+                                                        <td>{{totalGW}}</td>
+                                                        <td>{{totalCBM}}</td>
+                                                    </tr>
+                                                </ng-container>
+                                                <tr *ngIf="!(isLoading | async) && !houseBills.length"
+                                                    app-table-none-record [colspan]="headers.length + 1">
+                                                </tr>
+                                                <tr *ngIf="(isLoading | async)" app-table-row-loading></tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="m-portlet" style="position: relative">
+                                <ngx-spinner bdColor="rgba(242,222,223,0.3)" [name]="spinnerSurcharge"
+                                    [fullScreen]="false" type="ball-spin-clockwise" size="medium">
+                                </ngx-spinner>
+                                <div class="alert-block__heading">
+                                    <h3 class="alert-block__title">Profit Per House Bill</h3>
+                                </div>
+                                <div class="m-portlet__body">
+                                    <tabset class="custom-class-tab">
+                                        <tab heading="Buying" (selectTab)="onSelectTabSurcharge('BUY')">
+                                            <ng-container *ngIf="!!selectedHbl && selectedHbl.id; else placeholder">
+                                                <buying-charge *ngIf="selectedTabSurcharge === 'BUY'"></buying-charge>
+                                            </ng-container>
+                                        </tab>
+                                        <tab heading="Selling" (selectTab)="onSelectTabSurcharge('SELL')">
+                                            <ng-container *ngIf="!!selectedHbl && selectedHbl.id; else placeholder">
+                                                <selling-charge [showSyncFreight]="false"
+                                                    *ngIf="selectedTabSurcharge === 'SELL'"></selling-charge>
+                                            </ng-container>
+                                        </tab>
+                                        <tab heading="OBH" (selectTab)="onSelectTabSurcharge('OBH')">
+                                            <ng-container *ngIf="!!selectedHbl && selectedHbl.id; else placeholder">
+                                                <obh-charge *ngIf="selectedTabSurcharge === 'OBH'"></obh-charge>
+                                            </ng-container>
+                                        </tab>
+                                    </tabset>
+                                </div>
+                            </div>
+
+                            <hbl-profit-summary></hbl-profit-summary>
+
+                        </div>
+                    </div>
+                </tab>
+                <tab heading="Debit Note & Credit Note" (selectTab)="onSelectTab('cdNote')">
+                </tab>
+                <tab heading="Assignment" (selectTab)="onSelectTab('assignment')">
+                </tab>
+                <tab heading="Advance/Settlement" (selectTab)="onSelectTab('advance-settle')">
+                </tab>
+            </tabset>
+        </div>
+    </div>
+</div>
+
+<confirm-popup
+    [body]="'Are you sure you want to delete this House Bill, All related charges added to this House Bill will be lost'"
+    [labelCancel]="'No'" (onSubmit)="onDeleteHbl()">
+</confirm-popup>
+
+<ng-template #placeholder>
+    <div class="no-data">
+        <i class="flaticon-coins"></i>
+        <span class="no-data-text">No records found</span>
+    </div>
+</ng-template>
+
+<confirm-popup #confirmDeleteJob [body]="'You you sure you want to delete this Job'" [title]="'Alert'"
+    [labelConfirm]="'Yes'" (onSubmit)="onDeleteJob()"></confirm-popup>
+
+<ng-container *ngIf="dataReport">
+    <app-report-preview [data]="dataReport"></app-report-preview>
+</ng-container>
+
+<info-popup [body]="'You are not allowed to delete this job'"></info-popup>
+<permission-403-popup></permission-403-popup>

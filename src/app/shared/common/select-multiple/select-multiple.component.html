@@ -1,0 +1,43 @@
+<div class="select-multiple-container" (clickOutside)="onclickOutSide()">
+    <div class="select-multiple-item-selected" (click)="showContent();">
+        <ng-template #placeholder>
+            <span class=" placeholder float-left">{{placeHolder}}</span>
+        </ng-template>
+        <ng-template #all>
+            <span class="placeholder float-left">All</span>
+        </ng-template>
+        <ul class="list-inline" *ngIf="!!active.length else placeholder">
+            <ng-container *ngIf="active.length < sources.length">
+                <li *ngFor="let item of active; let i = index" class="list-inline-item">{{item.text}}</li>
+            </ng-container>
+            <ng-container *ngIf="active.length === sources.length">All</ng-container>
+        </ul>
+        <div class="icon-dropdown float-right">
+            <i class=" la la-angle-down" *ngIf="!active.length"></i>
+        </div>
+    </div>
+    <div class="select-multiple-content" *ngIf="isShow">
+        <div>
+            <input type="text" class="form-control" [(ngModel)]="keyword" #inputSearch placeholder="Search">
+        </div>
+        <ul class="list-group list">
+            <li class="list-group-item">
+                <label class="m-checkbox w-100">
+                    <input [(ngModel)]="isCheckAll" type="checkbox" class="form-control form-check-label"
+                        (change)="checkUncheckAll()">
+                    Select all
+                    <span></span>
+                </label>
+            </li>
+            <li *ngFor="let item of sources | filter: keyword: ['text']; let i = index; trackBy: trackByFn "
+                class="list-group-item">
+                <label class="m-checkbox w-100">
+                    <input type="checkbox" class="form-control form-check-label" [(ngModel)]="item.isSelected"
+                        [value]="item" (change)="onChangeCheckItem(item)">
+                    {{item.text}}
+                    <span></span>
+                </label>
+            </li>
+        </ul>
+    </div>
+</div>

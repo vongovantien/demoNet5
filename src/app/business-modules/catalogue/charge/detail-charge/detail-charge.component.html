@@ -1,0 +1,24 @@
+<div class="m-subheader">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <app-breadcrumb></app-breadcrumb>
+        </div>
+        <div class="c-button-actions">
+            <ng-container *ngIf="!!Charge && Charge.permission.allowUpdate">
+                <app-default-button [buttonSetting]="saveButtonSetting" (click)="updateCharge()"></app-default-button>
+            </ng-container>
+            <app-default-button [buttonSetting]="cancelButtonSetting" routerLink="/home/catalogue/charge">
+            </app-default-button>
+        </div>
+    </div>
+</div>
+
+<div class="m-content">
+
+    <form-add-charge [isUpdate]="true"></form-add-charge>
+
+    <voucher-list></voucher-list>
+
+</div>
+<generate-selling-charge-popup (onCreatSellingCharge)="addSellingCharge($event)">
+</generate-selling-charge-popup>

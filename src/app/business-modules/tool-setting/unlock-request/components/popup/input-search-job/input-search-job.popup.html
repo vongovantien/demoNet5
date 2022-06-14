@@ -1,0 +1,56 @@
+<div class="modal fade" role="dialog" bsModal #popup="bs-modal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Shipment To Unlock Or Change Service date</h5>
+            </div>
+            <div class="modal-body">
+                <div class="m-form m-form--state">
+                    <div class="m-form m-form--label-align-right">
+                        <div class="row align-items-center">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <div class="m-radio-inline d-flex justify-content-between">
+                                        <label class="m-radio m-radio--bold m-radio--state-brand"
+                                            *ngFor="let item of shipmentTypes; let i = index">
+                                            <input type="radio" [checked]="item.id === selectedShipmentType"
+                                                name="radio_grp_shipment" (change)="onChangeShipmentType(item)">
+                                            {{item.text}}
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row align-items-center">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <textarea class="form-control m-input m-input--square" [(ngModel)]="shipmentSearch"
+                                        rows="6"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer m--align-center">
+                <button class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="add()">
+                    <span>
+                        <i class="la la-check-square"></i>
+                        <span>
+                            Add
+                        </span>
+                    </span>
+                </button>
+                <button type="button" class="btn btn-cancel  m-btn--icon m-btn--uppercase" (click)="closePopup()">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span>
+                            cancel
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

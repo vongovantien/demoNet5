@@ -1,0 +1,148 @@
+<div class="modal m-animate-fade-in dim-volume-popup" role="dialog" bsModal #popup="bs-modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    DIM - Volume
+                </h5>
+
+                <button type="button" (click)="confirmCancel.show()" class="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <ng-container *ngIf="!(isLocked | async)">
+                    <div class="modal-actions c-button-actions" *ngIf="!!isShowGetFromHAWB">
+                        <button class="btn btn-sm btn-primary  m-btn--icon" (click)="confirmGetFromHAWB.show()">
+                            <span>
+                                <i class="la la-refresh"></i>
+                                <span>
+                                    Get From HAWB
+                                </span>
+                            </span>
+                        </button>
+                    </div>
+                </ng-container>
+            </div>
+            <div class="modal-body pb-0">
+                <div class="row align-items-center m--margin-bottom-10">
+                    <div class="col-md-2">Length</div>
+                    <div class="col-md-2">Width</div>
+                    <div class="col-md-2">Volume</div>
+                    <div class="col-md-2">Package</div>
+                    <div class="col-md-3">Volume Weight</div>
+                    <div class="col-md-1 pointer text-center">
+
+                    </div>
+                </div>
+                <ng-container *ngIf="!!dimsTemp.length; else placeholder">
+                    <ng-container *ngFor="let item of dimsTemp; let i=index; trackBy: trackByFn">
+                        <div class="row m--align-center m--margin-bottom-20 m-form m-form--state">
+                            <div class="col-md-2">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger':isSubmitted && item.length === null}">
+                                    <input type="text" class="form-control" [(ngModel)]="item.length"
+                                        (ngModelChange)="updateHeightWeight(item)" numeric [decimals]="digitDecimal">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger':isSubmitted && item.width === null}">
+                                    <input type="text" class="form-control" [(ngModel)]="item.width"
+                                        (ngModelChange)="updateHeightWeight(item)" numeric [decimals]="digitDecimal">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger':isSubmitted && item.height === null}">
+                                    <input type="text" class="form-control" [(ngModel)]="item.height"
+                                        (ngModelChange)="updateHeightWeight(item)" numeric [decimals]="digitDecimal">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger':isSubmitted && item.package === null}">
+                                    <input type="text" class="form-control" [(ngModel)]="item.package"
+                                        (ngModelChange)="updateHeightWeight(item)" numeric [decimals]="digitDecimal">
+                                </div>
+
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" [(ngModel)]="item.hw" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-1 pointer text-center">
+                                <a title="Delete" (click)="delete(item,i)">
+                                    <i class="fa fa-times fa-2x text-danger"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </ng-container>
+                </ng-container>
+                <ng-template #placeholder>
+                    <div class="no-data">
+                        <i class="flaticon-coins"></i>
+                        <span class="no-data-text">No records found</span>
+                    </div>
+                </ng-template>
+                <ng-container *ngIf="!(isLocked | async)">
+                    <a title="Add" class="pointer" (click)="addDIM()">
+                        <i class="fa fa-plus-circle fa-2x text-success"></i>
+                    </a>
+                </ng-container>
+                <div class="row pt-2 border border-bottom-0 mt-2 align-items-center pb-2">
+                    <div class="col-md-5">
+                        <div class="hw-constant d-flex justify-content-center align-items-center">
+                            <div class="font-12">VW Constant</div>
+                            <input type="number" style="max-width: 100px"
+                                class="form-control mw-100 m--margin-left-10 m--margin-right-10 flex-grow-1"
+                                [(ngModel)]="hwConstant" (ngModelChange)="calculateHWDimension()">
+                        </div>
+                    </div>
+                    <div class="col-md-2 text-right">
+                        <div class="form-group m-form__group">
+                            <label class="m-checkbox m-checkbox--state-success mb-0">
+                                <input type="checkbox" [(ngModel)]="isCBMChecked">
+                                Use CBM
+                                <span> </span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-2 text-right">
+                        <div class="form-group m-form__group">
+                            CBM: <span class="text-danger">{{totalCBM | number: '.0-2'}}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-right">
+                        <div class="form-group m-form__group">
+                            Total V.W: <span class="text-danger">{{totalHW | number: '.0-2'}} KGS</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer m--align-center">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="m--align-center">
+                            <ng-container *ngIf="!(isLocked | async)">
+                                <app-default-button [buttonSetting]="saveButtonSetting" (onClick)="saveDIM()">
+                                </app-default-button>
+                            </ng-container>
+                            <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="confirmCancel.show()">
+                            </app-default-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<confirm-popup #confirmCancel [body]="'Are you sure you want to exit without saving?'" [title]="'Alert'"
+    [labelConfirm]="'Yes'" [labelCancel]="'No'" (onSubmit)=" confirmCancel.hide();closePopup();"></confirm-popup>
+
+<confirm-popup #confirmGetFromHAWB body="Do you want to update DIM from HAWB?"
+    (onSubmit)="confirmGetFromHAWB.hide();onGetDimsFromHAWB()" [labelConfirm]="'Yes'" [labelCancel]="'No'">
+</confirm-popup>
+
+<confirm-popup #confirmDeleteDim [body]="'Are you sure want to delete DIM?'" [title]="'Alert'" [labelConfirm]="'Yes'"
+    [labelCancel]="'No'" (onSubmit)="confirmDeleteDim.hide(); onDeleteDIMItem()"></confirm-popup>

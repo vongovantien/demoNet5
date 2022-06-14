@@ -1,0 +1,101 @@
+<app-sub-header></app-sub-header>
+
+<div class="m-content">
+    <div class="m-portlet">
+        <div class="m-form">
+            <div class="m-portlet__body">
+                <tabset class="custom-class-tab">
+                    <tab heading="Advance Info" [active]="true">
+                        <adv-payment-form-create (onChangeCurrency)="onChangeCurrency($event)" (onChangeAdvanceFor)="changeAdvanceFor($event)">
+                        </adv-payment-form-create>
+                        <div class="row" *ngIf="!!advancePayment">
+                            <div class="col-6">
+                                <div class="m--align-left">
+                                    Created: {{advancePayment.datetimeCreated | date: 'dd/MM/yyyy HH:mm'}}
+                                    &nbsp;
+                                    By <span class="text-success">{{advancePayment.userNameCreated}}</span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="m--align-left">
+                                    Modified: {{advancePayment.datetimeModified | date: 'dd/MM/yyyy HH:mm'}}
+                                    &nbsp;
+                                    By <span class="text-success">{{advancePayment.userNameModified}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </tab>
+                    <tab>
+                        <ng-template tabHeading>
+                            <span class="m--margin-right-10">Attach files</span>
+                            <span class="badge badge-success"
+                                *ngIf="attachFiles.length > 0">{{attachFiles.length}}</span>
+                        </ng-template>
+                        <accounting-attach-file-list *ngIf="!!advancePayment" (onChange)="attachFiles = $event"
+                            [fileNo]="advancePayment.advanceNo" [folderModuleName]='folderModuleName'>
+                        </accounting-attach-file-list>
+                    </tab>
+                </tabset>
+            </div>
+        </div>
+    </div>
+    <div class="m-portlet">
+        <div class="m-form">
+            <div class="m-portlet__body">
+                <div>
+                    <adv-payment-list-request *ngIf="!isAdvCarrier" [state]="actionList" [statusApproval]="statusApproval">
+                    </adv-payment-list-request>
+                    <list-advance-payment-carrier *ngIf="isAdvCarrier" [state]="actionList" [statusApproval]="statusApproval"></list-advance-payment-carrier>
+                </div>
+                <div class="row height-row-12" *ngIf="!!advancePayment">
+                    <div class="col-12">
+                        <div class="m--align-center m--margin-top-20">
+                            <div class="c-button-actions">
+                                <ng-container
+                                    *ngIf="(advancePayment.statusApproval === 'New' || advancePayment.statusApproval === 'Denied') && advancePayment.isRequester">
+                                    <app-permission-button type="save" title="Save" (onClick)="updateAdvPayment()">
+                                    </app-permission-button>
+                                    <app-permission-button type="save-and-send" title="Save & Send Request"
+                                        (onClick)="sendRequest()"></app-permission-button>
+                                </ng-container>
+                                <button
+                                    *ngIf="advancePayment.statusApproval === 'Request Approval' && advancePayment.isRequester"
+                                    class="btn btn-danger  m-btn--icon m-btn--uppercase m--margin-right-10"
+                                    title="Recall" (click)="recall()">
+                                    <span>
+                                        <i class="la la-undo"></i>
+                                        <span>
+                                            Recall
+                                        </span>
+                                    </span>
+                                </button>
+                                <div class="dropdown m-dropdown m-dropdown--inline no-arrow">
+                                    <app-default-button [dpToggle]="dropdownMenu"
+                                        [buttonSetting]="previewButtonSetting">
+                                    </app-default-button>
+
+                                    <app-dropdown #dropdownMenu>
+                                        <a class="dropdown-item pointer" (click)="previewAdvPayment()">Preview
+                                            single</a>
+                                        <a class="dropdown-item pointer" (click)="exportAdvPayment('VN', 'preview')">Preview
+                                            multiple (VN)</a>
+                                        <a class="dropdown-item pointer"
+                                            (click)="exportAdvPayment('ENG', 'preview')">Preview multiple (ENG)</a>
+                                        <a class="dropdown-item pointer" (click)="exportAdvPayment('VN', 'download')">Print multiple
+                                            (VN)</a>
+                                        <a class="dropdown-item pointer" (click)="exportAdvPayment('ENG', 'download')">Print
+                                            multiple (ENG)</a>
+                                    </app-dropdown>
+                                </div>
+                                <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="back()">
+                                </app-default-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template inject></ng-template>

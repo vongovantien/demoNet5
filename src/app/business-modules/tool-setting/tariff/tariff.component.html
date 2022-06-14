@@ -1,0 +1,86 @@
+<div class="company-infomation-page">
+    <app-sub-header>
+        <div class="c-button-actions">
+            <app-permission-button type="add" [routerLink]="'/home/tool/tariff/new'" title="Create">
+            </app-permission-button>
+        </div>
+    </app-sub-header>
+    <div class="m-content">
+        <div class="m-portlet__body">
+            <tabset class="custom-class-tab">
+                <tab heading="OPS Tariff">
+                    <form-search-tariff (onSearch)="searchTariff($event)"></form-search-tariff>
+                    <div class="m-portlet">
+                        <div class="m-portlet__body">
+                            <div class="m-form m--margin-bottom-10">
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="form-group">
+                                            <div class="m-input-icon m-input-icon--left">
+                                                <input type="text" class="form-control m-input m-input--square"
+                                                    placeholder="Search..." [(ngModel)]="keyword" name="keyword">
+                                                <span class="m-input-icon__icon m-input-icon__icon--left">
+                                                    <span>
+                                                        <i class="la la-search"></i>
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-wrapper">
+                                <table class="table table-striped table-brand dataTable">
+                                    <thead app-table-header [headers]="headers"
+                                        (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                                        <th class="first table-actions-col"></th>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container *ngIf="!!tariffs.length">
+                                            <tr class=""
+                                                *ngFor="let tariff of tariffs | filter : keyword : ['tariffName','tariffType','customerID','supplierID','serviceMode','status']; let i = index; trackBy: trackByFn">
+                                                <td class="table-actions-col">
+                                                    <div class="table-actions">
+                                                        <app-permission-button type="copy"
+                                                            (onClick)="viewDetailTpCopy(tariff)">
+                                                        </app-permission-button>
+                                                        <ng-container *ngIf="!tariff.status">
+                                                            <app-permission-button type="delete"
+                                                                (onClick)="showDeletePopup(tariff)">
+                                                            </app-permission-button>
+                                                        </ng-container>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a class="text-underline pointer" (click)="viewDetail(tariff)"
+                                                        [title]="tariff.tariffName">
+                                                        {{tariff.tariffName}}
+                                                    </a>
+                                                </td>
+                                                <td>{{tariff.tariffType}}</td>
+                                                <td>{{tariff.customerName}}</td>
+                                                <td>{{tariff.supplierName}}</td>
+                                                <td>{{tariff.serviceMode}}</td>
+                                                <td>{{tariff.effectiveDate | date: 'dd/MM/yyyy'}}</td>
+                                                <td>{{tariff.expiredDate | date: 'dd/MM/yyyy'}}</td>
+                                                <td [ngClass]="tariff.status ? 'text-success' : 'text-danger'">
+                                                    {{tariff.status ? 'Active' : 'Inactive'}}</td>
+                                            </tr>
+                                        </ng-container>
+                                        <tr app-table-none-record *ngIf="!isLoading && !tariffs.length"
+                                            [colspan]="headers.length + 1"></tr>
+                                        <tr app-table-row-loading *ngIf="isLoading"></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+</div>
+
+<confirm-popup [body]="'Do you want to delete this tariff ?'" (onSubmit)="onDeleteTariff()"></confirm-popup>
+
+<permission-403-popup></permission-403-popup>

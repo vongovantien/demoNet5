@@ -1,0 +1,149 @@
+<div class="acc-cd-invoice-wrapper  m-animate-fade-in">
+    <app-sub-header> </app-sub-header>
+    <div class="m-content">
+        <div class="m-portlet__body">
+            <tabset class="custom-class-tab">
+                <tab heading="Invoice List" (selectTab)="onSelectTab('cdi')">
+                    <form-search-accounting-management (onSearch)="searchInvoiceAndCDNotes($event)"
+                        (onReset)="resetSearch($event)">
+                    </form-search-accounting-management>
+                    <div class="m-portlet">
+                        <div class="m-portlet__body">
+                            <div class="m-form m--margin-bottom-10">
+                                <div class="row">
+                                    <div class="col-lg-12 c-button-actions">
+                                        <ng-container
+                                            *ngIf="(menuSpecialPermission | async | specialPermission:'Voucher') || (menuSpecialPermission | async | specialPermission:'Invoice')">
+                                            <div class="dropdown m-dropdown m-dropdown--inline">
+                                                <button type="button" class="btn btn-success dropdown-toggle"
+                                                    data-toggle="dropdown">
+                                                    <i class="la la-download"></i>Issue<span class="caret"></span>
+                                                </button>
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item pointer" (click)="issueVatInvoice()"
+                                                        *ngIf="menuSpecialPermission | async | specialPermission:'Invoice'">VAT
+                                                        Invoice</a>
+                                                    <a class="dropdown-item pointer" (click)="issueVoucher()"
+                                                        *ngIf="menuSpecialPermission | async | specialPermission:'Voucher'">Voucher</a>
+                                                </div>
+                                            </div>
+                                        </ng-container>
+                                        <div class="dropdown m-dropdown m-dropdown--inline">
+                                            <button type="button" class="btn btn-default dropdown-toggle"
+                                                data-toggle="dropdown">
+                                                <i class="la la-print"></i>Combine Billing<span class="caret"></span>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item pointer"
+                                                    (click)="previewCombine('VND')">Local</a>
+                                                <a class="dropdown-item pointer" (click)="previewCombine('USD')">USD</a>
+                                            </div>
+                                        </div>
+                                        <app-permission-button type="export" (onClick)="exportInvoice()">
+                                        </app-permission-button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-wrapper">
+                                <table class="table table-striped table-brand dataTable table-hover">
+                                    <thead app-table-header [headers]="headers"
+                                        (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                                        <th class="first table-actions-col"></th>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container *ngIf="!!cdNotes">
+                                            <tr *ngFor="let cdNote of cdNotes; let i = index; trackBy: trackByFn"
+                                                [class.invalid-row]="cdNote.syncStatus === 'Rejected'"
+                                                [class.synced-row]="cdNote.status !== 'New'">
+                                                <td class="table-actions-col" ngi>
+                                                    <!-- *ngIf="cdNote.status === 'New'" -->
+                                                    <div class="table-actions">
+                                                        <label class="m-checkbox">
+                                                            <input type="checkbox" [(ngModel)]="cdNote.isSelected">
+                                                            <span></span>
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a href="javascript:void(0)"
+                                                        (click)="cdNote.billingType === 'Soa' ? viewDetail(cdNote.id, cdNote.referenceNo) : showDetailCDNote(cdNote.jobId, cdNote.referenceNo)">{{cdNote.referenceNo}}</a>
+                                                </td>
+                                                <td>{{cdNote.jobNo}}</td>
+                                                <td>
+                                                    {{cdNote.hblNo}}
+                                                </td>
+                                                <td>
+                                                    {{cdNote.partnerName}}
+                                                </td>
+                                                <td class="text-right">{{ cdNote.total | number: '.0-3'}}</td>
+                                                <td>{{ cdNote.currency}}</td>
+                                                <td>{{ cdNote.issuedDate | date: 'dd/MM/yyyy'}}</td>
+                                                <td>{{ cdNote.voucherIddate | date: 'dd/MM/yyyy'}}</td>
+                                                <td class="text-success">{{ cdNote.creator}}</td>
+                                                <td>
+                                                    <ng-container [ngSwitch]="cdNote.status">
+                                                        <ng-container *ngSwitchCase="'New'">
+                                                            <span class="text-danger">{{cdNote.status}}</span>
+                                                        </ng-container>
+                                                        <ng-container *ngSwitchCase="'Issued'">
+                                                            <span class="text-info">{{cdNote.status}}</span>
+                                                        </ng-container>
+                                                    </ng-container>
+                                                </td>
+                                                <td class="text-primary">{{cdNote.voucherId}}</td>
+                                                <td [ngSwitch]="cdNote.syncStatus">
+                                                    <span *ngSwitchCase="'Synced'" class="text-success">
+                                                        {{cdNote.syncStatus}}</span>
+                                                    <span *ngSwitchCase="'Rejected'" class="text-danger">
+                                                        {{cdNote.syncStatus}}
+                                                    </span>
+                                                    <span *ngSwitchDefault>
+                                                        {{cdNote.syncStatus}}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span>{{cdNote.lastSyncDate | date:'dd/MM/yyyy HH:mm:ss'}}</span>
+                                                </td>
+                                                <td>
+                                                    <ng-container [ngSwitch]="cdNote.paymentStatus">
+                                                        <span class="text-success" *ngSwitchCase="'Paid'">
+                                                            {{ cdNote.paymentStatus }}
+                                                        </span>
+                                                        <span class="text-warning" *ngSwitchCase="'Paid A Part'">
+                                                            {{ cdNote.paymentStatus }}
+                                                        </span>
+                                                        <span class="text-danger" *ngSwitchDefault>
+                                                            {{ cdNote.paymentStatus }}
+                                                        </span>
+                                                    </ng-container>
+                                                </td>
+                                            </tr>
+                                        </ng-container>
+                                        <tr app-table-none-record *ngIf="!isLoading && !cdNotes.length"
+                                            [colspan]="headers.length + 1">
+                                        </tr>
+                                        <tr app-table-row-loading *ngIf="isLoading"></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <app-pagination [total]="totalItems" [pageNum]="page" [itemPerPage]="pageSize"
+                                (onChange)="updatePagingData($event)"></app-pagination>
+                        </div>
+                    </div>
+                </tab>
+                <tab *ngIf="menuSpecialPermission | async | specialPermission:'Invoice'" heading="VAT Invoice"
+                    (selectTab)="onSelectTab('vat')" [active]="selectedTab === 'VAT'"> </tab>
+                <tab *ngIf="menuSpecialPermission | async | specialPermission:'Voucher'" heading="Voucher"
+                    (selectTab)="onSelectTab('voucher')" [active]="selectedTab === 'VOUCHER'"> </tab>
+            </tabset>
+        </div>
+    </div>
+</div>
+
+<accounting-detail-cd-note></accounting-detail-cd-note>
+
+<select-partner-popup (onSelect)="onSelectPartner()"></select-partner-popup>
+<select-partner-combine-popup (onSelect)="onSelectPartnerCombine($event)"></select-partner-combine-popup>
+<ng-container *ngIf="dataReport">
+    <app-report-preview [data]="dataReport"></app-report-preview>
+</ng-container>

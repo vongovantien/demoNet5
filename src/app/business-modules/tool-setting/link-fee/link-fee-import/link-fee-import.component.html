@@ -1,0 +1,176 @@
+<app-sub-header></app-sub-header>
+
+<div class="m-content">
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <div class="m-form m-form--state">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <form #form>
+                            <input type="file" #fileInput id="inputFile" class="form-control m-input m-input--square"
+                                placeholder="" (change)="chooseFile($event)" onclick="this.value=null;" accept=".xlsx">
+                        </form>
+                        <span class="m-form__help">
+                            <a class="btn-link" href="javascript:void(0)" (click)="downloadSample()">Download sample</a>
+                        </span>
+                    </div>
+                    <div class="col-lg-7 offset-lg-1">
+                        <div class="row">
+                            <div class="col-sm-4 m--margin-top-10 text-right">
+                                <span class="m--font-brand m--font-bolder">
+                                    Total rows: {{ totalRows }}
+                                </span>
+                            </div>
+                            <div class="col-sm-4 m--margin-top-10 text-right">
+                                <span class="m--font-success m--font-bolder">
+                                    Valid rows: {{ totalValidRows }}
+                                </span>
+                            </div>
+                            <div class="col-sm-4 m--margin-top-10 text-right">
+                                <span class="m--font-danger  m--font-bolder">
+                                    Invalid rows: {{ totalRows - totalValidRows }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions m--margin-top-5 m--align-right">
+                    <button type="button" class="btn btn-danger  m-btn--icon m-btn--uppercase" (click)="hideInvalid()">
+                        <span>
+                            <span *ngIf="isShowInvalid">
+                                Show invalid rows
+                            </span>
+                            <span *ngIf="isShowInvalid == false">
+                                Show All
+                            </span>
+                        </span>
+                    </button>
+                    <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase"
+                        (click)="import(fileInput)">
+                        <span>
+                            <i class="la la-save"></i>
+                            <span>
+                                Save
+                            </span>
+                        </span>
+                    </button>
+                    <app-default-button [buttonSetting]="closeButtonSetting" routerLink="/home/tool/link-fee">
+                    </app-default-button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="m-portlet" style="position: relative">
+        <div class="m-portlet__body">
+            <div class="table-wrapper" id="">
+                <table class="table table-striped table-brand dataTable">
+                    <thead>
+                        <tr>
+                            <th class="sorting_asc">
+                                <span>No</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'ruleName'), 'sorting_desc': (!isDesc && sortKey == 'ruleName') }"
+                                (click)="sort('ruleName')">
+                                <span>Rule Name</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'serviceBuying'), 'sorting_desc': (!isDesc && sortKey == 'serviceBuying') }"
+                                (click)="sort('serviceBuying')">
+                                <span>Service Buying</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'serviceSelling'), 'sorting_desc': (!isDesc && sortKey == 'serviceSelling') }"
+                                (click)="sort('serviceSelling')">
+                                <span>Service Selling</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'chargeBuying'), 'sorting_desc': (!isDesc && sortKey == 'chargeBuying') }"
+                                (click)="sort('chargeBuying')">
+                                <span>Charge Buying</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'chargeSelling'), 'sorting_desc': (!isDesc && sortKey == 'chargeSelling') }"
+                                (click)="sort('chargeSelling')">
+                                <span>Charge Selling</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'partnerBuying'), 'sorting_desc': (!isDesc && sortKey == 'partnerBuying') }"
+                                (click)="sort('partnerBuying')">
+                                <span>Partner Buying</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'partnerSelling'), 'sorting_desc': (!isDesc && sortKey == 'partnerSelling') }"
+                                (click)="sort('nameEn')">
+                                <span>Partner Selling</span>
+                            </th>
+                            <th>
+                                <span>Status</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="data">
+                        <ng-container *ngFor="let item of pagedItems; let i = index">
+                            <tr [ngClass]="{ 'invalid-row': !item.isValid }">
+                                <td>
+                                    <span>{{ (i + this.pager.startIndex + 1) }}</span>
+                                </td>
+                                <td>
+                                    <span>{{ item.ruleName }}</span>
+                                </td>
+                                <td>
+                                    <span >{{ item.serviceBuying }}</span>
+                                </td>
+                                <td>
+                                    <span >{{ item.serviceSelling }}</span>
+                                </td>
+                                <td>
+                                    <span >{{ item.chargeBuying }}</span>
+                                </td>
+                                <td>
+                                    <span >{{ item.chargeSelling }}</span>
+                                </td>
+                                <td>
+                                    <span >{{ item.partnerBuying }}</span>
+                                </td>
+                                <td>
+                                    <span >{{ item.partnerSelling }}</span>
+                                </td>
+                                <td>
+                                    <span>{{ item.status }}</span>
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </div>
+
+
+            <div class="pagination-nav">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="select-box" style="max-width: 190px">
+                            <select class="form-control" id="" aria-label="" [(ngModel)]="pager.pageSize"
+                                (change)="selectPageSize()" name="pagesize">
+                                <ng-container *ngFor="let item of pager.numberToShow; index as i; first as isFirst">
+                                    <option [ngValue]="item" [selected]="isFirst">{{item}} entries / page</option>
+                                </ng-container>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6" *ngIf="pager.totalItems > pager.pageSize">
+                        <div class="float-right">
+                            <pagination [boundaryLinks]="true" [totalItems]="pager.totalItems"
+                                [maxSize]="pager.numberPageDisplay" [itemsPerPage]="pager.pageSize"
+                                (pageChanged)="pageChanged($event)" [(ngModel)]="pager.currentPage">
+                            </pagination>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<info-popup [body]="'There are invalid data. Please check Import!'"></info-popup>

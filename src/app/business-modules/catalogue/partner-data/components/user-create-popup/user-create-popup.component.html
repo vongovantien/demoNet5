@@ -1,0 +1,115 @@
+<div class="modal fade user-create-popup" role="dialog" bsModal #popup="bs-modal" aria-hidden="true">
+    <div class="modal-dialog c-modal-fullscreen" role="document">
+        <div class="modal-content" style="width: 70%; height: 50%;">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    User List
+                </h5>
+                <button type="button" (click)="onClosePopup()" class="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group col-lg-12">
+                        <div class="m-input-icon m-input-icon--right">
+                            <input type="text" class="form-control m-input m-input--square" placeholder="Search"
+                                [(ngModel)]="keyword" name=keyword>
+                            <span class="m-input-icon__icon m-input-icon__icon--right">
+                                <span>
+                                    <i class="la la-search"></i>
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="table-wrapper fit-height-div">
+                        <table class="table table-bordered dataTable-edit">
+                            <thead app-table-header [headers]="headers" (onClick)="sortBy($event.sortField)">
+                                <th class="m--w-40 first table-actions-col">
+                                </th>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngIf="!!userList.length">
+                                    <tr *ngFor="let user of userList | filter: keyword: ['userName','groupName','officeName']; let i = index; trackBy: trackByFn"
+                                        class="table-actions-col fixed-side">
+                                        <td class="table-actions-col">
+                                            <div class="table-actions">
+                                                <label class="m-checkbox">
+                                                    <input type="checkbox" [(ngModel)]="user.isSelected"
+                                                        (change)="onSelectUser(user)">
+                                                    <span></span>
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span>{{user.userName}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{user.groupName}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{user.officeName}}</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="loading-wrapper" *ngIf="isLoading">
+                                        <td colspan="100">
+                                            <div class="on-loading">
+                                                <div class="m-loader m-loader--brand">
+                                                </div><span>Loading</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="!isLoading && !userList">
+                                        <td colspan="100">
+                                            <div class="no-data">
+                                                <i class="flaticon-coins"></i>
+                                                <span class="no-data-text">No records found</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="modal-footer m--align-center m--margin-top-10">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="m--align-center m--margin-top-20">
+                            <div class="c-button-actions">
+                                <app-default-button [buttonSetting]="saveButtonSetting" titleButton="Change Creator"
+                                    (onClick)="onChangeUser()"></app-default-button>
+                                <app-default-button [buttonSetting]=" cancelButtonSetting" (onClick)="onClosePopup()">
+                                </app-default-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+            <div class="modal-footer m--align-center">
+                <button class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="onChangeUser()">
+                    <span>
+                        <i class="la la-save"></i>
+                        <span>
+                            Change Creator
+                        </span>
+                    </span>
+                </button>
+                <button type="button" class="btn btn-cancel  m-btn--icon m-btn--uppercase" (click)="onClosePopup()">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span>
+                            cancel
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<confirm-popup #popupConfirmChange (onSubmit)="onChangeUser()"
+    [body]="'Do you want to change Creator? Make sure your choice.'" [labelConfirm]="'Ok'">
+</confirm-popup>

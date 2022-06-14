@@ -1,0 +1,124 @@
+<!--begin:: subheader-->
+<div class="m-subheader">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <!--begin:: breadcrumbs-->
+            <app-breadcrumb></app-breadcrumb>
+            <!--end:: breadcrumbs-->
+        </div>
+        <div class="c-button-actions">
+            <button type="button" class="btn btn-success  m-btn--icon m-btn--uppercase" (click)="openPopupAddStage()">
+                <span>
+                    <i class="la la-plus"></i>
+                    <span>
+                        add new
+                    </span>
+                </span>
+            </button>
+            <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase"
+                [routerLink]="['/home/catalogue/stage-management/stage-import']">
+                <span>
+                    <i class="la la-upload"></i>
+                    <span>
+                        import
+                    </span>
+                </span>
+            </button>
+            <button type="button" class="btn btn-danger  m-btn--icon m-btn--uppercase" (click)="export()">
+                <span>
+                    <i class="la la-download"></i>
+                    <span>
+                        export
+                    </span>
+                </span>
+            </button>
+        </div>
+    </div>
+</div>
+<!--end:: subheader-->
+<!--begin::m-content of stage-management-->
+<div class="m-content">
+    <!--begin:: m-portlet of search-form-->
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <!--begin::Form-->
+            <div class="m-form">
+                <app-search-options [configSearch]="configSearch" (search)="onSearch($event)"
+                    (reset_search)="resetSearch()"></app-search-options>
+            </div>
+            <!--end::Form-->
+        </div>
+    </div>
+    <!--end::m-portlet of search-form-->
+    <!--begin:: m-portlet of stage-management-->
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <!--begin: Datatable of stage-management-list-table -->
+            <div class="table-wrapper" id="">
+                <table class="table table-striped table-brand dataTable">
+                    <thead app-table-header [headers]="headers" (onClick)="sortBy($event)">
+                        <th class="m--w-50 first table-actions-col">
+                            Actions
+                        </th>
+                    </thead>
+                    <tbody *ngIf="listStages">
+                        <ng-container *ngIf="listStages.length > 0">
+                            <tr *ngFor="let stage of listStages;let i = index;">
+                                <td class="table-actions-col">
+                                    <div class="table-actions" style="width: 70px">
+                                        <button type="button"
+                                            class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only"
+                                            (click)="showDetailStage(stage)" title="Edit stage">
+                                            <i class="la la-edit"></i>
+                                        </button>
+                                        <button type="button"
+                                            class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only"
+                                            title="Remove stage" (click)="showConfirmDelete(stage)">
+                                            <i class="la la-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span>{{stage.deptName}}</span>
+                                </td>
+                                <td>
+                                    <span>{{stage.code}}</span>
+                                </td>
+                                <td>
+                                    <span>{{stage.stageNameVn}}</span>
+                                </td>
+                                <td>
+                                    <span>{{stage.stageNameEn}}</span>
+                                </td>
+                                <td>
+                                    <span>{{stage.descriptionVn}}</span>
+                                </td>
+                                <td>
+                                    <span>{{stage.descriptionEn}}</span>
+                                </td>
+                                <td>
+                                    <span [ngClass]="stage.active ? 'text-success' : 'text-danger'">
+                                        {{ stage.active ? 'Active' : 'Inactive'}}
+                                    </span>
+                                </td>
+                            </tr>
+                        </ng-container>
+                        <tr *ngIf="!isLoading && !listStages.length" app-table-none-record
+                            [colspan]="headers.length + 1"></tr>
+                        <tr *ngIf="isLoading" app-table-row-loading></tr>
+                    </tbody>
+                </table>
+            </div>
+            <!--end: Datatable of stage-management-list-table -->
+            <app-pagination [total]="totalItems" [pageNum]="page" [itemPerPage]="pageSize"
+                (onChange)="updatePagingData($event)"></app-pagination>
+
+        </div>
+    </div>
+    <!--end:: m-portlet of stage-management-->
+</div>
+<!--end::m-content of stage-management-->
+
+<confirm-popup [body]="'You want to delete this Stage'" (onSubmit)="onDelete()"></confirm-popup>
+
+<form-create-stage-management-popup (onRequestStage)="onRequestStage()"></form-create-stage-management-popup>

@@ -1,0 +1,42 @@
+{
+    "compileOnSave": false,
+    "compilerOptions": {
+        "baseUrl": "./",
+        "outDir": "./dist/out-tsc",
+        "sourceMap": true,
+        "declaration": false,
+        "module": "esnext",
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "esModuleInterop": true,
+        "target": "es5", // build for old browser and new => es2015
+        "typeRoots": ["node_modules/@types"],
+        "downlevelIteration": true,
+        "lib": ["es2017", "dom"],
+        "paths": {
+            "core-js/es7/reflect": [
+                "node_modules/core-js/proposals/reflect-metadata"
+            ],
+            "@services": ["src/app/shared/services"],
+            "@repositories": ["src/app/shared/repositories"],
+            "@common": ["src/app/shared/common"],
+            "@enums": ["src/app/shared/enums"],
+            "@models": ["src/app/shared/models"],
+            "@directives": ["src/app/shared/directives"],
+            "@interfaces": ["src/app/shared/interfaces"],
+            "@pipes": ["src/app/shared/pipes"],
+            "@validators": ["src/app/shared/validators"],
+            "@constants": ["src/constants"],
+            "@share-bussiness": ["src/app/business-modules/share-business"],
+            "@store": ["src/app/store"],
+            "@system-constants": ["src/constants"],
+            "@decorators": ["src/app/shared/decorators"],
+            "@core": ["src/app/core"],
+            "@app": ["src/app"],
+            "@animations": ["src/app/shared/animations"],
+            "@share-modules": ["src/app/business-modules/share-modules"],
+            "@operators": ["src/app/shared/operators"]
+        }
+    }
+}

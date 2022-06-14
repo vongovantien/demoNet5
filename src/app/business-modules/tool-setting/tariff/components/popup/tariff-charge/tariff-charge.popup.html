@@ -1,0 +1,272 @@
+<div class="modal add-new-charge-tariff-popup m-animate-fade-in" role="dialog" bsModal #popup="bs-modal"
+    aria-hidden="true">
+    <div class="modal-dialog c-modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <ng-container *ngIf="ACTION === 'CREATE'">
+                        Add OPS Tariff Detail
+                    </ng-container>
+
+                    <ng-container *ngIf="ACTION !== 'CREATE'">
+                        View/Edit OPS Tariff Charge
+                    </ng-container>
+                </h5>
+                <button type="button" (click)="closePopup()" class="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body m-form m-form--state">
+                <form [formGroup]="formChargeTariff">
+                    <div class="row" formGroupName="tariffChargeDetail">
+                        <div class="col-md-4 m--margin-bottom-10">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSubmitted && (!keyword || !selectedCharge)}">
+                                <label required>Charge</label>
+                                <div (clickOutside)="onClickOutsideChargeName()">
+                                    <input class="form-control m-input m-input--square dropdown-toggle" type="text"
+                                        placeholder="Input keyword" (click)="isShow = !isShow"
+                                        (ngModelChange)="onSearchAutoComplete($event)" [(ngModel)]="keyword"
+                                        [ngModelOptions]="{standalone: true}">
+                                    <ng-container *ngIf="isShow">
+                                        <app-combo-grid [data]="charges" [headers]="headersCharge"
+                                            (onClick)="onSelectDataFormInfo($event,'charge')">
+                                        </app-combo-grid>
+                                    </ng-container>
+                                </div>
+                                <div class="form-control-feedback" *ngIf="isSubmitted && (!keyword || !selectedCharge)">
+                                    Charge is required !
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 m--margin-bottom-10">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSubmitted && !formChargeTariff.value.tariffChargeDetail.useFor}">
+                                <label required>Use For</label>
+                                <select class="form-control" formControlName="useFor">
+                                    <option [ngValue]="null">Please Select</option>
+                                    <option *ngFor="let useFor of useFors" [ngValue]="useFor">{{useFor.displayName}}
+                                    </option>
+                                </select>
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmitted && !formChargeTariff.value.tariffChargeDetail.useFor">
+                                    Use For is required !
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 m--margin-bottom-10">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSubmitted && !formChargeTariff.value.tariffChargeDetail.route}">
+                                <label required>Route</label>
+                                <select class="form-control" formControlName="route">
+                                    <option [ngValue]="null">Please Select</option>
+                                    <option *ngFor="let route of routes" [ngValue]="route"
+                                        [ngClass]="route.value === 'Red' ? 'text-danger' : route.value === 'Green' ? 'text-success' : 'text-warning'">
+                                        {{route.displayName}}
+                                    </option>
+                                </select>
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmitted && !formChargeTariff.value.tariffChargeDetail.route">
+                                    Route is required !
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 m--margin-bottom-10">
+                            <div class="form-group">
+                                <label>Commodities</label>
+                                <app-combo-grid-virtual-scroll [currentActiveItemId]="selectedCommondityGroup"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'commondity')"
+                                    [selectedDisplayFields]="configComodity.selectedDisplayFields"
+                                    [dataSources]="configComodity.dataSource"
+                                    [displayFields]="configComodity.displayFields" [height]="200">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-md-4 m--margin-bottom-10">
+                            <div class="form-group">
+                                <label>Payer</label>
+                                <app-combo-grid-virtual-scroll [currentActiveItemId]="selectedPayer"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'payer')"
+                                    [selectedDisplayFields]="configPayer.selectedDisplayFields"
+                                    [dataSources]="configPayer.dataSource" [displayFields]="configPayer.displayFields"
+                                    [height]="200">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-md-4 m--margin-bottom-10">
+                            <div class="form-group">
+                                <label>Location Clearance</label>
+                                <app-combo-grid-virtual-scroll [currentActiveItemId]="selectedPort"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'port')"
+                                    [selectedDisplayFields]="configPort.selectedDisplayFields"
+                                    [dataSources]="configPort.dataSource" [displayFields]="configPort.displayFields"
+                                    [height]="200">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-md-4 m--margin-bottom-10">
+                            <div class="form-group">
+                                <label>Warehouse</label>
+                                <app-combo-grid-virtual-scroll [currentActiveItemId]="selectedWarehouse"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'warehouse')"
+                                    [selectedDisplayFields]="configWareHouse.selectedDisplayFields"
+                                    [dataSources]="configWareHouse.dataSource"
+                                    [displayFields]="configWareHouse.displayFields" [height]="200">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-md-4 m--margin-bottom-10">
+                            <div class="form-group">
+                                <label>Type</label>
+                                <select class="form-control" formControlName="type"
+                                    (ngModelChange)="onChangeTypeTariff($event)">
+                                    <option [ngValue]="null">Please Select</option>
+                                    <option *ngFor="let type of types" [ngValue]="type">{{type.displayName}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 m--margin-bottom-10">
+                            <div class="form-group">
+                                <label>Range Type</label>
+                                <select class="form-control" formControlName="rangeType">
+                                    <option [ngValue]="null">Please Select</option>
+                                    <option *ngFor="let rangeType of rangeTypes" [ngValue]="rangeType">
+                                        {{rangeType.displayName}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 m--margin-bottom-10">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSubmitted && !!formChargeTariff.value.tariffChargeDetail.rangeFrom && formChargeTariff.value.tariffChargeDetail.rangeFrom > formChargeTariff.value.tariffChargeDetail.rangeTo }">
+                                <label>Range From</label>
+                                <input numeric [decimals]="digitDecimal" type="text" class="form-control"
+                                    formControlName="rangeFrom">
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmitted && !!formChargeTariff.value.tariffChargeDetail.rangeFrom && formChargeTariff.value.tariffChargeDetail.rangeFrom > formChargeTariff.value.tariffChargeDetail.rangeTo">
+                                    Range From must be greater than or equal to Range To!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 m--margin-bottom-10">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSubmitted && !!formChargeTariff.value.tariffChargeDetail.rangeTo && formChargeTariff.value.tariffChargeDetail.rangeFrom > formChargeTariff.value.tariffChargeDetail.rangeTo}">
+                                <label>Range To</label>
+                                <input numeric [decimals]="digitDecimal" autoFormatCurrency type="text"
+                                    class="form-control" formControlName="rangeTo">
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmitted && !!formChargeTariff.value.tariffChargeDetail.rangeTo && formChargeTariff.value.tariffChargeDetail.rangeFrom > formChargeTariff.value.tariffChargeDetail.rangeTo">
+                                    Range From must be greater than or equal to Range To!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 m--margin-bottom-10">
+                            <div class="form-group">
+                                <label>Unit Price</label>
+                                <input type="text" class="form-control" formControlName="unitPrice" numeric
+                                    [decimals]="digitDecimal">
+                            </div>
+                        </div>
+                        <div class="col-md-4 m--margin-bottom-10">
+                            <div class="form-group">
+                                <label>Min</label>
+                                <input numeric [decimals]="digitDecimal" type="text" class="form-control"
+                                    formControlName="min">
+                            </div>
+                        </div>
+                        <div class="col-md-4 m--margin-bottom-10">
+                            <div class="form-group">
+                                <label>Max</label>
+                                <input numeric [decimals]="digitDecimal" type="text" class="form-control"
+                                    formControlName="max">
+                            </div>
+                        </div>
+                        <div class="col-md-4 m--margin-bottom-10">
+                            <div class="form-group">
+                                <label>Unit</label>
+                                <select class="form-control" formControlName="unitId">
+                                    <option [ngValue]="null">Please Select</option>
+                                    <option *ngFor="let unit of units" [ngValue]="unit">
+                                        {{unit.code}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 m--margin-bottom-10">
+                            <div class="form-group">
+                                <label>Next Unit</label>
+                                <input numeric [decimals]="digitDecimal" type="text" class="form-control"
+                                    formControlName="nextUnit">
+                            </div>
+                        </div>
+                        <div class="col-md-4 m--margin-bottom-10">
+                            <div class="form-group">
+                                <label>Next Unit Price</label>
+                                <input numeric [decimals]="digitDecimal" type="text" class="form-control"
+                                    formControlName="nextUnitPrice">
+                            </div>
+                        </div>
+                        <div class="col-md-4 m--margin-bottom-10">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label>VAT</label>
+                                        <input type="number" class="form-control" max="100" formControlName="vatrate"
+                                            numeric [decimals]="digitDecimal">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label>Currency</label>
+                                        <select class="form-control" formControlName="currencyId">
+                                            <option [ngValue]="null">Please Select</option>
+                                            <option *ngFor="let currency of currencyList" [ngValue]="currency">
+                                                {{currency.id}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer m--align-center">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="m--align-center m--margin-top-20">
+                            <button class="btn btn-primary  m-btn--icon m-btn--uppercase m--margin-right-10"
+                                title="Save" (click)="saveCharge()">
+                                <span>
+                                    <i class="la la-save"></i>
+                                    <span>
+                                        {{ACTION === 'CREATE' ? 'Add' : 'Update'}}
+                                    </span>
+                                </span>
+                            </button>
+                            <button *ngIf="ACTION === 'CREATE'"
+                                class="btn btn-success  m-btn--icon m-btn--uppercase m--margin-right-10"
+                                title="Update & Continue" (click)="updateToContinue()">
+                                <span>
+                                    <i class="la la-download"></i>
+                                    <span>
+                                        Add & Continue
+                                    </span>
+                                </span>
+                            </button>
+                            <button class="btn btn-default  m-btn--icon m-btn--uppercase" title="Cancel"
+                                (click)="closePopup()">
+                                <span>
+                                    <i class="la la-ban"></i>
+                                    <span>
+                                        Cancel
+                                    </span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

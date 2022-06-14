@@ -1,0 +1,265 @@
+<form novalidate>
+    <div class="m-content">
+        <div class="m-form m-form--state">
+            <div class="m-portlet bg-white">
+                <div class="m-portlet__body">
+                    <form [formGroup]="formCreate">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger':(isSubmitted || hwbno.dirty) && (!hwbno.valid||formCreate.get('hwbno').value?.length==0||formCreate.get('hwbno').value==null)}">
+                                    <label class="form-control-label" required>
+                                        HBL No
+                                    </label>
+                                    <input type="text" class="form-control" placeholder="Enter text"
+                                        formControlName="hwbno">
+                                        <div class="form-control-feedback" *ngIf="(isSubmitted || hwbno.dirty) && (formCreate.get('hwbno').value?.length==0||formCreate.get('hwbno').value==null)">
+                                            HBL No is required!
+                                        </div>
+                                        <div class="form-control-feedback" *ngIf="(isSubmitted || hwbno.dirty) && !hwbno.valid&&!(formCreate.get('hwbno').value?.length==0||formCreate.get('hwbno').value==null)">
+                                            HBL No must be not have special charater!
+                                        </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger':(isSubmitted || mblno.dirty) && (!mblno.valid || formCreate.get('mblno').value?.length==0||formCreate.get('mblno').value==null)}">
+                                    <label class="form-control-label" required>
+                                        MBL No
+                                    </label>
+                                    <input type="text" class="form-control" placeholder="Enter text"
+                                        formControlName="mblno">
+
+                                        <div class="form-control-feedback" *ngIf="(isSubmitted || mblno.dirty) && (formCreate.get('mblno').value?.length==0||formCreate.get('mblno').value==null)">
+                                            MBL No is required!
+                                        </div>
+                                        <div class="form-control-feedback" *ngIf="(isSubmitted || mblno.dirty) && !mblno.valid && !(formCreate.get('mblno').value?.length==0||formCreate.get('mblno').value==null)">
+                                            MBL No must be not have special charater!
+                                        </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger': (serviceDate.dirty && !serviceDate.value) || (isSubmitted && !serviceDate.value) || (isSubmitted && !serviceDate.value.startDate)}">
+                                    <label class="form-control-label" required>
+                                        Service Date
+                                    </label>
+                                    <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                        <input type="text" class="form-control m-input m-input--square"
+                                            ngxDaterangepickerMd [locale]="{format: 'DD/MM/YYYY'}" [autoApply]="true"
+                                            [singleDatePicker]="true" [alwaysShowCalendars]="true" name="daterange"
+                                            readonly placeholder="DD/MM/YYYY" formControlName="serviceDate"
+                                            (remove)="resetFormControl(serviceDate)" calendar />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger':(productService.dirty && !productService.valid) || (isSubmitted && !productService.valid)}">
+                                    <label class="form-control-label" required>
+                                        Product Service
+                                    </label>
+                                    <ng-select class="custom" [items]="productServices" placeholder="Please select"
+                                        [clearable]="false" formControlName="productService">
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger': (serviceMode.dirty && !serviceMode.valid) || (isSubmitted && !serviceMode.valid)}">
+                                    <label class="form-control-label" required>
+                                        Service Mode
+                                    </label>
+                                    <ng-select class="custom" [items]="serviceModes" placeholder="Please select"
+                                        formControlName="serviceMode" [clearable]="false">
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger': (shipmentMode.dirty && !shipmentMode.valid) || (isSubmitted && !shipmentMode.valid)}">
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <label class="form-control-label" required>
+                                                Shipment Mode
+                                            </label>
+                                        </div>
+                                        <div class="col-lg-8" *ngIf="shipmentMode.value === 'Internal'"
+                                            style="text-align: right;">
+                                            <a class="pointer" style="text-decoration: underline;"
+                                                (click)="getASInfoToLink()">Link Air/Sea </a>&nbsp;&nbsp;
+                                            <span class="text-warning">{{jobLinkAirSeaNo}}</span>
+                                        </div>
+                                    </div>
+                                    <ng-select class="custom" [items]="shipmentModes" placeholder="Please select"
+                                        [clearable]="false" formControlName="shipmentMode">
+                                    </ng-select>
+
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger': (shipmentType.dirty && !shipmentType.valid) || (isSubmitted && !shipmentType.valid)}">
+                                    <label class="form-control-label" required>
+                                        Shipment Type
+                                    </label>
+                                    <ng-select class="custom" [items]="shipmentTypes" placeholder="Please select"
+                                        [clearable]="false" formControlName="shipmentType">
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger':  isSubmitted && !customerId.value}">
+                                    <label class="form-control-label" required>
+                                        Customer
+                                    </label>
+                                    <app-combo-grid-virtual-scroll #comboGridCustomerCpn
+                                        (itemSelected)="onSelectDataFormInfo($event, 'customer')"
+                                        [currentActiveItemId]="{ field: 'id', value: customerId.value}"
+                                        [selectedDisplayFields]="['shortName']" [dataSources]="customers | async"
+                                        [displayFields]="displayFieldsCustomer" placeholder="Please select"
+                                        (remove)="resetFormControl(customerId)">
+                                    </app-combo-grid-virtual-scroll>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger': isSubmitted && (formCreate.errors | equalError:'invalidPort')}">
+                                    <label class="form-control-label">
+                                        Port Of Loading
+                                    </label>
+                                    <app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event, 'pol')"
+                                        [currentActiveItemId]="{ field: 'id', value: pol.value}"
+                                        [selectedDisplayFields]="['nameEn']" [dataSources]="ports | async"
+                                        [displayFields]="displayFieldPort" placeholder="POL"
+                                        (remove)="resetFormControl(pol)">
+                                    </app-combo-grid-virtual-scroll>
+                                    <div class="form-control-feedback"
+                                        *ngIf="isSubmitted && formCreate.errors | equalError:'invalidPort'">Port of
+                                        Loading must be different from Port of Discharge
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger': isSubmitted && (formCreate.errors | equalError:'invalidPort')}">
+                                    <label class="form-control-label">
+                                        Port Of Discharge
+                                    </label>
+                                    <app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event, 'pod')"
+                                        [currentActiveItemId]="{ field: 'id', value: pod.value }"
+                                        [selectedDisplayFields]="['nameEn']" [dataSources]="ports | async"
+                                        [displayFields]="displayFieldPort" placeholder="POD"
+                                        (remove)="resetFormControl(pod)">
+                                    </app-combo-grid-virtual-scroll>
+                                    <div class="form-control-feedback"
+                                        *ngIf="isSubmitted && formCreate.errors | equalError:'invalidPort'">Port of
+                                        Discharge must be different from Port of Loading
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger':  isSubmitted && !supplierId.value}">
+                                    <label class="form-control-label" required>
+                                        Supplier/Carrier
+                                    </label>
+                                    <app-combo-grid-virtual-scroll
+                                        (itemSelected)="onSelectDataFormInfo($event, 'supplier')"
+                                        [currentActiveItemId]="{ field: 'id', value: supplierId.value}"
+                                        [selectedDisplayFields]="['shortName']" [dataSources]="carries | async"
+                                        [displayFields]="displayFieldsCustomer" placeholder="Select supplier"
+                                        (remove)="resetFormControl(supplierId)">
+                                    </app-combo-grid-virtual-scroll>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-control-label">
+                                        Vessel/Flight
+                                    </label>
+                                    <input type="text" class="form-control" placeholder="Enter text"
+                                        formControlName="flightVessel">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-control-label">
+                                        Agent
+                                    </label>
+                                    <app-combo-grid-virtual-scroll
+                                        (itemSelected)="onSelectDataFormInfo($event, 'agent')"
+                                        [currentActiveItemId]="{ field: 'id', value: agentId.value}"
+                                        [selectedDisplayFields]="['shortName']" [dataSources]="agents | async"
+                                        [displayFields]="displayFieldsCustomer" placeholder="Select agent"
+                                        (remove)="resetFormControl(agentId)">
+                                    </app-combo-grid-virtual-scroll>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-control-label">
+                                        Purchase Order No
+                                    </label>
+                                    <input type="text" class="form-control" placeholder="Enter text"
+                                        formControlName="purchaseOrderNo">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-control-label" required>
+                                        Billing OPS
+                                    </label>
+                                    <app-combo-grid-virtual-scroll
+                                        (itemSelected)="onSelectDataFormInfo($event, 'billingOps')"
+                                        [currentActiveItemId]="{ field: 'id', value: billingOpsId.value}"
+                                        [selectedDisplayFields]="['username']" [dataSources]="users | async"
+                                        [displayFields]="[{field:'username',label:'User Name'}, {field:'employeeNameEn',label:'Full Name'}]"
+                                        placeholder="Select billing ops" (remove)="resetFormControl(billingOpsId)">
+                                    </app-combo-grid-virtual-scroll>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-control-label">
+                                        Commodity Group
+                                    </label>
+                                    <ng-select [items]="commodityGroups | async" placeholder="Commodity group"
+                                        class="custom" formControlName="commodityGroupId" bindValue="id"
+                                        bindLabel="groupNameEn">
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger': isSubmitted && !salemansId.value}">
+                                    <label class="form-control-label" for="" required>
+                                        Salesman
+                                    </label>
+                                    <app-combo-grid-virtual-scroll
+                                        [currentActiveItemId]="{field:'id',value: salemansId.value}"
+                                        (itemSelected)="onSelectDataFormInfo($event, 'salesman')"
+                                        [selectedDisplayFields]="['employeeNameEn']" [dataSources]="salesmans" size="15"
+                                        [displayFields]="displayFieldSalesman" placeholder="Please select"
+                                        (remove)="resetFormControl(salemansId)">
+                                    </app-combo-grid-virtual-scroll>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label class="form-control-label">
+                                        Replicate
+                                    </label>
+                                    <app-switch size="md" formControlName="isReplicate"></app-switch>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<info-popup #comfirmCusAgreement [body]="" [title]="'Notification'" [label]="'Ok'">
+</info-popup>

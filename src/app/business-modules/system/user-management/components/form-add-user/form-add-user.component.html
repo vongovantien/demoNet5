@@ -1,0 +1,228 @@
+<div class="m-content m-form m-form--state form-add-user">
+    <form [formGroup]="formGroup">
+        <div class="m-portlet">
+            <ng-content></ng-content>
+            <div class="m-portlet__body">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group"
+                            [ngClass]="{'m-form__group has-danger': (staffcode.dirty && !staffcode.valid) || (isSubmited && !staffcode.valid)}">
+                            <label class="form-control-label" for="">
+                                Staff Code <span class="m--font-danger">(*)</span>
+                            </label>
+                            <input type="text" class="form-control m-input m-input--square" formControlName="staffcode"
+                                placeholder="Please Enter Staff Code">
+                            <div class="form-control-feedback"
+                                *ngIf="isSubmited && (staffcode.errors | equalError: 'required') || (staffcode.errors | equalError: 'required') && staffcode.dirty">
+                                Staff code is required!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group"
+                            [ngClass]="{'m-form__group has-danger': (username.dirty && !username.valid) || (isSubmited && !username.valid)}">
+                            <label class="form-control-label" for="">
+                                User Name <span class="m--font-danger">(*)</span>
+                            </label>
+                            <input type="text" class="form-control m-input m-input--square" formControlName="username"
+                                placeholder="Please Enter User Name">
+                            <div class="form-control-feedback"
+                                *ngIf="isSubmited && (username.errors | equalError: 'required') || (username.errors | equalError: 'required') && username.dirty">
+                                User Name is required!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group"
+                            [ngClass]="{'m-form__group has-danger': (employeeNameVn.dirty && !employeeNameVn.valid) || (isSubmited && !employeeNameVn.valid)}">
+                            <label class="form-control-label" for="">
+                                Full Name <span class="m--font-danger">(*)</span>
+                            </label>
+                            <input type="text" class="form-control m-input m-input--square"
+                                formControlName="employeeNameVn" placeholder="Please Enter Full Name">
+                            <div class="form-control-feedback"
+                                *ngIf="isSubmited && (employeeNameVn.errors | equalError: 'required') || (employeeNameVn.errors | equalError: 'required') && employeeNameVn.dirty">
+                                Full Name is required!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group"
+                            [ngClass]="{'m-form__group has-danger': (employeeNameEn.dirty && !employeeNameEn.valid) || (isSubmited && !employeeNameEn.valid)}">
+                            <label class="form-control-label" for="">
+                                English Name <span class="m--font-danger">(*)</span>
+                            </label>
+                            <input type="text" class="form-control m-input m-input--square"
+                                formControlName="employeeNameEn" placeholder="Please Enter Staff Code">
+                            <div class="form-control-feedback"
+                                *ngIf="isSubmited && (employeeNameEn.errors | equalError: 'required') || (employeeNameEn.errors | equalError: 'required') && employeeNameEn.dirty">
+                                English Name is required!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-control-label" for="">
+                                Title
+                            </label>
+                            <input type="text" class="form-control" formControlName="title"
+                                placeholder="Please Enter Title">
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label class="form-control-label">
+                                User Type <span class="m--font-danger">(*)</span>
+                            </label>
+                            <select formControlName="usertype" class="form-control">
+                                <option *ngFor="let ustype of usertypes" [ngValue]="ustype">{{ustype.title}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="form-group"
+                        [ngClass]="{'m-form__group has-danger': (userRole.dirty && !userRole.valid) || (isSubmited && !userRole.valid)}">
+                            <label class="form-control-label">
+                                User Role <span class="m--font-danger">(*)</span>
+                            </label>
+                            <select formControlName="userRole" class="form-control">
+                                <option *ngFor="let usRole of userRoles" [ngValue]="usRole">{{usRole.title}}</option>
+                            </select>
+                            <div class="form-control-feedback"
+                            *ngIf="isSubmited && (userRole.errors | equalError: 'required') || (userRole.errors | equalError: 'required') && userRole.dirty">
+                             User Role is required!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-control-label">
+                                Status
+                            </label>
+                            <select formControlName="active" class="form-control">
+                                <option *ngFor="let st of status" [ngValue]="st">{{st.title}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-control-label">
+                                Working Status
+                            </label>
+                            <select formControlName="workingg" class="form-control">
+                                <option *ngFor="let wk of working" [ngValue]="wk">{{wk.title}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group"
+                            [ngClass]="{'m-form__group has-danger': (email.dirty && !email.valid) || (isSubmited && !email.valid)}">
+                            <label class="form-control-label" for="">
+                                Email <span class="m--font-danger">(*)</span>
+                            </label>
+                            <input type="text" class="form-control m-input m-input--square" formControlName="email"
+                                placeholder="Please Enter Email">
+                            <div class="form-control-feedback"
+                                *ngIf="isSubmited && (email.errors | equalError: 'required') || (email.errors | equalError: 'required') && email.dirty">
+                                Email is required!
+                            </div>
+                            <div class="form-control-feedback"
+                                *ngIf="isSubmited && email.errors  | equalError:'pattern'">
+                                Email field invalid!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label class="form-control-label" for="">
+                                Phone Number
+                            </label>
+                            <input type="text" class="form-control m-input m-input--square" formControlName="phone"
+                                placeholder="Please Enter Phone Number">
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label class="form-control-label" for="">
+                                Personal ID/Passport
+                            </label>
+                            <input type="text" class="form-control m-input m-input--square" formControlName="personalId"
+                                placeholder="Please Enter Personal Id">
+                        </div>
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="form-group">
+                            <label class="form-control-label" for="">
+                                Description
+                            </label>
+                            <input type="text" class="form-control m-input m-input--square"
+                                formControlName="description" placeholder="Please Enter Description">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-control-label" for="">
+                                Credit Limit
+                            </label>
+                            <input type="number" min="0" class="form-control m-input m-input--square"
+                                formControlName="creditLimit" placeholder="Please Enter Credit Limit">
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-control-label" for="">
+                                Credit Rate
+                            </label>
+                            <input type="number" min="0" class="form-control m-input m-input--square"
+                                formControlName="creditRate" placeholder="Please Enter Credit Rate">
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-control-label">LDAP</label>
+                                    <div class="m-checkbox-inline">
+                                        <app-switch formControlName="ldap">
+                                        </app-switch>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6" *ngIf="isDetail">
+                                <div class="form-group m--align-right">
+                                    <label></label>
+                                    <div class="c-btn-form-group">
+                                        <button (click)="resetPassword(SelectedUser.id)"
+                                            class="btn btn-default  m-btn--icon m-btn--uppercase">Reset
+                                            Password</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row m--margin-top-10" *ngIf="isDetail">
+                    <div class="col-6">
+                        Created: {{SelectedUser.datetimeCreated | date: 'dd/MM/yyyy HH:mm'}} by <span
+                            class="text-success">{{SelectedUser.userCreatedName}}</span>
+                    </div>
+                    <div class="col-6">
+                        Modified: {{SelectedUser.datetimeModified | date: 'dd/MM/yyyy HH:mm'}} by <span
+                            class="text-success">{{SelectedUser.userModifiedName}}</span>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </form>
+</div>

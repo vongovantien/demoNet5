@@ -1,0 +1,38 @@
+<div class="sea-fcl-create-hbl-page">
+    <app-sub-header>
+        <div class="c-button-actions">
+            <app-default-button *ngIf="(permissionShipments | async)?.allowUpdate" (click)="showImportPopup()"
+                [buttonSetting]="importButtonSetting">
+            </app-default-button>
+            <app-default-button *ngIf="(permissionShipments | async)?.allowUpdate" (click)="showCreatepoup()"
+                [buttonSetting]="saveButtonSetting">
+            </app-default-button>
+            <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="gotoList()"></app-default-button>
+        </div>
+    </app-sub-header>
+</div>
+
+<div class="m-content">
+    <div class="m-portlet__body">
+        <tabset class="custom-class-tab">
+            <tab heading="HAWB Detail">
+                <app-form-create-hbl-sea-export type="SLE"></app-form-create-hbl-sea-export>
+
+                <hbl-goods-summary-lcl type="export" (onSelectQty)="selectedPackage($event)"> HBL Goods Summary
+                </hbl-goods-summary-lcl>
+            </tab>
+            <tab heading="Attach List">
+                <attach-list-house-bill></attach-list-house-bill>
+            </tab>
+            <tab heading="Proof Of Delivery">
+                <hbl-proof-of-delivery></hbl-proof-of-delivery>
+            </tab>
+        </tabset>
+    </div>
+</div>
+
+<import-house-bill-detail (onImport)="onImport($event)" [jobId]="jobId" [typeTransaction]="8">
+</import-house-bill-detail>
+
+
+<ng-template inject></ng-template>

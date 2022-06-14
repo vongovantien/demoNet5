@@ -1,0 +1,72 @@
+<div class="modal fade" role="dialog" bsModal #popup="bs-modal">
+    <div class="modal-dialog modal-xs" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{isUpdate ? 'Update' : 'Add'}} bank</h5>
+                <button type="button" class="close" aria-label="Close" (click)=hide()>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="m-form m-form--state" [formGroup]="form">
+                    <div class="form-group row"
+                        [ngClass]="{ 'm-form__group has-danger': isSubmitted && !form.controls['bankNameCode'].valid }">
+                        <label class="col-lg-4 col-form-label form-control-label" required> Bank Code </label>
+                        <div class="col-lg-8">
+                            <input type="text" class="form-control m-input m-input--square"
+                                placeholder="Please enter bank code" formControlName="bankNameCode"
+                                [attr.disabled]="!isUpdate ? null : 'disabled'">
+                        </div>
+                    </div>
+                    <div class="form-group row"
+                        [ngClass]="{ 'm-form__group has-danger': isSubmitted && !form.controls['bankNameVN'].valid }">
+                        <label class="col-lg-4 col-form-label form-control-label" required> Bank name VN </label>
+                        <div class="col-lg-8">
+                            <input type="text" class="form-control m-input m-input--square"
+                                placeholder="Please enter bank name(VN)" formControlName="bankNameVN">
+                        </div>
+                    </div>
+                    <div class="form-group row"
+                        [ngClass]="{ 'm-form__group has-danger': isSubmitted && !form.controls['bankNameEN'].valid }">
+                        <label class="col-lg-4 col-form-label form-control-label" required> Bank name EN </label>
+                        <div class="col-lg-8">
+                            <input type="text" class="form-control m-input m-input--square"
+                                placeholder="Please enter bank name(EN)" formControlName="bankNameEN">
+                        </div>
+                    </div>
+                    <ng-container *ngIf="isUpdate">
+                            <div class="form-group row"
+                                [ngClass]="{ 'm-form__group has-danger': isSubmitted && !form.controls['userCreatedName'].valid }">
+                                <label class="col-lg-4 col-form-label form-control-label" required> Creator </label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="" formControlName="userCreatedName" disabled>
+                                </div>
+                            </div>
+                            <div class="form-group row"
+                                [ngClass]="{ 'm-form__group has-danger': isSubmitted && !form.controls['userModifiedName'].valid }">
+                                <label class="col-lg-4 col-form-label form-control-label" required> Repairer </label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="" formControlName="userModifiedName" disabled>
+                                </div>
+                            </div>
+                            
+                        <!-- </ng-container> -->
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-form-label form-control-label"> Active </label>
+                            <div class="col-lg-8">
+                                <app-switch formControlName="active">
+                                </app-switch>
+                            </div>
+                        </div>
+                    </ng-container>
+                </form>
+            </div>
+            <div class="modal-footer m--align-center c-button-actions">
+                <app-permission-button type="save" (onClick)="onSubmit()" title="Save"></app-permission-button>
+                <app-default-button [buttonSetting]="cancelButtonSetting" (click)="hide()"></app-default-button>
+            </div>
+        </div>
+    </div>
+</div>

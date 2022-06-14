@@ -1,0 +1,132 @@
+<div class="modal fade new-adv-payment-popup" role="dialog" bsModal #popup="bs-modal" aria-hidden="true">
+    <div class="modal-dialog c-modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" *ngIf="action !== 'update' else updateTitle">Add New Advance Request</h5>
+                <ng-template #updateTitle class="modal-title">
+                    <h5 class="modal-title">Update Advance Request</h5>
+                </ng-template>
+
+                <button type="button" (click)="onCancel()" class="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="m-form m-form--state bg-secondary m--padding-15 m--margin-bottom-15" [formGroup]="form">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': description.dirty && !description.valid }">
+                                <label for="">Description
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control" formControlName="description"
+                                    placeholder="Description">
+                                <div class="form-control-feedback" *ngIf="description.dirty">
+                                    <span *ngIf="description.errors | equalError:'pattern'">Description invalid</span>
+                                    <span *ngIf="description.errors | equalError:'required'">Description was
+                                        required</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label for="">Shipment
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <app-combo-grid-virtual-scroll [currentActiveItemId]="selectedShipment"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'shipment')"
+                                    [dataSources]="configShipment.dataSource"
+                                    [displayFields]="configShipment.displayFields"
+                                    [selectedDisplayFields]="configShipment.selectedDisplayFields" [height]="150"
+                                    (remove)="clearData('shipment')">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>Custom No</label>
+                                <!-- <select class="form-control" name="type" formControlName="customNo">
+                                    <option [ngValue]="null" disabled>Choose CustomNo</option>
+                                    <option
+                                        *ngFor="let customDeclaration of customDeclarations; let i = index; trackBy: trackByFn"
+                                        [ngValue]="customDeclaration">{{customDeclaration.clearanceNo}}</option>
+                                </select> -->
+                                <app-combo-grid-virtual-scroll
+                                    [currentActiveItemId]="{field:'clearanceNo', value:customNo.value}"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'cd')"
+                                    [selectedDisplayFields]="['clearanceNo']" [dataSources]="customDeclarations"
+                                    [displayFields]="configCustomDisplayFields" (remove)="clearData('cd')">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>Amount
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" class="form-control" placeholder="Amount" formControlName="amount"
+                                    numeric autoFormatCurrency [decimals]="digitDecimal">
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>Currency
+                                </label>
+                                <input type="text" class="form-control" formControlName="currency" readonly disabled>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>Type</label>
+                                <select class="form-control" name="type" formControlName="type">
+                                    <option [ngValue]="null" disabled>Choose type</option>
+                                    <option *ngFor="let type of types" [ngValue]="type">{{type.title}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="">Note</label>
+                                <input type="text" class="form-control" placeholder="Note" formControlName="note">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer m--align-center">
+                <button class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="onSubmit(form)"
+                    [disabled]="!form.valid || selectedShipmentData === null">
+                    <span>
+                        <i class="la la-save"></i>
+                        <span>
+                            {{action === 'create' ? 'Add' : 'Save'}}
+                        </span>
+                    </span>
+                </button>
+                <button type="button" class="btn btn-cancel  m-btn--icon m-btn--uppercase" (click)="onCancel()">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span>
+                            cancel
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<ng-template inject></ng-template>
+
+<!-- <confirm-popup #existedPopup body="Shipment has existed in another Advance " title="Warning"
+    (onSubmit)="existedPopup.hide(); onSubmitShipmentExisted()"></confirm-popup> -->
+
+<shipment-existed-popup #existedPopup (onSubmit)="existedPopup.hide(); onSubmitShipmentExisted()"
+    [items]="shipmentExisted" [jobNo]="dataRequest.jobId">
+</shipment-existed-popup>

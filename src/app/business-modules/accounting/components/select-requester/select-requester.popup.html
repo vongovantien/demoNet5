@@ -1,0 +1,64 @@
+<div class="modal fade" role="dialog" bsModal #popup="bs-modal">
+    <div class="modal-dialog modal-xs" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Select Partner</h5>
+                <button type="button" class="close" aria-label="Close" (click)=hide()>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <ng-container *ngIf="!isPayee;else payeeTitle">
+                            <p>There are many <span class="font-weight-bold">Requesters</span> in your
+                                selected data, Please select a requester to continue!</p>
+                            <p>(Có nhiều <span class="font-weight-bold">đối tượng yêu cầu</span> trong dữ liệu bạn chọn.
+                                Bạn
+                                vui lòng chọn một đối tượng để tiếp tục tạo phiếu)</p>
+                        </ng-container>
+                        <ng-template #payeeTitle>
+                            <p>There are many <span class="font-weight-bold">Partners</span> in your
+                                selected data, Please select a partner to create voucher
+                                !</p>
+                            <p>(Có nhiều <span class="font-weight-bold">đối tượng thanh toán</span> trong dữ liệu bạn
+                                chọn. Bạn
+                                vui lòng chọn đối tương để tiếp tục tạo phiếu)</p>
+                        </ng-template>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="list-group">
+                            <ng-container *ngIf="isPayee;else requester">
+                                <ng-container *ngFor="let item of listRequesters; let i = index; trackBy: trackByFn">
+                                    <li [ngClass]="!!selectedRequester && item.partnerId === selectedRequester.partnerId ? 'list-group-item-success' : 'list-group-item-light'"
+                                        class="list-group-item list-group-item-action " (click)="selectRequester(item)">
+                                        {{item.partnerName}}</li>
+                                </ng-container>
+                            </ng-container>
+                            <ng-template #requester>
+                                <ng-container *ngFor="let item of listRequesters; let i = index; trackBy: trackByFn">
+                                    <li [ngClass]="!!selectedRequester && item.settlementRequesterId === selectedRequester.settlementRequesterId ? 'list-group-item-success' : 'list-group-item-light'"
+                                        class="list-group-item list-group-item-action " (click)="selectRequester(item)">
+                                        {{item.settlementRequester}}</li>
+                                </ng-container>
+                            </ng-template>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer m--align-center c-button-actions">
+                <button class="btn btn-brand  m-btn--icon m-btn--uppercase" [disabled]="!selectedRequester"
+                    (click)="onSubmitSelectPartner()">
+                    <span>
+                        <i class="la la-check-circle"></i>
+                        <span> Ok </span>
+                    </span>
+                </button>
+                <app-default-button [buttonSetting]="cancelButtonSetting" (click)="hide()"></app-default-button>
+            </div>
+        </div>
+    </div>
+</div>

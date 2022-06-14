@@ -1,0 +1,182 @@
+<div class="m-animate-fade-in mt-3">
+    <div class="m-form m-form--state">
+        <div class="form" [formGroup]="formGroup">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger':(isSubmitted || partnerId.dirty) && !partnerId.valid }">
+                                <label required>Partner Name</label>
+                                <app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event, 'partner')"
+                                    [currentActiveItemId]="{ field: 'id', value: partnerId.value}"
+                                    [selectedDisplayFields]="['partnerNameVn']" [dataSources]="partners | async"
+                                    [displayFields]="displayFieldsCustomer" (remove)="resetFormControl(partnerId)"
+                                    placeholder="Please select partner">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label>Personal Name</label>
+                                <input type="text" class="form-control" formControlName="personalName">
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label>Address</label>
+                                <input type="text" class="form-control" formControlName="partnerAddress">
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea class="form-control" cols="30" rows="5"
+                                    formControlName="description"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger':isSubmitted  && !paymentTerm.valid }">
+                                <label required>Payment Term</label>
+                                <input type="text" class="form-control" formControlName="paymentTerm" integer>
+                            </div>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="form-group">
+                                <label>General Exchange Rate
+                                </label>
+                                <input type="number" class="form-control" formControlName="totalExchangeRate"
+                                    autoFormatCurrency numeric [decimals]="digitDecimal">
+                            </div>
+                        </div>
+                        <div class="col-lg-4 d-flex align-items-end justify-content-end" *ngIf="!isReadonly">
+                            <div class="form-group">
+                                <label> &nbsp; </label>
+                                <button class="btn btn-success m-btn--pill m-btn--icon m-btn--uppercase" type="button"
+                                    (click)="syncExchangeRateCharge()">
+                                    <span>
+                                        <i class="la la-refresh"></i>
+                                        <span>Update ExRate</span>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger':(isSubmitted || voucherId.dirty) && !voucherId.valid }">
+                                <label required>Voucher ID</label>
+                                <input type="text" class="form-control" placeholder="Voucher"
+                                    formControlName="voucherId">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Date</label>
+                                <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                    <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                        [locale]="{format: 'DD/MM/YYYY'}" [autoApply]="true" [singleDatePicker]="true"
+                                        [alwaysShowCalendars]="true" formControlName="date" name="daterange"
+                                        placeholder="DD/MM/YYYY" readonly calendar
+                                        [allowRemove]="!!date.value && !!date.value.startDate"
+                                        (remove)="resetFormControl(date)" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger':(isSubmitted || invoiceNoTempt.dirty) && !invoiceNoTempt.valid }">
+                                <label required>Invoice No (Temp)</label>
+                                <input type="text" class="form-control" placeholder="Invoice Temp"
+                                    formControlName="invoiceNoTempt">
+                            </div>
+
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Real Invoice</label>
+                                <input type="text" class="form-control" formControlName="invoiceNoReal">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger':(isSubmitted || serie.dirty) && !serie.valid }">
+                                <label required>Series</label>
+                                <input type="text" class="form-control" placeholder="Please input"
+                                    formControlName="serie">
+                            </div>
+
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Payment Method</label>
+                                <ng-select [items]="paymentMethods" formControlName="paymentMethod"
+                                    placeholder="Please select" class="custom"></ng-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label>Account No</label>
+                                <app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event, 'account')"
+                                    [currentActiveItemId]="{ field: 'accountCode', value: accountNo.value}"
+                                    [selectedDisplayFields]="['accountCode','accountNameLocal']"
+                                    [dataSources]="chartOfAccounts | async" [displayFields]="displayFieldsChartAccount"
+                                    (remove)="resetFormControl(accountNo)" placeholder="Please select">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Total Amount</label>
+                                <input type="text" class="form-control" placeholder="Total"
+                                    [value]="formGroup.controls['totalAmount'].value | number: '.0-3'"
+                                    formControlName="totalAmount">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Currency</label>
+                                <ng-select [items]="listCurrency | async" formControlName="currency" placeholder="VND"
+                                    bindValue="id" bindLabel="id" class="custom">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 m--margin-top-20" *ngIf="!isReadonly">
+                            <div class="row">
+                                <div class="col-lg-6" style="height: 33px">
+                                    <div class="h-100 d-flex align-items-center justify-content-center text-white"
+                                        [class.bg-danger]="status.value === 'New'"
+                                        [class.bg-success]="status.value === 'Updated Invoice'">
+                                        {{status.value}}</div>
+                                </div>
+                                <div class="col-lg-6 w-100">
+                                    <button class="btn btn-info  m-btn--icon m-btn--uppercase w-100" type="button"
+                                        (click)="refNoPopup.keyword = null; refNoPopup.show()">
+                                        <span>
+                                            <i class="la la-edit"></i>
+                                            <span> Get detail </span>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label>Attach Document Info</label>
+                        <textarea class="form-control" cols="30" rows="5" formControlName="attachDocInfo"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input-ref-no-popup #refNoPopup></input-ref-no-popup>

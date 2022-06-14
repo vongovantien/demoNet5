@@ -1,0 +1,82 @@
+<div class="form-search-permission-wrapper">
+    <div class="m-portlet__body">
+        <div class="m-form">
+            <form>
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="form-group">
+                            <label class="form-control-label" for="">
+                                Search
+                            </label>
+                            <ng-container>
+                                <form>
+                                    <div class="input-group m-input-group m-input-group--square">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-secondary dropdown-toggle"
+                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                {{searchObject.displayName}}
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <ng-container *ngFor="let item of settingFields">
+
+                                                    <a class="dropdown-item"
+                                                        [ngClass]="{ 'active': item.displayName == searchObject.displayName}"
+                                                        href="javascript:void(0)"
+                                                        (click)="searchTypeChange(item,$event)"
+                                                        attr.id="{{item.fieldName}}Field">
+
+                                                        {{ item.displayName }}
+                                                    </a>
+                                                </ng-container>
+                                            </div>
+                                        </div>
+                                        <input type="text" class="form-control"
+                                            aria-label="Text input with dropdown button"
+                                            [(ngModel)]="searchObject.searchString" name="searchString"
+                                            (change)="searchObject.searchString = searchObject.searchString.trim()">
+                                    </div>
+                                </form>
+                            </ng-container>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group form-control-serviceDateFromTo daterange-rtl">
+                            <label class="form-control-label" for="">
+                                Date
+                            </label>
+                            <input type="text" [(ngModel)]="dateFromTo" class="form-control m-input m-input--square"
+                                ngxDaterangepickerMd [autoApply]="true"
+                                [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" [ranges]="ranges"
+                                [alwaysShowCalendars]="true" name="daterange" placeholder="From date - to date"
+                                readonly />
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="form-actions">
+                <div class="row">
+                    <div class="col-lg-6"></div>
+                    <div class="col-lg-6 m--align-right">
+                        <button (click)="searchData()" class="btn btn-brand  m-btn--icon m-btn--uppercase">
+                            <span>
+                                <i class="la la-search"></i>
+                                <span>
+                                    Search
+                                </span>
+                            </span>
+                        </button>
+                        <button type="button" class="btn btn-default  m-btn--icon m-btn--uppercase" (click)="reset()">
+                            <span>
+                                <i class="la la-refresh"></i>
+                                <span>
+                                    Reset
+                                </span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

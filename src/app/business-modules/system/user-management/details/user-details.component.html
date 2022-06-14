@@ -1,0 +1,96 @@
+<div class="user-detail-page">
+    <app-sub-header> </app-sub-header>
+    <app-form-add-user>
+        <div class="row m--padding-top-10">
+            <div class="col-6">
+                <h3 class="c-block-title m--margin-left-10">General Information</h3>
+            </div>
+            <div class="col-6">
+                <div class="m--align-right">
+
+                    <app-default-button class="m--margin-right-10" [buttonSetting]="saveButtonSetting"
+                        (onClick)="updateUser()">
+                    </app-default-button>
+                    <button routerLink="/home/system/user-management" type="button"
+                        class="btn btn-default  m-btn--icon m-btn--uppercase m--margin-right-10">
+                        <span>
+                            <i class="la la-ban"></i>
+                            <span> Cancel </span>
+                        </span>
+                    </button>
+
+                </div>
+            </div>
+
+        </div>
+        <hr />
+    </app-form-add-user>
+</div>
+
+<div class="m-content">
+    <div class="m-portlet__body">
+
+        <tabset class="custom-class-tab">
+            <tab heading="Group">
+                <div class="float-right m-3">
+                    <button class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only" (click)="formAddGroup.show()"
+                        type="button">
+                        <i class="la la-plus"></i>
+                    </button>
+                </div>
+                <div class="p-3 bg-white">
+                    <div class="table-wrapper table-scrollabler" id="department-list-table">
+                        <table class="table table-striped table-brand table-hover dataTable">
+                            <thead app-table-header [headers]="headersuslv">
+                                <th class="m--w-50 first table-actions-col">
+                                </th>
+                            </thead>
+                            <tbody class="tbody-group">
+                                <ng-container *ngIf="!!this.userLevels.length">
+                                    <tr [contextMenu]="usrLvMenuContext" (onTouch)="onSelectContextMenu(lv)"
+                                        *ngFor="let lv of userLevels; let i = index; trackBy: trackByFn">
+                                        <td class="table-actions-col">
+                                            <div class="table-actions" style="width: 70px">
+                                                <button type="button" (click)="deleteGroup(lv)"
+                                                    class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only"
+                                                    title="Delete">
+                                                    <i class="la la-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td>{{lv.groupAbbrName}}</td>
+                                        <td>{{lv.companyAbbrName}}</td>
+                                        <td>{{lv.officeAbbrName}}</td>
+                                        <td>{{lv.departmentAbbrName}}</td>
+                                        <td>{{lv.position}}</td>
+                                        <td>
+                                            <app-switch size="md" [ngModel]="lv.isDefault" disabled></app-switch>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                                <tr *ngIf="!this.userLevels.length" app-table-none-record
+                                    [colspan]="headersuslv.length + 1">
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </tab>
+            <tab heading="Role" (selectTab)="selectRoleTab()">
+                <add-role-user></add-role-user>
+            </tab>
+        </tabset>
+    </div>
+</div>
+
+<usermanagement-add-group-popup #formAddGroup [userId]="userId" (onUpdate)="getListUserLevelByUserId()">
+</usermanagement-add-group-popup>
+
+<confirm-popup body="Are you sure want to delete this user group" (onSubmit)="onSubmitDelete()" title="Warning">
+</confirm-popup>
+
+<app-context-menu #usrLvMenuContext (clickOutside)="!selectedUserLevel">
+    <div class="menu-context__item" (click)="onSelectConfirmSetDefault()">
+        <span><i class="la la-cloud-upload "></i><span> Set default login</span></span>
+    </div>
+</app-context-menu>

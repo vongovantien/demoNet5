@@ -1,0 +1,51 @@
+<div class="detail-combine-billing">
+    <app-sub-header> </app-sub-header>
+    <div class="m-content">
+        <div class="m-portlet">
+            <div class="m-portlet__body">
+                <div class="d-flex align-items-center justify-content-between p-1">
+                    <h3>Edit Combine Billing</h3>
+                    <div class="c-button-actions">
+                        <div class="dropdown m-dropdown m-dropdown--inline no-arrow">
+                            <app-default-button [dpToggle]="dropdownMenu" [buttonSetting]="previewButtonSetting">
+                            </app-default-button>
+
+                            <app-dropdown #dropdownMenu>
+                                <a class="dropdown-item pointer" (click)="exportCombineOps()">OPS Template</a>
+                                <a class="dropdown-item pointer" (click)="previewConfirmBilling()">General Template</a>
+                                <a class="dropdown-item pointer" (click)="previewDebitTemplate()">As Debit Template</a>
+                            </app-dropdown>
+                        </div>
+                    </div>
+                </div>
+                <form-get-billing-list [isUpdate]="true" (onSearch)="onSearchShipmet($event)"></form-get-billing-list>
+                <hr />
+            </div>
+            <div class="m-portlet">
+                <div class="m-form">
+                    <div class="m-portlet__body">
+
+                        <combine-billing-list></combine-billing-list>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="m--align-center m--margin-top-20">
+                                    <div class="c-button-actions">
+                                        <app-permission-button type="save" title="Save" (onClick)="saveBilling()">
+                                        </app-permission-button>
+                                        <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="back()">
+                                        </app-default-button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template inject></ng-template>
+<ng-container *ngIf="dataReport">
+    <app-report-preview [data]="dataReport"></app-report-preview>
+</ng-container>

@@ -1,0 +1,91 @@
+<div class="company-infomation-detail-page">
+    <app-sub-header> </app-sub-header>
+
+    <form-add-company [companyId]="this.companyId">
+        <div class="row">
+            <div class="col-6">
+                <span class="font-20">General Information</span>
+            </div>
+            <div class="col-6 text-right">
+                <div class="c-button-actions">
+
+                    <app-default-button [buttonSetting]="saveButtonSetting" (onClick)="saveInformation()">
+                    </app-default-button>
+
+                    <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="cancel()"></app-default-button>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="date-time p-3 font-14" *ngIf="!!company">
+            <div class="row">
+                <div class="col-6">
+                    <span>Created: {{company.datetimeCreated | date: 'dd/MM/yyyy HH:mm'}} by </span> <span
+                        class="text-success">{{company.nameUserCreated}}</span>
+                </div>
+                <div class="col-6">
+                    <span>Modified: {{company.datetimeModified | date: 'dd/MM/yyyy HH:mm'}} by </span> <span
+                        class="text-success">{{company.nameUserModified}}</span>
+                </div>
+            </div>
+        </div>
+    </form-add-company>
+    <div class="m-content">
+        <div class="m-portlet__body">
+            <tabset class="custom-class-tab">
+                <tab heading="Office" id="tab1">
+                    <div class="p-3 bg-white">
+                        <perfect-scrollbar style="max-height: 900px">
+                            <div class="table-wrapper table-scrollabler">
+                                <table class="table table-brand table-hover dataTable">
+                                    <thead app-table-header [headers]="headersOffice"
+                                        (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                                        <th class="m--w-50 first">
+                                        </th>
+                                    </thead>
+                                    <tbody class="tbody-group">
+                                        <ng-container *ngIf="!isLoading && !!offices.length">
+                                            <tr *ngFor="let office of offices; let i = index; trackBy: trackByFn"
+                                                class="">
+                                                <td class="table-actions-col">
+                                                    <div class="table-actions">
+                                                        <a (click)="gotoDetailOffice(office)"
+                                                            class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only text-white"
+                                                            title="Edit">
+                                                            <i class="la la-edit"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a [routerLink]="['/home/system/'+'office/' + office.id]"
+                                                        routerLinkActive="router-link-active">
+                                                        {{office.code}}
+                                                    </a>
+                                                </td>
+                                                <td>{{office.branchNameEn}}</td>
+                                                <td>{{office.branchNameVn}}</td>
+                                                <td>{{office.shortName}}</td>
+                                                <td>{{office.addressEn}}</td>
+                                                <td [ngClass]="office.active ? 'text-success' : 'text-danger'">
+                                                    {{office.active ? 'Active' : 'Inactive'}}</td>
+                                            </tr>
+                                        </ng-container>
+                                        <tr *ngIf="!isLoading && !offices.length" app-table-none-record
+                                            [colspan]="headersOffice.length + 1"></tr>
+                                        <tr *ngIf="isLoading" app-table-row-loading></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </perfect-scrollbar>
+                    </div>
+                </tab>
+                <tab heading="Management Group">
+                    <ng-container *ngIf="!!company">
+                        <form-user-level type="company" [object]="company"></form-user-level>
+                    </ng-container>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+
+</div>

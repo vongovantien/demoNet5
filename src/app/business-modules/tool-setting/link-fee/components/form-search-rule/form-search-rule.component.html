@@ -1,0 +1,119 @@
+<div class="m-portlet">
+    <div class="m-portlet__body">
+        <div class="m-form">
+            <div class="row" [formGroup]="formSearchRule">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Rule Name</label>
+                        <input type="text" class="form-control" formControlName="ruleName">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Service Buying</label>
+                        <select formControlName="serviceBuying" class="form-control" >
+                            <option *ngFor="let item of services" [ngValue]="item.value">
+                                {{item.displayName}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Service Selling</label>
+                        <select formControlName="serviceSelling" class="form-control">
+                            <option *ngFor="let item of services" [ngValue]="item.value">
+                                {{item.displayName}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select formControlName="status" class="form-control">
+                            <option *ngFor="let item of status" [ngValue]="item.value">
+                                {{item.displayName}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="">Partner Buying</label>
+                        <app-combo-grid-virtual-scroll [currentActiveItemId]="selectedPartnerBuying"
+                            (itemSelected)="onSelectDataFormInfo($event, 'partnerBuying')"
+                            [selectedDisplayFields]="configPartner.selectedDisplayFields"
+                            [dataSources]="configPartner.dataSource" [displayFields]="configPartner.displayFields"
+                            [height]="200" (remove)="resetPartnerBuying()">
+                        </app-combo-grid-virtual-scroll>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="">Partner Selling</label>
+                        <app-combo-grid-virtual-scroll [currentActiveItemId]="selectedPartnerSelling"
+                            (itemSelected)="onSelectDataFormInfo($event, 'partnerSelling')"
+                            [selectedDisplayFields]="configPartner.selectedDisplayFields"
+                            [dataSources]="configPartner.dataSource" [displayFields]="configPartner.displayFields"
+                            [height]="200" (remove)="resetPartnerSelling()">
+                        </app-combo-grid-virtual-scroll>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="">Date</label>
+                        <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                            <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" [ranges]="ranges"
+                                [alwaysShowCalendars]="true" name="daterange" placeholder="From date - to date" readonly
+                                formControlName="date"
+                                [allowRemove]="!!date.value && !!date.value.startDate && !!date.value.endDate"
+                                (remove)="resetDate()"
+                                />
+                            <span class="m-input-icon__icon m-input-icon__icon--right">
+                                <span>
+                                    <i class="la la-calendar"></i>
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="">Type Date</label>
+                        <select formControlName="dateType" class="form-control">
+                            <option *ngFor="let type of dateTypes" [ngValue]="type.value" >{{type.displayName}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions">
+                <div class="row">
+                    <div class="col-lg-6"></div>
+                    <div class="col-lg-6 m--align-right">
+                        <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase"
+                            (click)="submitSearch(formSearchRule.value)">
+                            <span>
+                                <i class="la la-search"></i>
+                                <span>
+                                    Search
+                                </span>
+                            </span>
+                        </button>
+                        <button type="button" class="btn btn-default  m-btn--icon m-btn--uppercase"
+                            (click)="submitReset()">
+                            <span>
+                                <i class="la la-refresh"></i>
+                                <span>
+                                    Reset
+                                </span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

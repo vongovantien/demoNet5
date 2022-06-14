@@ -1,0 +1,38 @@
+<div class="modal fade" id="permission-modal" role="dialog" bsModal #popup="bs-modal">
+    <div class="modal-dialog modal-sm" role="document" [class.modal-dialog-centered]="center">
+        <div class="modal-content">
+            <div class="modal-header bg-danger">
+                <h5 class="modal-title">No Permission</h5>
+                <button type="button" class="close" aria-label="Close" (click)=hide()>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="confirm-text-block text-danger d-flex p-0 text-left">
+                    <div>
+                        <span>
+                            <i class="fa fa-exclamation-circle fa-3x" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <div class="m--margin-left-15">
+                        <span class="font-weight-bold font-14">You are not allowed for this action!</span>
+                        <p class="m-0">
+                            <i>
+                                Bạn không có quyền thực hiện hành động này!
+                            </i>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer m--align-center">
+                <button style="width: 150px" type="button" class="btn btn-danger   m-btn--uppercase" (click)="hide()">
+                    <span>
+                        <span>
+                            Ok
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

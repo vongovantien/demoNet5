@@ -1,0 +1,52 @@
+
+<div class="modal fade" id="loading-download-modal" role="dialog" bsModal #popup="bs-modal">
+    <div class="modal-dialog modal-xs " role="document" [class.modal-dialog-centered]="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Notification</h5>
+            </div>
+            <div class="modal-body">
+                <div class="text-center" *ngIf="!isCompleted">
+                    <div class="confirm-text-block" style="font-size: 18px;">
+                        <span [innerHTML]="body" class="d-inline-block"></span>
+                    </div>
+                    <div class="spinner-grow text-primary" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <div class="spinner-grow text-danger" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <div class="spinner-grow text-warning" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+                <div class="text-center" *ngIf="isCompleted">
+                    <div class="confirm-text-block" *ngIf="!isSuccessDownload && !isProccessComplete && !body" style="font-size: 16px;">
+                        <span class="text-danger">Download fail.</span>
+                        <br>
+                        <span>Your file is empty, Please re-check and try again!</span>
+                    </div>
+                    <div class="confirm-text-block" *ngIf="isSuccessDownload" style="font-size: 16px;">
+                        <span class="text-success">Your file downloaded successfully!</span>
+                    </div>
+                    <div class="confirm-text-block" *ngIf="!isSuccessDownload && isProccessComplete" style="font-size: 16px;">
+                        <span [innerHTML]="body"  class="text-success"></span>
+                    </div>
+                    <div class="confirm-text-block" *ngIf="!isSuccessDownload && !isProccessComplete" style="font-size: 16px;">
+                        <span class="text-danger">Proccess fail.</span>
+                        <br>
+                        <span [innerHTML]="body"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer m--align-center c-button-actions">
+                <button [disabled]="!isCompleted" type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="close()">
+                    <span>
+                        <i class="la la-check-square"></i>
+                        <span>Done</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

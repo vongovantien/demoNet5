@@ -1,0 +1,154 @@
+<div class="form-get-billing">
+    <div class="form" [formGroup]="formGroup">
+        <div class="row">
+            <div class="col-lg-5">
+                <div class="form-group">
+                    <label>Combine Billing No</label>
+                    <input [attr.disabled]="isUpdate" type="text" class="form-control" formControlName="billingNo">
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="form-group"
+                            [ngClass]="{'m-form__group has-danger': isSubmitted && (!partnerId.valid || !partnerId.value)}">
+                            <label required>Partner</label>
+                            <app-combo-grid-virtual-scroll [currentActiveItemId]="{field:'id',value:partnerId.value}"
+                                (itemSelected)="partnerId.setValue($event.id);" [dataSources]="partners"
+                                [displayFields]="[
+                                { field: 'shortName', label: 'Name ABBR' },
+                                { field: 'partnerNameEn', label: 'Name EN' },
+                                { field: 'taxCode', label: 'Tax Code' }]" [selectedDisplayFields]="['shortName']"
+                                [disabled]="isDisabled" placeholder="Select partner"
+                                (remove)="resetFormControl(partnerId)" [disabled]="isUpdate">
+                            </app-combo-grid-virtual-scroll>
+                            <div class="form-control-feedback"
+                                *ngIf="isSubmitted && (!partnerId.valid || !partnerId.value)">
+                                Please Select Partner!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-control-label">Type</label>
+                            <ng-select formControlName="billingType" [items]="billingTypeList"
+                                placeholder="" class="custom">
+                            </ng-select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <label class="form-control-label">Date</label>
+                <div class="row">
+                    <div class="col-lg-5">
+                        <div class="form-group">
+                            <ng-select formControlName="billingDateType" [clearable]="false" [items]="typeDateSearch"
+                                placeholder="" class="custom">
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="form-group">
+                            <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                    [autoApply]="true" [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}"
+                                    [ranges]="ranges" [alwaysShowCalendars]="true" name="daterange"
+                                    formControlName="billingDate" placeholder="   /   /   " readonly calendar
+                                    [allowRemove]="!!billingDate.value && !!billingDate.value.startDate"
+                                    (remove)="resetFormControl(billingDate)" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="form-group">
+                    <label class="form-control-label" for="">
+                        Service
+                    </label>
+                    <ng-select [multiple]="true" formControlName="service" [items]="serviceList" placeholder=""
+                        class="custom" bindLabel="text" bindValue="id" (add)="selelectedService($event)">
+                    </ng-select>
+                </div>
+            </div>
+
+
+            <div class="col-lg-5">
+                <label class="form-control-label" for="">
+                    Document
+                </label>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <ng-select formControlName="documentType" [clearable]="false" [items]="documentTypes"
+                                placeholder="" class="custom">
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <textarea class="form-control m-input m-input--square" formControlName="referenceNo" name="referenceNo"
+                            rows="5"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <label class="form-control-label" for="">
+                    Description
+                </label>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <textarea class="form-control m-input m-input--square" formControlName="description" name="description"
+                            rows="7"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-lg-12" *ngIf="isUpdate">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="m--align-left">
+                                Created: {{billing?.datetimeCreated | date: 'dd/MM/yyyy HH:mm'}}
+                                &nbsp;
+                                By <span class="text-success">{{billing?.userCreatedName}}</span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="m--align-left">
+                                Modified: {{billing?.datetimeModified | date: 'dd/MM/yyyy HH:mm'}}
+                                &nbsp;
+                                By <span class="text-success">{{billing?.userModifiedName}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-actions">
+        <div class="row">
+            <div class="col-lg-6"></div>
+            <div class="col-lg-6 m--align-right">
+                <button type="button" class="btn btn-success  m-btn--icon m-btn--uppercase m--margin-left-10" (click)="search()">
+                    <span>
+                        <i class="la la-plus"></i>
+                        <span>
+                            Add
+                        </span>
+                    </span>
+                </button>
+                <button type="button" class="btn btn-default  m-btn--icon m-btn--uppercase" (click)="reset()">
+                    <span>
+                        <i class="la la-refresh"></i>
+                        <span>
+                            Reset
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

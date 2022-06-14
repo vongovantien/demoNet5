@@ -1,0 +1,12 @@
+<button NoDbClick type="{{buttonAttribute.type}}" attr.class="{{buttonAttribute.classStyle}}" data-toggle="modal"
+    attr.data-target="#{{dataTarget}}" (click)="onClickButton()"
+    attr.title="{{ (isEdit || isDelete || isDetail)? buttonAttribute.titleButton:'' }}"
+    attr.data-dismiss="{{(isCancel || isDelete)?'modal':''}}" [disabled]="disabled">
+    <span *ngIf="isAdd || isImport || isExport || isCancel || isSave || isSearch || isPreview || isLock">
+        <i attr.class="{{buttonAttribute.icon}}"></i>
+        <span>
+            {{ buttonAttribute.titleButton }}
+        </span>
+    </span>
+    <i *ngIf="isEdit || isDelete|| isDetail" attr.class="{{buttonAttribute.icon}}"></i>
+</button>

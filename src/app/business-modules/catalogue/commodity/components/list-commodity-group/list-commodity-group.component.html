@@ -1,0 +1,100 @@
+<!--begin:: Search-form-->
+<div class="m-form m--margin-bottom-15">
+    <div class="clearfix m--margin-bottom-15">
+        <div class="c-button-actions m--align-right">
+            <button type="button" class="btn btn-success  m-btn--icon m-btn--uppercase"
+                (click)="openPopupAddCommodityGroup()">
+                <span>
+                    <i class="la la-plus"></i>
+                    <span>
+                        add new
+                    </span>
+                </span>
+            </button>
+            <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase"
+                [routerLink]="['/home/catalogue/commodity/commodity-group-import']">
+                <span>
+                    <i class="la la-upload"></i>
+                    <span>
+                        import
+                    </span>
+                </span>
+            </button>
+            <button type="button" class="btn btn-danger  m-btn--icon m-btn--uppercase" (click)="exportComGroup()">
+                <span>
+                    <i class="la la-download"></i>
+                    <span>
+                        export
+                    </span>
+                </span>
+            </button>
+        </div>
+    </div>
+    <div class="m--padding-10">
+        <app-search-options [configSearch]="configSearch" (search)="onSearch($event)"
+            (reset_search)="resetSearch($event)"></app-search-options>
+    </div>
+</div>
+<!--end:: Search-form-->
+<div class="table-wrapper">
+    <table class="table table-brand table-striped dataTable">
+        <thead app-table-header [headers]="headers" (onClick)="sortCommodityGroup($event)">
+            <th class="m--w-50 first table-actions-col">
+                Actions
+            </th>
+        </thead>
+        <tbody class="tbody-group">
+            <ng-container *ngIf="!!commodityGroups.length">
+                <tr *ngFor="let commodityGroup of commodityGroups; let i = index; trackBy: trackByFn">
+                    <td class="table-actions-col">
+                        <div class="table-actions">
+                            <button class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only" title="Edit"
+                                (click)="showDetailCommodityGroup(commodityGroup)">
+                                <i class="la la-edit"></i>
+                            </button>
+                            <button (click)="showConfirmDelete(commodityGroup)"
+                                class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only">
+                                <i class="la la-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                    <td>{{commodityGroup.id}}</td>
+                    <td>{{commodityGroup.groupNameEn}}</td>
+                    <td>{{commodityGroup.groupNameVn}}</td>
+                    <td [ngClass]="commodityGroup.active ? 'text-success' : 'text-danger'">
+                        {{commodityGroup.active ? 'Active' : 'Inactive'}}
+                    </td>
+                </tr>
+            </ng-container>
+            <tr *ngIf="!isLoading && !commodityGroups.length" app-table-none-record [colspan]="headers.length + 1"></tr>
+            <tr *ngIf="isLoading" app-table-row-loading></tr>
+        </tbody>
+    </table>
+</div>
+<div class="pagination-nav ">
+    <div class="row">
+        <div *ngIf="!!commodityGroups.length" class="col-sm-6">
+            <div class="tatable__pager-size">
+                <div class="select-box">
+                    <select class="form-control" id="" aria-label="" [(ngModel)]="pageSize"
+                        (change)="selectPageSize(pageSize, dataSearch)" name="pagesize">
+                        <ng-container *ngFor="let item of numberToShow; let i = index; trackBy: trackByFn">
+                            <option [ngValue]="item">{{item}} line / screen</option>
+                        </ng-container>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6" *ngIf="totalItems > pageSize">
+            <div class="float-right">
+                <pagination [boundaryLinks]="true" [totalItems]="totalItems" [itemsPerPage]="pageSize"
+                    (pageChanged)="pageChanged($event)" [(ngModel)]="page" [maxSize]="5">
+                </pagination>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form-create-commodity-group-popup (onRequestCommodity)="onRequestCommodityGroup()"></form-create-commodity-group-popup>
+<confirm-popup [body]="'You want to delete this Commodity Group'" [labelConfirm]="'Yes'" (onSubmit)="onDelete()">
+</confirm-popup>

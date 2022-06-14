@@ -1,0 +1,51 @@
+@font-face {
+  font-family: 'icomoon';
+  src:  url('fonts/icomoon/icomoon.eot?yfvkyv');
+  src:  url('fonts/icomoon/icomoon.eot?yfvkyv#iefix') format('embedded-opentype'),
+    url('fonts/icomoon/icomoon.ttf?yfvkyv') format('truetype'),
+    url('fonts/icomoon/icomoon.woff?yfvkyv') format('woff'),
+    url('fonts/icomoon/icomoon.svg?yfvkyv#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-format_paint:before {
+  content: "\e900";
+}
+.icon-books:before {
+  content: "\ed35";
+}
+.icon-file-text2:before {
+  content: "\ed3b";
+}
+.icon-calculator:before {
+  content: "\ed55";
+}
+.icon-database:before {
+  content: "\ed79";
+}
+.icon-wrench:before {
+  content: "\eda6";
+}
+.icon-cogs:before {
+  content: "\edaa";
+}
+.icon-stats-bars:before {
+  content: "\edb1";
+}

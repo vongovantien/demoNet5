@@ -1,0 +1,98 @@
+<div class="search-confirm-billing">
+    <form class="row" action="" [formGroup]="formSearch">
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label class="form-control-label" for="">Search Option</label>
+                <ng-select formControlName="searchOption" [items]="searchOptionList" placeholder="" class="custom">
+                </ng-select>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="form-group">
+                <label class="form-control-label" for="">
+                    Partner
+                </label>
+                <app-combo-grid-virtual-scroll [currentActiveItemId]="{ field: 'id', value: partner.value}"
+                    (itemSelected)="onSelectDataFormInfo($event, 'partner')" [selectedDisplayFields]="['shortName']"
+                    [dataSources]="partners | async" [displayFields]="displayFieldsPartner" [height]="150"
+                    (remove)="resetFormControl(partner)" placeholder="Select partner">
+                </app-combo-grid-virtual-scroll>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label class="form-control-label" for="">Reference No</label>
+                <textarea rows="5" class="form-control" formControlName="referenceNo"></textarea>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label class="form-control-label" for="">Date</label>
+                        <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                            <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                [autoApply]="true" [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}"
+                                [ranges]="ranges" [alwaysShowCalendars]="true" name="daterange"
+                                formControlName="issueDate" placeholder="   /   /   " readonly calendar
+                                [allowRemove]="!!issueDate.value && !!issueDate.value.startDate"
+                                (remove)="resetFormControl(issueDate)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label" for="">Date Type</label>
+                                <ng-select formControlName="dateType" [items]="dateTypeList" placeholder=""
+                                    class="custom">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label" for="">Confirmed Billing</label>
+                                <ng-select formControlName="confirmedBilling" [items]="confirmedBillingList"
+                                    placeholder="" class="custom">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label class="form-control-label" for="">
+                            Service
+                        </label>
+                        <ng-select [multiple]="true" formControlName="service" [items]="services"
+                            (remove)="onRemoveDataFormInfo($event, 'service')" [(ngModel)]="selectedService"
+                            (add)="onSelectDataFormInfo($event, 'service')" placeholder="" class="custom"
+                            bindLabel="text" bindValue="id">
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label class="form-control-label" for="">CS Handling</label>
+                        <ng-select [multiple]="true" formControlName="csHandling" [items]="csHandlings"
+                            (remove)="onRemoveDataFormInfo($event, 'csHandling')" [(ngModel)]="selectedCsHandling"
+                            (add)="onSelectDataFormInfo($event, 'csHandling')" placeholder="" class="custom"
+                            bindLabel="text" bindValue="id">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="form-actions">
+        <div class="row">
+            <div class="col-lg-6"></div>
+            <div class="col-lg-6 m--align-right c-button-actions">
+                <app-default-button [buttonSetting]="searchlButtonSetting" (click)="search()">
+                </app-default-button>
+                <app-default-button [buttonSetting]="resetButtonSetting" (click)="reset()"></app-default-button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,189 @@
+<div class="m-subheader">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <!--begin:: breadcrumbs-->
+            <app-breadcrumb></app-breadcrumb>
+            <!--end:: breadcrumbs-->
+        </div>
+    </div>
+</div>
+<div class="m-content form-add-company">
+    <form action="" [formGroup]="formGroup">
+        <div class="m-portlet">
+            <div class="m-form m-form--state">
+                <div class="row m--padding-top-10">
+                    <div class="col-6">
+                        <h3 class="c-block-title m--margin-left-10">General Information</h3>
+                    </div>
+                    <div class="col-6">
+                        <div class="m--align-right">
+                            <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase m--margin-right-10"
+                                (click)="update()">
+                                <span>
+                                    <i class="la la-save"></i>
+                                    <span>
+                                        Save
+                                    </span>
+                                </span>
+                            </button>
+                            <button type="button"
+                                class="btn btn-default  m-btn--icon m-btn--uppercase m--margin-right-10"
+                                (click)="cancel()">
+                                <span>
+                                    <i class="la la-ban"></i>
+                                    <span>
+                                        Cancel
+                                    </span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="m-portlet__body">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': (code.dirty && !code.valid) || (isSubmitted && !code.valid)}"
+                                disabled>
+                                <label for="">Group Code <span class="text-danger">(*)</span></label>
+                                <input type="text" class="form-control m-input m-input--square" placeholder="Group Code"
+                                    formControlName="code" disabled>
+                                <div class="form-control-feedback" *ngIf="isSubmitted && !code.valid">
+                                    Group code is required!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': (groupNameEN.dirty && !groupNameEN.valid) || (isSubmitted && !groupNameEN.valid)}">
+                                <label for="">Name EN <span class="text-danger">(*)</span></label>
+                                <input type="text" class="form-control m-input m-input--square" placeholder="Name EN"
+                                    formControlName="groupNameEN">
+                                <div class="form-control-feedback" *ngIf="isSubmitted && !groupNameEN.valid">
+                                    Name EN is required!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': (groupNameVN.dirty && !groupNameVN.valid) || (isSubmitted && !groupNameVN.valid)}">
+                                <label for="">Name Local <span class="text-danger">(*)</span></label>
+                                <input type="text" class="form-control m-input m-input--square" placeholder="Name Local"
+                                    formControlName="groupNameVN">
+                                <div class="form-control-feedback" *ngIf="isSubmitted && !groupNameVN.valid">
+                                    Name Local is required!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': (groupNameAbbr.dirty && !groupNameAbbr.valid) || (isSubmitted && !groupNameAbbr.valid)}">
+                                <label for="">Name Abbr <span class="text-danger">(*)</span></label>
+                                <input type="text" class="form-control m-input m-input--square" placeholder="Name Abbr"
+                                    formControlName="groupNameAbbr">
+                                <div class="form-control-feedback" *ngIf="isSubmitted && !groupNameAbbr.valid">
+                                    Name Abbr is required!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': (department.dirty && !department.valid) || (isSubmitted && !department.valid)}">
+                                <label for="">Department <span class="text-danger">(*)</span></label>
+                                <select formControlName="department" class="form-control" [disabled]="isReadonly">
+                                    <option *ngFor="let department of departments" [ngValue]="department">
+                                        {{department.deptNameAbbr}}
+                                    </option>
+                                </select>
+                                <!-- <div class="form-control-feedback" *ngIf="isSubmitted && !department.valid">
+                                    Department is required!
+                                </div> -->
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmitted && (department.errors | equalError: 'required') || (department.errors | equalError: 'required') && department.dirty">
+                                    Department is required!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label for="">Office </label>
+                                <input type="text" class="form-control m-input m-input--square"
+                                    formControlName="officeName" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label for="">Company </label>
+                                <input type="text" class="form-control m-input m-input--square"
+                                    formControlName="companyName" disabled>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': (email.dirty && !email.valid) || (isSubmitted && !email.valid) }">
+                                <label class="form-control-label">
+                                    Email:
+                                </label>
+                                <input type="text" class="form-control m-input m-input--square" placeholder="Email"
+                                    formControlName="email">
+                                <div class="form-control-feedback" *ngIf="email.errors | equalError: 'maxlength'">
+                                    Max length must be less than or equal 150
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': (active.dirty && !active.valid) || (isSubmitted && !active.valid)}">
+                                <label for="">Status<span class="text-danger">(*)</span></label>
+                                <select formControlName="active" class="form-control">
+                                    <option *ngFor="let type of types" [ngValue]="type">{{type.title}}</option>
+                                </select>
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmitted && (active.errors | equalError: 'required') || (active.errors | equalError: 'required') && active.dirty">
+                                    Status is required!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="group">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Created: {{ group.datetimeCreated | date: 'dd/MM/yyyy HH:mm' }} by
+                                    <span class="text-success">{{group.nameUserCreated}}</span></label>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label *ngIf="group.datetimeModified">Modified:
+                                    {{ group.datetimeModified | date: 'dd/MM/yyyy HH:mm' }}
+                                    by <span class="text-success">{{group.nameUserModified}}</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="m-content">
+    <div class="m-portlet__body">
+        <tabset class="custom-class-tab">
+            <tab heading="User">
+                <div class="bg-white">
+                    <ng-container *ngIf="!!group">
+                        <form-user-level type="group" [object]="group"></form-user-level>
+                    </ng-container>
+                </div>
+            </tab>
+        </tabset>
+    </div>
+</div>
+<confirm-popup [body]="'Do you want to delete?'" [labelConfirm]="'Yes'" (onSubmit)="onDeleteGroup()">
+</confirm-popup>

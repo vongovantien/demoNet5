@@ -1,0 +1,87 @@
+<app-sub-header>
+    <div class="c-button-actions">
+        <button type="button" class="btn btn-success  m-btn--icon m-btn--uppercase" (click)="showAdd()">
+            <span>
+                <i class="la la-plus"></i>
+                <span>
+                    add new
+                </span>
+            </span>
+        </button>
+        <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase" disabled>
+            <span>
+                <i class="la la-upload"></i>
+                <span>
+                    import
+                </span>
+            </span>
+        </button>
+        <button type="button" class="btn btn-danger  m-btn--icon m-btn--uppercase" (click)="export()">
+            <span>
+                <i class="la la-download"></i>
+                <span>
+                    export
+                </span>
+            </span>
+        </button>
+    </div>
+</app-sub-header>
+
+<div class="m-content">
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <div class="m-form">
+                <app-search-options [configSearch]="configSearch" (search)="onSearch($event)"
+                    (reset_search)=resetSearch($event)></app-search-options>
+            </div>
+        </div>
+    </div>
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <div class="table-wrapper">
+                <table class="table table-brand table-striped dataTable">
+                    <thead app-table-header [headers]="headers"
+                        (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                        <th class="m--w-50 first table-actions-col">
+                            Actions
+                        </th>
+                    </thead>
+                    <tbody class="tbody-group">
+                        <ng-container *ngFor="let currency of currencies; let i = index; trackBy: trackByFn">
+                            <tr>
+                                <td class="table-actions-col">
+                                    <div class="table-actions" style="width: 70px">
+                                        <button class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only"
+                                            title="Edit" (click)="showDetail(currency)">
+                                            <i class="la la-edit"></i>
+                                        </button>
+                                        <button (click)="showConfirmDelete(currency)"
+                                            class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only">
+                                            <i class="la la-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                                <td> <span>{{currency.id}}</span></td>
+                                <td> <span>{{currency.currencyName}}</span> </td>
+                                <td>
+                                    <app-switch disabled [(ngModel)]="currency.isDefault" size="sm"></app-switch>
+                                </td>
+                                <td [ngClass]="currency.active ? 'text-success' : 'text-danger'">
+                                    {{currency.active ? 'Active' : 'Inactive'}}</td>
+                            </tr>
+                        </ng-container>
+                        <tr *ngIf="!isLoading && !currencies.length" app-table-none-record
+                            [colspan]="headers.length + 1"></tr>
+                        <tr *ngIf="isLoading" app-table-row-loading></tr>
+                    </tbody>
+                </table>
+            </div>
+            <app-pagination [total]="totalItems" [pageNum]="page" [itemPerPage]="pageSize"
+                (onChange)="updatePagingData($event)"></app-pagination>
+        </div>
+    </div>
+</div>
+
+<form-create-currency-popup (onChange)="resetSearch($event)"></form-create-currency-popup>
+
+<confirm-popup body="You want to delete this currency" (onSubmit)="onDelete()"></confirm-popup>

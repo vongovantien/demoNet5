@@ -1,0 +1,40 @@
+<!--begin:: m-portlet-->
+<div class="m-portlet">
+    <div class="m-portlet__body">
+        <!--begin: Datatable-->
+        <div class="table-wrapper table-scrollable">
+            <table class="table table-striped table-brand dataTable">
+                <thead app-table-header [headers]="headers"
+                    (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                </thead>
+                <tbody class="tbody-group">
+                    <tr class="" *ngFor="let housebill of housebills;let i = index;">
+                        <td>
+                            <span>{{ housebill.hwbno }}</span>
+                        </td>
+                        <td>
+                            <span>{{ housebill.desOfGoods }}</span>
+                        </td>
+                        <td>
+                            <span>{{ housebill.shippingMark }}</span>
+                        </td>
+                        <td style="white-space:pre">
+                            <span>{{ housebill.containers }}</span>
+                        </td>
+                        <td>
+                            <span>{{ housebill.packages }}</span>
+                        </td>
+                        <td>
+                            <span>{{ housebill.gw }}</span>
+                        </td>
+                        <td>
+                            <span>{{ housebill.cbm }}</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!--end: Datatable-->
+    </div>
+</div>
+<!--end:: m-portlet-->

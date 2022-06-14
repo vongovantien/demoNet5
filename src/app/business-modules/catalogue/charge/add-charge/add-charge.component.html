@@ -1,0 +1,21 @@
+<div class="m-subheader">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <app-breadcrumb></app-breadcrumb>
+        </div>
+        <div class="c-button-actions">
+            <app-default-button [buttonSetting]="saveButtonSetting" (click)="addCharge()"></app-default-button>
+
+            <app-default-button [buttonSetting]="cancelButtonSetting" routerLink="/home/catalogue/charge">
+            </app-default-button>
+        </div>
+    </div>
+</div>
+
+<div class="m-content">
+    <form-add-charge></form-add-charge>
+
+    <voucher-list></voucher-list>
+</div>
+<generate-selling-charge-popup (onCreatSellingCharge)="addSellingCharge($event)">
+</generate-selling-charge-popup>

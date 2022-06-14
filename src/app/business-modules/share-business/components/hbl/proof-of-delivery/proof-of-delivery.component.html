@@ -1,0 +1,73 @@
+<div class="proof-of-delivery-wrapper m-animate-fade-in">
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <div class="row proof-of-delivery m-form m-form--state m--margin-bottom-20">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Reference No</label>
+                        <input type="text" class="form-control" placeholder="Reference No"
+                            [(ngModel)]="proofOfDelievey.referenceNo">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Delivery Person</label>
+                        <input type="text" class="form-control" placeholder="Delivery Person"
+                            [(ngModel)]="proofOfDelievey.deliveryPerson">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Delivery Date</label>
+                        <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                            <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" name="daterange"
+                                placeholder="Please Select" readonly [autoApply]="true" [singleDatePicker]="true"
+                                [alwaysShowCalendars]="true" [(ngModel)]="proofOfDelievey.deliveryDate" calendar
+                                [allowRemove]="proofOfDelievey.deliveryDate"
+                                (remove)="proofOfDelievey.deliveryDate = null" />
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label></label>
+                    <label></label>
+                    <label></label>
+                    <div class="form-group">
+                        <input style="display:none" type="file" #file (change)="handleFileInput($event)">
+                        <button style="margin-top:5px;" (click)="file.click()" type="button"
+                            class="btn btn-success  m-btn--icon m-btn--uppercase margin-right-10">
+                            <span>
+                                <i class="la la-plus"></i>
+                                <span>
+                                    Update Files
+                                </span>
+                            </span>
+                        </button>
+                        <span class="text-primary">
+                            {{ !!fileList ? fileList[0].name : null}}
+                        </span>
+                        <br/><br/>
+                        <ng-container *ngIf="!isLoading && !!files && !!hblid">
+                            <!-- <a [href]="files.url" target="_blank" [title]="files.name" download>{{files.name}}</a> -->
+                            <li *ngFor="let file of files"><a [href]="file.url" target="_blank" [title]="file.name" download>{{file.name}}</a>
+                                <span class="pointer text-center" *ngIf="!readonly">
+                                    <a title="Delete" (click)="deleteFilePOD(file.name)">
+                                        <i class="la la-times fa-lg text-danger"></i>
+                                    </a>
+                                </span>
+                            </li>
+                        </ng-container>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Note</label>
+                        <textarea cols="30" rows="5" class="form-control" [(ngModel)]="proofOfDelievey.note"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

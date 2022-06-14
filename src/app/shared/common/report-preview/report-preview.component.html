@@ -1,0 +1,29 @@
+<div class="modal fade" role="dialog" bsModal #popup="bs-modal" (onHide)="onHide()">
+    <div class="modal-dialog" [ngClass]="!!data && data.isLandscape === true ? 'modal-xl' : 'modal-lg'" role="document">
+        <div class="modal-content" [ngClass]="!!data && data.isLandscape === true ? '' : 'modal-lg__width'">
+            <div class="modal-header">
+                <h5 class="modal-title">Preview</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form #formReport target="frame" method="POST" [action]="scr" (ngSubmit)="submitForm($event)">
+                    <input name="crystal" type="hidden" [value]="value">
+                </form>
+                <iframe #frame id="frame" name="frame" src="" type="application/pdf" height="1080px" width="100%"
+                    allowfullscreen frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer m--align-center" (click)="hide()">
+                <button type="button" class="btn  m-btn--icon m-btn--uppercase" data-dismiss="modal">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span>
+                            cancel
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

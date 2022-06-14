@@ -1,0 +1,111 @@
+<div class="company-infomation-page">
+    <app-sub-header>
+        <div class="c-button-actions">
+            <button type="button" class="btn btn-success  m-btn--icon m-btn--uppercase"
+                [routerLink]="'/home/system/company/new'">
+                <span>
+                    <i class="la la-plus"></i>
+                    <span>
+                        add new
+                    </span>
+                </span>
+            </button>
+            <button type="button" class="btn btn-danger  m-btn--icon m-btn--uppercase" (click)="exportExcel()">
+                <span>
+                    <i class="la la-upload"></i>
+                    <span>
+                        export
+                    </span>
+                </span>
+            </button>
+        </div>
+    </app-sub-header>
+    <div class="m-content">
+
+        <form-search-company (onSearch)="onSearchCompany($event)"></form-search-company>
+
+        <div class="m-portlet">
+            <div class="m-portlet__body">
+                <div class="table-wrapper">
+                    <table class="table table-brand table-striped dataTable">
+                        <thead app-table-header [headers]="headers"
+                            (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                            <th class="m--w-50 first table-actions-col">
+                                Action
+                            </th>
+                        </thead>
+                        <tbody class="tbody-group">
+                            <ng-container *ngFor="let company of companies; let i = index; trackBy: trackByFn">
+                                <tr class="">
+                                    <td class="table-actions-col">
+                                        <div class="table-actions">
+                                            <a [routerLink]="company.id"
+                                                class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only"
+                                                title="Edit">
+                                                <i class="la la-edit"></i>
+                                            </a>
+                                            <button (click)="showDeletePopup(company)" [disabled]="company.active"
+                                                disabled class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only">
+                                                <i class="la la-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <a [routerLink]="company.id">
+                                            {{company.code}}
+                                        </a>
+                                    </td>
+                                    <td>{{company.bunameEn}}</td>
+                                    <td>{{company.bunameVn}}</td>
+                                    <td>{{company.bunameAbbr}}</td>
+                                    <td>
+                                        <div class="logo-company">
+                                            <img alt="" class="img-fluid"
+                                                onerror="this.src = 'assets/app/media/img/emptydata.png'"
+                                                [src]="company.logoPath">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="text-primary text-underline">{{company.website}}</span>
+                                    </td>
+                                    <td [ngClass]="!company.active ? 'text-danger' : 'text-success'">
+                                        {{company.active ? 'Active' : 'Inactive'}}</td>
+                                </tr>
+                            </ng-container>
+                            <tr *ngIf="!isLoading && !companies.length" app-table-none-record
+                                [colspan]="headers.length + 1"></tr>
+                            <tr *ngIf="isLoading" app-table-row-loading></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination-nav ">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="tatable__pager-size">
+                                <div class="select-box">
+                                    <select class="form-control" id="" aria-label="" [(ngModel)]="pageSize"
+                                        (change)="selectPageSize(pageSize, dataSearch)" name="pagesize">
+                                        <ng-container
+                                            *ngFor="let item of numberToShow; let i = index; trackBy: trackByFn">
+                                            <option [ngValue]="item">{{item}} line / screen</option>
+                                        </ng-container>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6" *ngIf="totalItems > pageSize">
+                            <div class="float-right">
+                                <pagination [boundaryLinks]="true" [totalItems]="totalItems" [itemsPerPage]="pageSize"
+                                    (pageChanged)="pageChanged($event)" [(ngModel)]="page">
+                                </pagination>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<confirm-popup [body]="'Do you want to delete this company ?'" [labelCancel]="'No'" (onSubmit)="onDelete()">
+</confirm-popup>

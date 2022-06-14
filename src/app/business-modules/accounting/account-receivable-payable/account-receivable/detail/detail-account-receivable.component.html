@@ -1,0 +1,196 @@
+<div class="create-commercial-page">
+    <app-sub-header> </app-sub-header>
+    <div class="m-content">
+        <div class="m-portlet">
+            <div class="m-portlet__body">
+                <div class="d-flex align-items-center justify-content-between p-1 mb-2">
+                    <h3 class="w-75 text-primary">
+                        {{accReceivableDetail.partnerCode}} - {{accReceivableDetail.partnerNameEn}}
+                    </h3>
+                    <app-default-button class="mb-2" [buttonSetting]="backButtonSetting" (click)="goBack()">
+                    </app-default-button>
+                </div>
+                <form-detail-account-receivable [accReceivableDetail]="accReceivableDetail">
+                </form-detail-account-receivable>
+
+                <div class="row m--margin-top-20">
+                    <div class="col-lg-12 m--margin-top-20">
+                        <div class="table-wrapper table-scrollable">
+                            <table class="table table-hover table-brand dataTable table-hover">
+                                <thead app-table-header [headers]="headers" (onClick)="sortBy($event.sortField)">
+                                    <th class="m--w-50 first table-actions-col">
+                                        Action
+                                    </th>
+                                </thead>
+                                <tbody>
+                                    <ng-container
+                                        *ngFor="let item of accReceivableMoreDetail; let i = index; trackBy: trackByFn">
+                                        <tr class="collapse-toggle-row" id="service-table-{{i}}">
+                                            <td class="table-actions-col">
+                                                <div class="table-actions" style="width: 100px">
+                                                    <button type="button"
+                                                        class="btn btn-sm  m-btn--icon m-btn--icon-only collapsed"
+                                                        data-toggle="collapse" [attr.data-target]="'#id-00' + (i+1)"
+                                                        title="Collapse">
+                                                        <i class="la la-angle-up"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+
+                                            <td class="text-right">{{ item.officeNameAbbr}}</td>
+                                            <td class="text-right">{{ item.totalDebitAmount | number: '.0-3'}}</td>
+                                            <td class="text-right">
+                                                <a href="javascript:void(0)" (click)="showDebitDetail(item, null)">
+                                                    {{ (item.totalBillingAmount + item.totalObhBillingAmount) |
+                                                    number:'.0-3'}}
+                                                </a>
+                                            </td>
+                                            <td class="text-right">
+                                                <a href="javascript:void(0)"
+                                                    (click)="showDebitDetail(item, 'Paid A Part')">
+                                                    {{ (item.totalPaidAmount + item.totalObhPaidAmount) |
+                                                    number:'.0-3'}}
+                                                </a>
+                                            </td>
+                                            <td class="text-right">
+                                                <a href="javascript:void(0)" (click)="showDebitDetail(item, null)">
+                                                    {{ (item.totalBillingUnpaid + item.totalObhUnPaidAmount) |
+                                                    number:'.0-3'}}
+                                                </a>
+                                            </td>
+
+                                            <td class="text-right">
+                                                <span [ngClass]="'text-danger'">
+                                                    <a href="javascript:void(0)"
+                                                        (click)="showDebitDetail(item, null, null, null, 'Over1To15')">
+                                                        {{ item.totalOver1To15Day | number: '.0-3' }}
+                                                    </a>
+                                                </span>
+                                                <a (click)="calculateOverDue(1)">
+                                                    <i class="la la-calculator"></i>
+                                                </a>
+                                            </td>
+                                            <td class="text-right">
+                                                <span [ngClass]="'text-danger'">
+                                                    <a href="javascript:void(0)"
+                                                        (click)="showDebitDetail(item, null, null, null, 'Over15To30')">
+                                                        {{ item.totalOver15To30Day | number: '.0-3' }}
+                                                    </a>
+                                                </span>
+                                                <a (click)="calculateOverDue(2)">
+                                                    <i class="la la-calculator"></i>
+                                                </a>
+                                            </td>
+                                            <td class="text-right">
+                                                <span [ngClass]="'text-danger'">
+                                                    <a href="javascript:void(0)"
+                                                        (click)="showDebitDetail(item, null, null, null,'Over30')">
+                                                        {{ item.totalOver30Day | number: '.0-3' }}
+                                                    </a>
+                                                </span>
+                                                <a (click)="calculateOverDue(3)">
+                                                    <i class="la la-calculator"></i>
+                                                </a>
+                                            </td>
+                                            <td class="text-right">{{ item.currency}}</td>
+                                        </tr>
+                                        <tr class="collapse-panel-row" app-table-collapse-row [id]="'id-00' + (i + 1)"
+                                            [parentId]="'#service-table-' + i">
+                                            <table class="table table-secondary dataTable">
+                                                <thead app-table-header [headers]="subHeaders"
+                                                    (onClick)="sortDetailMoreGuaranteed(item ,$event.sortField, $event.order)">
+                                                </thead>
+                                                <tbody>
+                                                    <tr
+                                                        *ngFor="let element of item.accountReceivableGrpServices; let j = index; trackBy: trackByFn">
+                                                        <td>
+                                                            <ng-container *ngIf="agreementId&&menuSpecialPermission | async | specialPermission:'ReCalculateARSummary'">
+                                                                <button title="Calculate Accounts Receivable Payable"
+                                                                    (click)="onClickCalculateService(element,item)"
+                                                                    class="btn btn-primary btn-sm m-btn--pill m-btn--icon m-btn--icon-only">
+                                                                    <i class="la la-calculator"></i>
+                                                                </button>
+                                                            </ng-container>
+
+                                                            <ng-container *ngIf="partnerId && menuSpecialPermission | async | specialPermission:'ReCalARSumNoContract'">
+                                                            <button title="Calculate Accounts Receivable Payable"
+                                                                (click)="onClickCalculateService(element,item)"
+                                                                class="btn btn-primary btn-sm m-btn--pill m-btn--icon m-btn--icon-only">
+                                                                <i class="la la-calculator"></i>
+                                                            </button>
+                                                        </ng-container>
+                                                        </td>
+                                                        <td>{{ element.serviceName }}
+                                                        </td>
+                                                        <td class="text-right">{{ element.debitAmount |
+                                                            number: '.0-3'}}
+                                                        </td>
+
+                                                        <td class="text-right">
+                                                            <a href="javascript:void(0)"
+                                                                (click)="showDebitDetail(item,null, element.officeId, element.serviceCode)">
+                                                                {{ (element.billingAmount+ element.obhBillingAmount)|
+                                                                number: '.0-3'}}
+                                                            </a>
+                                                        </td>
+                                                        <td class="text-right">
+                                                            <a href="javascript:void(0)"
+                                                                (click)="showDebitDetail(item, 'Paid A Part', element.officeId, element.serviceCode)">
+                                                                {{ (element.paidAmount + element.obhPaidAmount) |
+                                                                number: '.0-3' }}
+                                                            </a>
+                                                        </td>
+                                                        <td class="text-right">
+                                                            <a href="javascript:void(0)"
+                                                                (click)="showDebitDetail(item, null, element.officeId, element.serviceCode)">
+                                                                {{ (element.billingUnpaid + element.obhUnPaidAmount) |
+                                                                number: '.0-3'}}
+                                                            </a>
+                                                        </td>
+                                                        <td class="text-right">
+                                                            <span [ngClass]="'text-danger'">
+                                                                <a href="javascript:void(0)"
+                                                                    (click)="showDebitDetail(item, null, element.officeId, element.serviceCode, 'Over1To15')">
+                                                                    {{ element.over1To15Day | number: '.0-3'}}
+                                                                </a>
+                                                            </span>
+                                                        </td>
+                                                        <td class="text-right">
+                                                            <span [ngClass]="'text-danger'">
+                                                                <a href="javascript:void(0)"
+                                                                    (click)="showDebitDetail(item, null, element.officeId, element.serviceCode, 'Over15To30')">
+                                                                    {{ element.over16To30Day | number:'.0-3' }}
+                                                                </a>
+                                                            </span>
+                                                        </td>
+                                                        <td class="text-right">
+                                                            <span [ngClass]="'text-danger'">
+                                                                <a href="javascript:void(0)"
+                                                                    (click)="showDebitDetail(item, null, element.officeId, element.serviceCode, 'Over30')">
+                                                                    {{ element.over30Day | number: '.0-3' }}
+                                                                </a>
+                                                            </span>
+                                                        </td>
+
+                                                    </tr>
+                                                    <tr app-table-none-record
+                                                        *ngIf="!item.accountReceivableGrpServices.length">
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </tr>
+                                    </ng-container>
+                                    <tr app-table-none-record *ngIf="!isLoading && !accReceivableMoreDetail.length">
+                                    </tr>
+                                    <tr app-table-row-loading *ngIf="isLoading && !accReceivableMoreDetail.length"></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<account-receivable-debit-detail-popup></account-receivable-debit-detail-popup>
+<ng-template inject></ng-template>

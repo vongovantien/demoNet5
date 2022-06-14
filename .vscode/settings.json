@@ -1,0 +1,6 @@
+{
+    "editor.semanticHighlighting.enabled": false,
+    "explorer.autoReveal": true,
+    "typescript.tsdk": "node_modules\\typescript\\lib",
+    "angular.enable-strict-mode-prompt": false
+}

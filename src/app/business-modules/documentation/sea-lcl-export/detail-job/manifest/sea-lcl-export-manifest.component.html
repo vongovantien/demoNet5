@@ -1,0 +1,53 @@
+<div class="m-subheader">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <app-breadcrumb></app-breadcrumb>
+        </div>
+        <div class="c-button-actions">
+            <span *ngIf="(isLocked | async) === true" class="m--margin-right-10 align-middle">
+                <i class="fa fa-lock text-danger fa-3x"></i>
+            </span>
+
+            <ng-container *ngIf="isShowUpdate">
+                <button id="button-nested" dropdownToggle type="button" class="btn btn-success"
+                    (click)="previewManifest()">
+                    <i class="la la-print"></i> Preview<span class="caret"></span>
+                </button>
+            </ng-container>
+
+            <ng-container *ngIf="(isLocked | async) === false">
+                <ng-container *ngIf="(permissionShipments | async)?.allowUpdate">
+                    <button type="button" (click)="showRefreshPopup()"
+                        class="btn btn-default  m-btn--icon m-btn--uppercase">
+                        <span>
+                            <i class="la la-refresh"></i>
+                            <span>
+                                Refresh
+                            </span>
+                        </span>
+                    </button>
+                    <app-default-button (click)="addOrUpdateManifest()" [buttonSetting]="saveButtonSetting"
+                        [dataTarget]="saveButtonSetting.dataTarget">
+                    </app-default-button>
+                </ng-container>
+            </ng-container>
+
+            <app-default-button (click)="combackToHBLList()" [buttonSetting]="cancelButtonSetting"></app-default-button>
+        </div>
+    </div>
+</div>
+
+<form-manifest [type]="portType">
+    <housebills-in-manifest (emitVolum)="getVolumn($event)" [isLocked]="(isLocked | async)">
+    </housebills-in-manifest>
+</form-manifest>
+
+<add-hbl-to-manifest-popup-share (onAdd)="onAdd()"></add-hbl-to-manifest-popup-share>
+
+<ng-container *ngIf="dataReport">
+    <app-report-preview [data]="dataReport"></app-report-preview>
+</ng-container>
+
+<confirm-popup [body]="'All manually entered data will be refresh. Are you sure you want to perform this action?'"
+    [labelCancel]="'No'" (onSubmit)="onRefresh()">
+</confirm-popup>

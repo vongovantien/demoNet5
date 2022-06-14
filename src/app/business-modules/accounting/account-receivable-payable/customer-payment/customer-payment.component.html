@@ -1,0 +1,289 @@
+<div class="customer-payment-wrapper m-animate-fade-in">
+    <app-sub-header> </app-sub-header>
+    <div class="m-content">
+        <div class="m-portlet__body">
+            <tabset class="custom-class-tab">
+                <tab heading="Customer/Agency Payment" [active]="true">
+
+                    <customer-payment-form-search></customer-payment-form-search>
+
+                    <div class="m-portlet">
+                        <div class="m-portlet__body">
+                            <div class="m--align-right">
+                                <button class="btn btn-success dropdown-toggle" type="button"
+                                    [dpToggle]="createReceitTypeTpl" position="rightTop" position="bottomCenter">
+                                    <i class="la la-plus"></i>Create Receipt<span class="caret"></span>
+                                </button>
+
+                            </div>
+                            <tabset class="custom-class-tab">
+                                <tab [active]="true">
+                                    <ng-template tabHeading>
+                                        <span class="m--margin-right-10">Payment</span>
+                                        <ng-container *ngIf="!!totalItems">
+                                            <span class="badge badge-info">{{totalItems}}</span>
+                                        </ng-container>
+                                    </ng-template>
+                                    <div class="row">
+                                        <div class="col-lg-12 ">
+                                            <div class="table-wrapper table-scrollable m--margin-top-20"
+                                                id="payment-table">
+                                                <table class="table table-hover table-brand dataTable table-hover">
+                                                    <thead app-table-header [headers]="headers"
+                                                        (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                                                        <th class="first table-actions-col" style="min-width:40px">
+                                                        </th>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let cps of CPs; let i = index; trackBy: trackByFn"
+                                                            [attr.title]="cps.reasonReject"
+                                                            [class.invalid-row]="cps.syncStatus === 'Rejected'"
+                                                            [contextMenu]="receiptContextMenu"
+                                                            (onTouch)="onSelectReceipt(cps)"
+                                                            [class.touch-row]="selectedReceipt?.id === cps.id">
+                                                            <td class="table-actions-col" style="min-width:40px">
+                                                                <div class="table-actions">
+
+                                                                    <app-permission-button type="delete"
+                                                                        *ngIf="(cps.status === 'Draft')"
+                                                                        (onClick)="checkAllowDelete(cps)"
+                                                                        [user]="cps.userCreated" class="icon"
+                                                                        icon="la la-trash text-danger">
+                                                                    </app-permission-button>
+
+                                                                    <button type="button" (click)="cancelReceipt(cps)"
+                                                                        class="btn btn-icon m-btn--icon m-btn--icon-only"
+                                                                        title="Cancel"
+                                                                        *ngIf="(cps.status === 'Done' && cps.syncStatus !=='Synced')">
+                                                                        <i class="la la-times text-danger"></i>
+                                                                    </button>
+
+                                                                </div>
+                                                            </td>
+
+                                                            <td class="text-underline">
+                                                                <div *ngIf="cps.status != 'Cancel'; else CancelNo">
+                                                                    <span>
+                                                                        <a class="pointer"
+                                                                            (click)="checkAllowDetail(cps)">
+                                                                            {{cps.paymentRefNo}}
+                                                                        </a>
+                                                                        <ng-container [ngSwitch]="cps.status">
+                                                                            <span *ngSwitchCase="'Done'"
+                                                                                class="badge badge-success m--margin-left-10">
+                                                                                {{cps.status}}</span>
+                                                                            <span *ngSwitchCase="'Draft'"
+                                                                                class="badge badge-danger m--margin-left-10">
+                                                                                {{cps.status}}</span>
+                                                                        </ng-container>
+
+                                                                        <ng-container [ngSwitch]="cps.syncStatus">
+                                                                            <span *ngSwitchCase="'Synced'"
+                                                                                class="badge badge-success m--margin-left-10">
+                                                                                {{cps.syncStatus}}</span>
+                                                                            <span *ngSwitchCase="'Rejected'"
+                                                                                class="badge badge-danger m--margin-left-10">
+                                                                                {{cps.syncStatus}}</span>
+                                                                        </ng-container>
+                                                                    </span>
+                                                                </div>
+                                                                <ng-template #CancelNo>
+                                                                    <a class="text-muted pointer"
+                                                                        (click)="checkAllowDetail(cps)">{{cps.paymentRefNo}}
+                                                                        <span
+                                                                            class="badge badge-dark m--margin-left-10">
+                                                                            Cancel</span>
+                                                                    </a>
+                                                                </ng-template>
+                                                            </td>
+                                                            <td>
+                                                                <span>
+                                                                    {{cps.paymentDate | date :'dd/MM/yyyy'}}
+                                                                </span>
+                                                            </td>
+                                                            <td style="min-width: 200px; white-space:initial">
+                                                                <span class="text-info">{{cps.customerName}}</span>
+                                                            </td>
+                                                            <td class="text-right">
+                                                                <span>{{(cps.currencyId ===
+                                                                    'VND'?cps.paidAmountVnd:cps.paidAmountUsd) | number
+                                                                    :'.0-3'}}</span>
+                                                            </td>
+                                                            <td style="min-width: 500px; white-space:initial">
+                                                                <span>{{cps.description}}</span>
+                                                            </td>
+                                                            <td>
+                                                                {{cps.class}}
+                                                            </td>
+                                                            <td>
+                                                                {{cps.paymentMethod}}
+                                                            </td>
+                                                            <td class="text-right">
+                                                                <span>{{cps.finalPaidAmount | number :'.0-3'}}</span>
+                                                            </td>
+                                                            <td>
+                                                                <span>{{cps.currencyId}}</span>
+                                                            </td>
+                                                            <td>
+                                                                <span>{{cps.type}}</span>
+                                                            </td>
+                                                            <td>
+                                                                <div
+                                                                    *ngIf="cps.fromDate !=null|| cps.toDate !=null; else DateNo">
+                                                                    <span>{{cps.fromDate | date :'dd/MM/yyyy'}}
+                                                                        -
+                                                                        {{cps.toDate | date :'dd/MM/yyyy'}}</span>
+                                                                </div>
+
+                                                                <ng-template #DateNo></ng-template>
+                                                            </td>
+                                                            <td>
+                                                                <span>{{cps.lastSyncDate | date :'dd/MM/yyyy' }}
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <span
+                                                                    class="text-success">{{cps.userNameCreated}}</span>
+                                                            </td>
+                                                            <td>
+                                                                <span>
+                                                                    {{cps.datetimeCreated | date :'dd/MM/yyyy'}}
+                                                                </span>
+                                                            </td>
+
+                                                            <td>
+                                                                <span>
+                                                                    {{cps.datetimeModified | date: 'dd/MM/yyyy'}}
+                                                                </span>
+                                                            </td>
+
+                                                        </tr>
+                                                        <tr class="loading-wrapper" *ngIf="(isLoading | async) "
+                                                            app-table-row-loading>
+                                                        </tr>
+                                                        <tr *ngIf="!(isLoading | async)  && !CPs.length"
+                                                            app-table-none-record>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <app-pagination [total]="totalItems" [pageNum]="page" [data]="dataSearch"
+                                                [itemPerPage]="pageSize" (onChange)="updatePagingData($event)">
+                                            </app-pagination>
+                                        </div>
+                                    </div>
+                                </tab>
+                            </tabset>
+                        </div>
+                    </div>
+                </tab>
+                <tab (selectTab)="onSelectTab('AR')">
+                    <ng-template tabHeading>
+                        <a routerLink="/home/accounting/account-receivable-payable/summary" style="color:#6f727d">
+                            AR Summary
+                        </a>
+                    </ng-template>
+                </tab>
+                <tab (selectTab)="onSelectTab('HISTORY')">
+                    <ng-template tabHeading>
+                        <a routerLink="/home/accounting/account-receivable-payable/history-payment"
+                            style="color:#6f727d">
+                            Payment History
+                        </a>
+                    </ng-template>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+</div>
+
+<!-- Popup -->
+<ng-template inject></ng-template>
+
+
+<app-context-menu #receiptContextMenu (clickOutside)="selectedReceipt = null">
+    <ng-container *ngIf="selectedReceipt?.status === 'Done' && selectedReceipt?.syncStatus !== 'Synced'">
+        <div class="menu-context__item" (click)="confirmSyncReceipt(selectedReceipt)">
+            <span><i class="la la-cloud-upload "></i><span> Sync to accountant system</span></span>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="selectedReceipt?.status !== 'Draft'">
+        <div class="menu-context__item" (click)="confirmCopyReceipt()">
+            <span><i class="la la-copy"></i><span> Copy receipt {{selectedReceipt?.paymentRefNo}}</span></span>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="selectedReceipt?.status === 'Done' && selectedReceipt.class !== 'Clear Debit'">
+        <div class="menu-context__item" (click)="confirmCreateClearDebit()">
+            <span><i class="la la-plus"></i><span> Clear debit receipt {{selectedReceipt?.paymentRefNo}}</span></span>
+        </div>
+    </ng-container>
+    <!-- <div class="menu-context__item">
+        <span><i class="la la-print"></i><span>Print...</span></span>
+    </div> -->
+    <div class="menu-context__item" [dpToggle]="exportTpl" position="rightTop" trigger="hover" ClickStopPropagation>
+        <div class="d-flex justify-content-between">
+            <div>
+                <i class="la la-download"></i>
+                <span>Export...</span>
+            </div>
+            <div>
+                <span><i class="la la-caret-right"></i></span>
+            </div>
+        </div>
+
+    </div>
+    <ng-container *ngIf="(selectedReceipt?.status === 'Done' && selectedReceipt?.syncStatus !=='Synced')">
+        <hr />
+        <div class="menu-context__item" (click)="showQuickUpdatePopup('paymentRefNo')">
+            <span><i class="la la-edit"></i><span> Update receipt no </span></span>
+        </div>
+        <div class="menu-context__item" (click)="showQuickUpdatePopup('paymentDate')">
+            <span><i class="la la-edit"></i><span>Update payment date</span></span>
+        </div>
+        <div class="menu-context__item" (click)="showQuickUpdatePopup('paymentMethod')">
+            <span><i class="la la-edit"></i><span>Update payment method</span></span>
+        </div>
+        <div class="menu-context__item" (click)="showQuickUpdatePopup('bankAccountNo')">
+            <span><i class="la la-edit"></i><span>Update account no</span></span>
+        </div>
+        <div class="menu-context__item" (click)="showQuickUpdatePopup('obhpartnerId')">
+            <span><i class="la la-edit"></i><span>Update OBH partner</span></span>
+        </div>
+    </ng-container>
+
+    <!-- <ng-container *ngIf="(selectedReceipt?.status === 'Done' && selectedReceipt?.syncStatus !=='Synced')">
+        <hr />
+        <div class="menu-context__item" (click)="cancelReceipt(selectedReceipt)">
+            <span><i class="la la-times-circle"></i><span>Cancel receipt</span></span>
+        </div>
+    </ng-container> -->
+    <ng-container *ngIf="selectedReceipt?.status === 'Draft'">
+        <div class="menu-context__item">
+            <app-permission-button type="delete" (onClick)="checkAllowDelete(selectedReceipt)"
+                [user]="selectedReceipt.userCreated" class="icon" icon="la la-trash text-danger" mode="context-menu"
+                title="Delete receipt">
+            </app-permission-button>
+        </div>
+    </ng-container>
+
+</app-context-menu>
+
+<form-quick-update-receipt [updateKey]="selectedUpdateKey" (onSuccess)="onUpdateReceiptSuccess($event)">
+</form-quick-update-receipt>
+
+<app-dropdown #exportTpl>
+    <span class="dropdown-item pointer" (click)="exportAdvanceReceipt()">
+        <span>
+            <i class="la la-file-excel-o"></i>
+            Advance receipt
+        </span>
+    </span>
+</app-dropdown>
+
+<app-dropdown #createReceitTypeTpl>
+    <a class="dropdown-item pointer" (click)="gotoCreateReceipt('CUSTOMER')">Customer Receipt</a>
+    <ng-container *ngIf="!isProduction">
+        <a class="dropdown-item pointer" (click)="gotoCreateReceipt('AGENT')">Agency
+            Receipt</a>
+    </ng-container>
+</app-dropdown>

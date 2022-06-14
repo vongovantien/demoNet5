@@ -1,0 +1,168 @@
+<div class="modal fade form-edit-stage" role="dialog" aria-hidden="true" bsModal #popup="bs-modal"
+    (onHide)="onHide($event)" (onShow)="onShow($event)">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Stage Detail</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="m-form m-form--state" [formGroup]="form" novalidate (ngSubmit)="onSubmit(form)">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Stage name
+                                </label>
+                                <input type="text" class="form-control m-input m-input--square"
+                                    [formControl]="stageName" formControlName="stageName">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Role
+                                </label>
+                                <input type="text" class="form-control m-input m-input--square"
+                                    [formControl]="departmentName" formControlName="departmentName">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSummited && processTime.value === 0}">
+                                <label class="form-control-label">
+                                    Process time (h)
+                                </label>
+                                <input type="number" numeric [decimals]="5" class="form-control m-input m-input--square"
+                                    [formControl]="processTime" formControlName="processTime" min="1">
+                                <div class="form-control-feedback" *ngIf="isSummited && processTime.value === 0">
+                                    Process time must greater than 0 !
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group form-control-date">
+                                <label class="form-control-label">
+                                    Deadline
+                                </label>
+                                <div class="m-input-icon m-input-icon--right down">
+                                    <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                        formControlName="deadLineDate" placeholder="Choose date"
+                                        [singleDatePicker]="true" [timePicker]="true" [timePicker24Hour]="true"
+                                        [locale]="{format: 'DD/MM/YYYY'}" [autoApply]="true">
+                                    <span class=" m-input-icon__icon m-input-icon__icon--right ">
+                                        <span>
+                                            <i class="la la-calendar "></i>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ">
+                        <div class="col-lg-6 ">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSummited && !mainPersonInCharge.value}">
+                                <label class="form-control-label ">
+                                    Main person incharge <span class="m--font-danger">(*)</span>
+                                </label>
+                                <app-combo-grid-virtual-scroll
+                                    [currentActiveItemId]="{field:'id', value: mainPersonInCharge.value}"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'mainPersonInCharge')"
+                                    [selectedDisplayFields]="['username']" [dataSources]="systemUsers"
+                                    [displayFields]="displayFields" placeholder="Please select"
+                                    (remove)="resetFormControl(mainPersonInCharge)">
+                                </app-combo-grid-virtual-scroll>
+                                <div class="form-control-feedback" *ngIf="isSummited && !mainPersonInCharge.value">
+                                    Main person in charge is required!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 ">
+                            <div class="form-group">
+                                <label class="form-control-label ">
+                                    Real person incharge
+                                </label>
+                                <app-combo-grid-virtual-scroll
+                                    [currentActiveItemId]="{field:'id', value: realPersonInCharge.value}"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'realPersonInCharge')"
+                                    [selectedDisplayFields]="['username']" [dataSources]="systemUsers"
+                                    [displayFields]="displayFields" placeholder="Please select"
+                                    (remove)="resetFormControl(realPersonInCharge)">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ">
+                        <div class="col-lg-6 ">
+                            <div class="form-group ">
+                                <label class="form-control-label ">
+                                    Description
+                                </label>
+                                <textarea class="form-control m-input m-input--square " rows="3 "
+                                    [formControl]="description" formControlName="description"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 ">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': (status.value === 'Pending' ||status.value === 'Deleted') && !comment.value}">
+                                <label class="form-control-label ">
+                                    Comment
+                                </label>
+                                <textarea class="form-control m-input m-input--square " rows="3 "
+                                    [formControl]="comment" formControlName="comment"></textarea>
+                                <div class="form-control-feedback"
+                                    *ngIf="(status.value === 'Pending' || status.value === 'Deleted') && !comment.value">
+                                    Comment is required!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ">
+                        <div class="col-lg-6 ">
+                            <div class="form-group ">
+                                <label class="form-control-label ">
+                                    Status
+                                </label>
+                                <ng-select class="custom" [items]="statusStage" placeholder="Select status"
+                                    formControlName="status">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mt-3">
+                            <div class="border-top text-center p-3">
+                                <button class="btn btn-brand  m-btn--icon m-btn--uppercase mr-2" type="submit">
+                                    <span>
+                                        <i class="la la-save "></i>
+                                        <span>
+                                            Save
+                                        </span>
+                                    </span>
+                                </button>
+                                <button type="button" class="btn btn-cancel  m-btn--icon m-btn--uppercase "
+                                    (click)="onCancel()">
+                                    <span>
+                                        <i class="la la-ban "></i>
+                                        <span>
+                                            cancel
+                                        </span>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <!-- <div class="modal-footer m--align-center ">
+
+            </div> -->
+        </div>
+    </div>
+</div>

@@ -1,0 +1,166 @@
+<div class="m-subheader">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <app-breadcrumb></app-breadcrumb>
+        </div>
+    </div>
+</div>
+<div class="m-content">
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <div class="m-form m-form--state">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <input type="file" #inputFile id="inputFile" class="form-control m-input m-input--square"
+                            placeholder="" (change)="chooseFile($event)" onclick="this.value=null;" accept=".xlsx">
+                        <span class="m-form__help">
+                            <a class="btn-link" href="javascript:void(0)" (click)="downloadSample()">Download sample</a>
+                        </span>
+                    </div>
+                    <div class="col-lg-7 offset-lg-1">
+                        <div class="row">
+                            <div class="col-sm-4 m--margin-top-10 text-right">
+                                <span class="m--font-brand m--font-bolder">
+                                    Total rows: {{totalRows}}
+                                </span>
+                            </div>
+                            <div class="col-sm-4 m--margin-top-10 text-right">
+                                <span class="m--font-success m--font-bolder">
+                                    Valid rows: {{totalValidRows}}
+                                </span>
+                            </div>
+                            <div class="col-sm-4 m--margin-top-10 text-right">
+                                <span class="m--font-danger  m--font-bolder">
+                                    Invalid rows: {{(totalRows - totalValidRows)}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions m--margin-top-5 m--align-right">
+                    <button type="button" class="btn btn-danger  m-btn--icon m-btn--uppercase" (click)="hideInvalid()">
+                        <span>
+                            <span *ngIf="isShowInvalid">
+                                Show invalid rows
+                            </span>
+                            <span *ngIf="isShowInvalid == false">
+                                Show All
+                            </span>
+                        </span>
+                    </button>
+                    <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="import()">
+                        <span>
+                            <i class="la la-save"></i>
+                            <span>
+                                save
+                            </span>
+                        </span>
+                    </button>
+                    <button type="button" class="btn  m-btn--icon m-btn--uppercase"
+                        routerLink="/home/accounting/account-receivable-payable">
+                        <span>
+                            <i class="la la-ban"></i>
+                            <span>
+                                close
+                            </span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="m-portlet" style="position: relative">
+        <div class="m-portlet__body">
+            <div class="table-wrapper" id="">
+                <table class="table table-striped table-brand dataTable">
+                    <thead app-table-header [headers]="headers"
+                        (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                        <th class="first table-actions-col">
+                            No.
+                        </th>
+                    </thead>
+                    <tbody *ngIf="data">
+                        <ng-container *ngFor="let item of pagedItems; let i = index">
+                            <tr [ngClass]="{ 'invalid-row': !item.isValid }">
+                                <td class="">
+                                    <span>{{ (i + startIndex + 1) }}</span>
+                                </td>
+                                <td class="">
+                                    <span *ngIf="item.invoiceNoError === null">{{ item.invoiceNo }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.invoiceNoError !== null">{{item.invoiceNoError }}</span>
+                                </td>
+                                <td class="">
+                                    <span *ngIf="item.serieNoError === null">{{ item.serieNo }}</span>
+                                    <span class="m--font-danger" *ngIf="item.serieNoError !== null">{{
+                                        item.serieNoError }}</span>
+                                </td>
+                                <td class="">
+                                    <span *ngIf="item.partnerAccountError === null">{{ item.partnerAccount }}</span>
+                                    <span class="m--font-danger" *ngIf="item.partnerAccountError !== null">{{
+                                        item.partnerAccountError }}</span>
+                                </td>
+                                <td class="">
+                                    <span>{{ item.partnerName }}</span>
+                                </td>
+                                <td class="">
+                                    <span
+                                        *ngIf="item.paymentAmountError === null">{{ item.paymentAmount | number: '.0-3'}}</span>
+                                    <span class="m--font-danger" *ngIf="item.paymentAmountError !== null">{{
+                                        item.paymentAmountError }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="!item.currencyIdError; else curE">{{ item.currencyId}}</span>
+                                    <ng-template #curE>
+                                        <span class="m--font-danger">
+                                            {{item.currencyIdError}}
+                                        </span>
+                                    </ng-template>
+                                </td>
+                                <td>
+                                    <span
+                                        *ngIf="!item.exchangeRateError; else exE">{{item.exchangeRate | number: '.0-3'}}</span>
+                                    <ng-template #exE>
+                                        <span class="m--font-danger">
+                                            {{item.exchangeRateError}}
+                                        </span>
+                                    </ng-template>
+                                </td>
+                                <td>
+                                    <span *ngIf="!item.paymentMethodError; else pmE">{{item.paymentMethod}}</span>
+                                    <ng-template #pmE>
+                                        <span class="m--font-danger">
+                                            {{item.paymentMethodError}}
+                                        </span>
+                                    </ng-template>
+                                </td>
+                                <td class="">
+                                    <span
+                                        *ngIf="item.paidDateError === null">{{ item.paidDate | date: 'dd/MM/yyyy'  }}</span>
+                                    <span class="m--font-danger" *ngIf="item.paidDateError !== null">{{
+                                        item.paidDateError }}</span>
+                                </td>
+                                <td class="">
+                                    <span *ngIf="item.paymentTypeError === null">{{ item.paymentType }}</span>
+                                    <span class="m--font-danger" *ngIf="item.paymentTypeError !== null">{{
+                                        item.paymentTypeError }}</span>
+                                </td>
+                                <td class="">
+                                    <span *ngIf="item.note !== null">{{ item.note }}</span>
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </div>
+
+            <app-pagination [total]="totalItems" [pageNum]="page" [itemPerPage]="pageSize"
+                (onChange)="updatePagingData($event)"></app-pagination>
+        </div>
+    </div>
+
+</div>
+
+<info-popup [body]="'There are invalid data. Please check Import!'" [title]="'Notification'" [label]="'Ok'">
+</info-popup>

@@ -1,0 +1,140 @@
+<div class="modal m-animate-fade-in" role="dialog" bsModal #popup="bs-modal" aria-hidden="true">
+    <div class="modal-dialog c-modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Shipment Attach Files</h5>
+                <button type="button" (click)="hide()" class="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="files-attach-wp m-animate-fade-in">
+                    <ng-container *ngIf="!readonly">
+                        <div class="m-portlet">
+                            <div class="m-portlet__body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="text-center">
+                                            <div class="dropzone">
+                                                <div class="dropzone__message">
+                                                    <h3 class="dropzone__title">
+                                                        Click to upload
+                                                        <span>
+                                                            <i class="fa fa-upload" aria-hidden="true"></i>
+                                                        </span>
+                                                    </h3>
+                                                </div>
+                                                <input type="file" multiple (change)="chooseFile($event)"
+                                                    [accept]="'image/*,.txt,.pdf,.doc,.xlsx,.xls'"
+                                                    title="Upload files" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <div class="m-portlet list-files">
+                        <div class="m-portlet__body">
+                            <ul class="list-group list-unstyled">
+                                <ng-container *ngIf="!!(files.length)">
+                                    <br/>
+                                            <div class="float-left" *ngIf="files.length > 1">
+                                                <button type="button" class="btn btn-info m-btn--icon m-btn--uppercase " (click)="dowloadAllAttach()">
+                                                    <span>
+                                                        <i class="la la-download"></i>
+                                                        <span> Download All Files</span>
+                                                    </span>
+                                                </button>  
+                                            </div>
+                                    <br/>
+                                    <li class="list-group-item file__item m-animate-fade-in"
+                                        *ngFor="let file of files; let i = index; trackBy:trackByFn">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="d-flex align-items-center">
+                                                <div class="file-item__icon">
+                                                    <ng-container [ngSwitch]="(file.name | extension)">
+                                                        <ng-container *ngSwitchCase="'pdf'">
+                                                            <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
+                                                        </ng-container>
+                                                        <ng-container *ngSwitchCase="'doc'">
+                                                            <i class="fa fa-file-word-o fa-2x" aria-hidden="true"></i>
+                                                        </ng-container>
+                                                        <ng-container *ngSwitchCase="'docx'">
+                                                            <i class="fa fa-file-word-o fa-2x" aria-hidden="true"></i>
+                                                        </ng-container>
+                                                        <ng-container *ngSwitchCase="'xlsx'">
+                                                            <i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i>
+                                                        </ng-container>
+                                                        <ng-container *ngSwitchCase="'xls'">
+                                                            <i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i>
+                                                        </ng-container>
+                                                        <ng-container *ngSwitchCase="'txt'">
+                                                            <i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i>
+                                                        </ng-container>
+                                                        <ng-container *ngSwitchCase="'jpg'">
+                                                            <i class="fa fa-file-image-o fa-2x" aria-hidden="true"></i>
+                                                        </ng-container>
+                                                        <ng-container *ngSwitchCase="'png'">
+                                                            <i class="fa fa-file-image-o fa-2x" aria-hidden="true"></i>
+                                                        </ng-container>
+                                                        <ng-container *ngSwitchDefault>
+                                                            <i class="fa fa-file fa-2x" aria-hidden="true"></i>
+                                                        </ng-container>
+                                                    </ng-container>
+                                                </div>
+                                                <div class="file-item__name m--margin-left-20">
+                                                    <a [href]="file.url" target="_blank" [title]="file.name"
+                                                        download>{{file.name}}</a>
+                                                    <ng-container *ngIf="!readonly">
+                                                        <span class="pointer text-center">
+                                                            <a title="Delete" (click)="deleteFile(file)">
+                                                                <i class="la la-times fa-lg text-danger"></i>
+                                                            </a>
+                                                        </span>
+                                                    </ng-container>
+                                                </div>
+                                            </div>
+                                            <div class="text-right">
+                                                <span>Uploaded: {{file.dateTimeCreated | date: 'dd/MM/yyyy'}} by </span>
+                                                <span class="text-success">{{file.userCreated}}</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ng-container>
+                                <li *ngIf="!(files?.length) && !isLoading">
+                                    <div class="no-data">
+                                        <i class="flaticon-coins"></i>
+                                        <span class="no-data-text">No files found</span>
+                                    </div>
+                                </li>
+                                <li *ngIf="isLoading">
+                                    <div class="on-loading text-center">
+                                        <div class="m-loader m-loader--brand">
+                                        </div><span>Loading</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ng-container *ngIf="!readonly">
+                <div class="modal-footer m--align-center">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="m--align-center m--margin-top-20">
+                                <app-default-button [buttonSetting]="saveButtonSetting" (onClick)="hide()">
+                                </app-default-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+
+        </div>
+    </div>
+</div>
+
+<ng-template inject></ng-template>

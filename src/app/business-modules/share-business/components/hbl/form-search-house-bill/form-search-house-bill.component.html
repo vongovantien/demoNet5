@@ -1,0 +1,59 @@
+<form [formGroup]="formSearch">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label class="form-control-label" for="">
+                    Search text
+                </label>
+                <input type="text" class="form-control m-input m-input--square" formControlName="searchText"
+                    placeholder="Search text">
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label class="form-control-label" for="">
+                    Select filter
+                </label>
+                <select class="form-control" formControlName="filterType">
+                    <option *ngFor="let type of filterTypes" [ngValue]="type">{{type.title}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group form-control-serviceDateFromTo daterange-rtl">
+                <label class="form-control-label" for="">
+                    Service Date From - To
+                </label>
+                <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd [autoApply]="true"
+                    [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" [ranges]="ranges"
+                    [alwaysShowCalendars]="true" formControlName="serviceDate" name="daterange"
+                    placeholder="From date - to date" readonly />
+            </div>
+        </div>
+
+    </div>
+    <div class="form-actions">
+        <div class="row">
+            <div class="col-lg-6"></div>
+            <div class="col-lg-6 m--align-right">
+                <button (click)="searchHbl()" type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase">
+                    <span>
+                        <i class="la la-search"></i>
+                        <span>
+                            Search
+                        </span>
+                    </span>
+                </button>
+                <button type="button" (click)="resetSearch()" class="btn btn-default  m-btn--icon m-btn--uppercase">
+                    <span>
+                        <i class="la la-refresh"></i>
+                        <span>
+                            Reset
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+</form>

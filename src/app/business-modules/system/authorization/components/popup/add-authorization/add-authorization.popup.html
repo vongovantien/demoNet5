@@ -1,0 +1,199 @@
+<div class="modal fade" id="add-authorization-modal" bsModal #popup="bs-modal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Authorize Request</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closePopup()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="m-form m-form--state" [formGroup]="formAuthorization">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger': (authorizationName.dirty && !authorizationName.valid) || (isSubmited && !authorizationName.valid) }">
+                                <label class="form-control-label" required>
+                                    Name
+                                </label>
+                                <input type="text" class="form-control m-input m-input--square"
+                                    placeholder="Please enter name" name="authorizationName" autocomplete="nope"
+                                    formControlName="authorizationName">
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmited && (authorizationName.errors | equalError: 'required') || (authorizationName.errors | equalError: 'required') && authorizationName.dirty">
+                                    Name is required
+                                </div>
+                                <div class="form-control-feedback"
+                                    *ngIf="authorizationName.errors | equalError: 'maxlength'">
+                                    Name is required least 250 characters
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Person In Charge
+                                </label>
+                                <ng-select class="custom" formControlName="personInCharge" [disabled]="true"
+                                    [items]="personInChargeList | async" bindLabel="username" bindValue="id">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger': isSubmited && (authorizedPerson.errors | equalError: 'required') }">
+                                <label class="form-control-label" required>
+                                    Authorized Person
+                                </label>
+                                <ng-select class="custom" formControlName="authorizedPerson" bindLabel="username"
+                                    bindValue="id" [items]="personInChargeList | async">
+                                </ng-select>
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmited && (authorizedPerson.errors | equalError: 'required')">
+                                    Authorized Person is required
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger': isSubmited && (authorizationService.errors | equalError: 'required') }">
+                                <label class="form-control-label" required>
+                                    Service
+                                </label>
+                                <ng-select class="custom" formControlName="authorizationService" [multiple]="true"
+                                    [items]="serviceList | async" bindValue="value" bindLabel="displayName">
+                                </ng-select>
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmited && (authorizationService.errors | equalError: 'required')">
+                                    Service is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSubmited && (!effectiveDate.value || !effectiveDate.value.startDate)}">
+                                <label class="form-control-label" required>
+                                    Effective Date
+                                </label>
+                                <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                    <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                        [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" [singleDatePicker]="true"
+                                        name="daterange" [autoApply]="true" formControlName="effectiveDate" readonly
+                                        [minDate]="minDateEffective" />
+                                    <span class="m-input-icon__icon m-input-icon__icon--right">
+                                        <span>
+                                            <i class="la la-calendar"></i>
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmited && (!effectiveDate.value || !effectiveDate.value.startDate)">
+                                    Effective Date is required
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Expiration Date
+                                </label>
+                                <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                    <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                        [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" [singleDatePicker]="true"
+                                        name="daterange" [autoApply]="true" formControlName="expirationDate" readonly
+                                        [minDate]="minDateExpired" />
+                                    <span class="m-input-icon__icon m-input-icon__icon--right">
+                                        <span>
+                                            <i class="la la-calendar"></i>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>
+                                    Note
+                                </label>
+                                <textarea formControlName="authorizationNote"
+                                    class="form-control m-input m-input--square" rows="6"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="row">
+                                <label class="col-lg-4 col-form-label form-control-label"> Status </label>
+                                <div class="col-lg-8">
+                                    <app-switch formControlName="authorizationActive" [disabled]="action==='create'"
+                                        (click)="changeStatus($event)">
+                                    </app-switch>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <ng-container *ngIf="!!isShowUpdate">
+                                <div class="row">
+
+                                    <div class="col-md-6 m--margin-top-10 m--margin-bottom-5">
+                                        <span class="m--font-bolder">Created:</span>
+                                        <span class="m--font-success m--margin-left-5">{{datetimeCreated |
+                                            date:'dd/MM/yyyy h:mm:ss a'}}</span>
+                                        <span class="m--font-bolder m--margin-left-5">by</span>
+                                        <span class="m--font-success m--margin-left-5">{{userCreatedName}}</span>
+                                    </div>
+                                    <div class="col-md-6 m--margin-top-10 m--margin-bottom-5">
+                                        <span class="m--font-bolder">Modified:</span>
+                                        <ng-container *ngIf="!!userModifiedName">
+                                            <span class="m--font-success m--margin-left-5">{{datetimeModified |
+                                                date:'dd/MM/yyyy h:mm:ss a'}}</span>
+                                            <span class="m--font-bolder m--margin-left-5">by</span>
+                                            <span class="m--font-success m--margin-left-5">{{userModifiedName}}</span>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer m--align-center">
+                <button class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="saveAuthorization()"
+                    *ngIf="!!authorization && authorization.active && authorization.permission.allowUpdate">
+                    <span>
+                        <i class="la la-save"></i>
+                        <span>
+                            Save
+                        </span>
+                    </span>
+                </button>
+                <button type="button" class="btn btn-cancel  m-btn--icon m-btn--uppercase" (click)="closePopup()">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span>
+                            cancel
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<confirm-popup #confirmUpdatePopup [body]="'Do you want to save the changes?'" [labelConfirm]="'Yes'"
+    (onSubmit)="onUpdateAuthorization()">
+</confirm-popup>
+<confirm-popup #confirmCancelPopup [body]="'Do you want to exit without saving?'" [labelConfirm]="'Yes'"
+    (onSubmit)="onCancelAuthorization()">
+</confirm-popup>
+
+<confirm-popup #confirmChangeStatus body="Do you want to turn off this authorization?" [labelConfirm]="'Yes'"
+    (onSubmit)="onCnfirmChangeStatus()">
+</confirm-popup>

@@ -1,0 +1,129 @@
+<div class="modal fade" role="dialog" bsModal #popup="bs-modal">
+    <div class="modal-dialog modal-xs" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{commodity.id ? 'Edit Commodity' : 'Add New Commodity'}}</h5>
+                <button type="button" (click)="closePopup()" class="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form [formGroup]="formCommodity">
+                <div class="modal-body">
+                    <!--begin::add-commodity-form-->
+                    <div class="m-form m-form--state">
+                        <div class="form-group row"
+                            [ngClass]="{ 'm-form__group has-danger': (commodityCode.dirty && !commodityCode.valid) || (isSubmited && !commodityCode.valid) }">
+                            <label class="col-lg-4 col-form-label form-control-label">
+                                Code: <span class="m--font-danger">(*)</span>
+                            </label>
+                            <div class="col-lg-8">
+                                <input type="text" class="form-control m-input m-input-group--square"
+                                    formControlName="commodityCode" placeholder="Please enter code"
+                                    [attr.disabled]="commodity.id ? '' : null">
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmited && (commodityCode.errors | equalError: 'required') || (commodityCode.errors | equalError: 'required') && commodityCode.dirty">
+                                    Code is required
+                                </div>
+                                <div class="form-control-feedback"
+                                    *ngIf="commodityCode.errors | equalError: 'minlength'">
+                                    Min length must be greater than or equal to 2
+                                </div>
+                                <div class="form-control-feedback"
+                                    *ngIf="commodityCode.errors | equalError: 'maxlength'">
+                                    Max length must be less than or equal 25
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row"
+                            [ngClass]="{ 'm-form__group has-danger': (commodityNameEn.dirty && !commodityNameEn.valid) || (isSubmited && !commodityNameEn.valid) }">
+                            <label class="col-lg-4 col-form-label form-control-label">
+                                Name (EN): <span class="m--font-danger">(*)</span>
+                            </label>
+                            <div class="col-lg-8">
+                                <input type="text" class="form-control m-input m-input-group--square"
+                                    formControlName="commodityNameEn" required placeholder="Please enter name (EN)">
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmited && (commodityNameEn.errors | equalError: 'required') || (commodityNameEn.errors | equalError: 'required') && commodityNameEn.dirty">
+                                    Name(EN) is required
+                                </div>
+                                <div class="form-control-feedback"
+                                    *ngIf="commodityNameEn.errors | equalError: 'minlength'">
+                                    Min length must be greater than or equal to 2
+                                </div>
+                                <div class="form-control-feedback"
+                                    *ngIf="commodityNameEn.errors | equalError: 'maxlength'">
+                                    Max length must be less than or equal 250
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row"
+                            [ngClass]="{ 'm-form__group has-danger': (commodityNameVn.dirty && !commodityNameVn.valid) || (isSubmited && !commodityNameVn.valid) }">
+                            <label class="col-lg-4 col-form-label form-control-label">
+                                Name (Local): <span class="m--font-danger">(*)</span>
+                            </label>
+                            <div class="col-lg-8">
+                                <input type="text" class="form-control m-input m-input-group--square"
+                                    formControlName="commodityNameVn" required placeholder="Please enter name (Local)">
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmited && (commodityNameVn.errors | equalError: 'required') || (commodityNameVn.errors | equalError: 'required') && commodityNameVn.dirty">
+                                    Name (Local) is required
+                                </div>
+                                <div class="form-control-feedback"
+                                    *ngIf="commodityNameVn.errors | equalError: 'minlength'">
+                                    Min length must be greater than or equal to 2
+                                </div>
+                                <div class="form-control-feedback"
+                                    *ngIf="commodityNameVn.errors | equalError: 'maxlength'">
+                                    Max length must be less than or equal 250
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row"
+                            [ngClass]="{ 'm-form__group has-danger': isSubmited && (commodityGroup.errors | equalError: 'required') }">
+                            <label class="col-lg-4 col-form-label form-control-label">
+                                Group: <span class="m--font-danger">(*)</span>
+                            </label>
+                            <div class="col-lg-8">
+                                <ng-select formControlName="commodityGroup" placeholder="Select group commodity"
+                                    [clearable]="true" [items]="groups" class="custom" bindLabel="text"
+                                    (remove)="commodity.commodityGroupId = null; isSubmited">
+                                </ng-select>
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmited && (commodityGroup.errors | equalError: 'required')">
+                                    Group commodity is required
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row" *ngIf="commodity.id">
+                            <label class="col-lg-4 col-form-label form-control-label"> Active </label>
+                            <div class="col-lg-8">
+                                <app-switch formControlName="commodityActive">
+                                </app-switch>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end:add-commodity-form -->
+                </div>
+                <div class="modal-footer m--align-center">
+                    <button class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="saveCommodity()">
+                        <span>
+                            <i class="la la-save"></i>
+                            <span>
+                                Save
+                            </span>
+                        </span>
+                    </button>
+                    <button type="button" class="btn btn-cancel  m-btn--icon m-btn--uppercase" (click)="closePopup()">
+                        <span>
+                            <i class="la la-ban"></i>
+                            <span>
+                                cancel
+                            </span>
+                        </span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

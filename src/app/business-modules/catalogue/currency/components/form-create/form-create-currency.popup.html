@@ -1,0 +1,53 @@
+<div class="modal fade" role="dialog" bsModal #popup="bs-modal">
+    <div class="modal-dialog modal-xs" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{isUpdate ? 'Update' : 'Add'}} currency</h5>
+                <button type="button" class="close" aria-label="Close" (click)=hide()>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="m-form m-form--state" [formGroup]="form">
+                    <div class="form-group row"
+                        [ngClass]="{ 'm-form__group has-danger': isSubmitted && !form.controls['code'].valid }">
+                        <label class="col-lg-4 col-form-label form-control-label" required> Currency Code </label>
+                        <div class="col-lg-8">
+                            <input type="text" class="form-control m-input m-input--square"
+                                placeholder="Please enter currency code" formControlName="code"
+                                [attr.disabled]="!isUpdate ? null : 'disabled'">
+                        </div>
+                    </div>
+                    <div class="form-group row"
+                        [ngClass]="{ 'm-form__group has-danger': isSubmitted && !form.controls['name'].valid }">
+                        <label class="col-lg-4 col-form-label form-control-label" required> Currency name </label>
+                        <div class="col-lg-8">
+                            <input type="text" class="form-control m-input m-input--square"
+                                placeholder="Please enter currency name" formControlName="name">
+                        </div>
+                    </div>
+                    <ng-container *ngIf="isUpdate">
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-form-label form-control-label"> Default </label>
+                            <div class="col-lg-8">
+                                <app-switch formControlName="default">
+                                </app-switch>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-form-label form-control-label"> Active </label>
+                            <div class="col-lg-8">
+                                <app-switch formControlName="active">
+                                </app-switch>
+                            </div>
+                        </div>
+                    </ng-container>
+                </form>
+            </div>
+            <div class="modal-footer m--align-center c-button-actions">
+                <app-default-button [buttonSetting]="saveButtonSetting" (click)="onSubmit()"></app-default-button>
+                <app-default-button [buttonSetting]="cancelButtonSetting" (click)="hide()"></app-default-button>
+            </div>
+        </div>
+    </div>
+</div>

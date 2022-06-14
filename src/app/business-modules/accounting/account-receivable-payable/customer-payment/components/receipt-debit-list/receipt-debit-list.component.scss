@@ -1,0 +1,61 @@
+:host /deep/ {
+    .credit-wrapper {
+        border: 1px solid #ebedf2;
+        min-height: 37px;
+        background-color: #fbfbfb;
+        .credit-container {
+            position: absolute;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+            top: 10px;
+            left: 10px;
+            .credit-item-wrapper {
+                color: #fff;
+                background-color: #3966b6 !important;
+                border-radius: 2px;
+                margin: 0px 5px 5px 0px;
+                .credit-item__icon {
+                    display: inline-block;
+                    padding: 1px 5px;
+                    border-right: 1px solid #b8dbff;
+                    cursor: pointer;
+                    &:hover {
+                        background-color: #d1e8ff;
+                    }
+                }
+                .credit-item__label {
+                    display: inline-block;
+                    padding: 1px 5px;
+                }
+            }
+        }
+    }
+
+    // .table-bordered th {
+    //     border: none;
+    // }
+    // .fixed-side {
+    //     position: -webkit-sticky;
+    //     position: sticky;
+    //     background-color: white;
+    //     &.fixed-side-0 {
+    //         left: 0px;
+    //         z-index: 401;
+    //     }
+    //     &.fixed-side-1 {
+    //         left: 48px;
+    //         z-index: 401;
+    //     }
+    //     &.fixed-side-2 {
+    //         left: 173px;
+    //         z-index: 401;
+    //     }
+    //     &.fixed-side-3 {
+    //         left: 273px;
+    //         z-index: 401;
+    //     }
+    // }
+}

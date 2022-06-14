@@ -1,0 +1,181 @@
+<div class="modal adjust-debit-value-popup m-animate-fade-in" role="dialog" bsModal #popup="bs-modal"
+    aria-hidden="true">
+    <div class="modal-dialog c-modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{action === 'SOA' ? 'Adjusted Soa' : 'Adjusted CD Note'}} </h5>
+                <button type="button" (click)="closePopup()" class="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="m-form m-form--state">
+                    <!-- <div class="m-portlet__body"> -->
+                    <div class="div-inside bg-jagged-ice">
+                        <div class="row">
+                            <ng-container *ngIf="action === 'SOA'">
+                                <div class="col-lg-4 m--margin-bottom-10">
+                                    <span class="m--font-bolder">SOA No:</span>
+                                    <span class="m--font-brand m--margin-left-5">{{data.code}}</span>
+                                    <br />
+                                    <span class="m--font-bolder">Total USD:</span>
+                                    <span class="m--font-brand m--margin-left-5">{{data.totalUSD | number:
+                                        '.0-3'}}</span>
+                                </div>
+                                <div class="col-lg-4 m--margin-bottom-10">
+                                    <span class="m--font-bolder">Partner Name:</span>
+                                    <span class="m--font-brand m--margin-left-5">{{data.partnerName}}</span>
+                                    <br />
+                                    <span class="m--font-bolder">Total Shipment/Charge:</span>
+                                    <span
+                                        class="m--font-brand m--margin-left-5">{{data.totalShipment}}/{{data.totalCharge}}</span>
+                                </div>
+                                <div class="col-lg-4 m--margin-bottom-10">
+                                    <span class="m--font-bolder">Exchange Rate:</span>
+                                    <span class="m--font-brand m--margin-left-5">{{data.exchangeRate| number:
+                                        '.0-3'}}</span>
+                                    <br />
+                                    <span class="m--font-bolder">Total VND:</span>
+                                    <span class="m--font-brand m--margin-left-5">{{data.totalVND | number:
+                                        '.0-3'}}</span>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="action === 'DEBIT'">
+                                <div class="col-lg-4 m--margin-bottom-10">
+                                    <span class="m--font-bolder">CODE:</span>
+                                    <span class="m--font-brand m--margin-left-5">{{data.code}}</span>
+                                    <br />
+                                    <span class="m--font-bolder">Exchange Rate:</span>
+                                    <span class="m--font-brand m--margin-left-5">{{data.exchangeRate| number:
+                                        '.0-3'}}</span>
+                                </div>
+                                <div class="col-lg-4 m--margin-bottom-10">
+                                    <span class="m--font-bolder">Partner Name:</span>
+                                    <span class="m--font-brand m--margin-left-5">{{data.partnerName}}</span>
+                                    <br />
+                                    <span class="m--font-bolder">Total VND:</span>
+                                    <span class="m--font-brand m--margin-left-5">{{data.totalVND | number:
+                                        '.0-3'}}</span>
+                                </div>
+                                <div class="col-lg-4 m--margin-bottom-10">
+                                    <span class="m--font-bolder">Job Id:</span>
+                                    <span class="m--font-brand m--margin-left-5">{{data.jobNo}}</span>
+                                    <br />
+                                    <span class="m--font-bolder">Total USD:</span>
+                                    <span class="m--font-brand m--margin-left-5">{{data.totalUSD | number:
+                                        '.0-3'}}</span>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 item-shipment-wrapper">
+                    <ng-container *ngFor="let chargeGrp of data.listChargeGrp ; let i = index; trackBy: trackByFn">
+                        <div class="div-inside bg-bizare">
+                            <div class="row">
+                                <div class="col-2">
+                                    <span class="m--font-bolder">Job</span>
+                                    <span class="m--font-brand m--margin-left-5">{{chargeGrp.jobNo}}</span>
+                                </div>
+                                <div class="col-2">
+                                    <span class="m--font-bolder">HBL</span>
+                                    <span class="m--font-brand m--margin-left-5">{{chargeGrp.hblNo}}</span>
+                                </div>
+                                <div class="col-2">
+                                    <span class="m--font-bolder">MBL</span>
+                                    <span class="m--font-brand m--margin-left-5">{{chargeGrp.mblNo}}</span>
+                                </div>
+                                <div class="col-2">
+                                    <span class="m--font-bolder">CustomNo</span>
+                                    <span class="m--font-brand m--margin-left-5">{{chargeGrp.customNo}}</span>
+                                </div>
+                                <div class="col-2">
+                                    <span class="m--font-bolder">Pic</span>
+                                    <span class="m--font-brand m--margin-left-5">{{chargeGrp.pic}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-wrapper table-scrollable">
+                            <table class="table table-brand table-hover dataTable">
+                                <thead app-table-header [headers]="headers">
+                                </thead>
+                                <tbody>
+                                    <tr class="child"
+                                        *ngFor="let charge of chargeGrp.listCharges; let j = index; trackBy: trackByFn">
+                                        <td class="table-actions-col">{{j + 1}}</td>
+                                        <td class="text-left">{{charge.chargeCode}}</td>
+                                        <td class="text-left " style="min-width: 150px; white-space:initial">
+                                            {{charge.chargeName}}</td>
+                                        <td class="text-right">
+                                            <span>{{charge.orgNet | number: '.0-3'}} {{charge.currency}}</span>
+                                        </td>
+                                        <td class="text-center">{{charge.vatRate}}</td>
+                                        <td class="text-right">
+                                            <span>{{charge.orgAmount | number: '.0-3'}} {{charge.currency}}</span>
+                                        </td>
+                                        <td class="text-right">
+                                            <input type="number" [disabled]="charge.type=='OBH'? 'disabled': null"
+                                                class="form-control text-right"
+                                                (ngModelChange)="onChangeNetDebit(i,j,$event)"
+                                                [ngModel]="charge.amountVND" autoFormatCurrency />
+                                        </td>
+                                        <td class="text-right">
+                                            <input type="number" [disabled]="charge.type=='OBH'
+                                                    || !charge.vatRate || charge.vatRate === 0 ? 'disabled': null"
+                                                class="form-control text-right"
+                                                (ngModelChange)="onChangeNetVat(i,j,$event)"
+                                                [(ngModel)]="charge.vatAmountVND" autoFormatCurrency />
+                                        </td>
+                                        <td class="text-right">
+                                            <span>{{(charge.amountVND + charge.vatAmountVND)| number: '.0-3'
+                                                }}</span>
+                                        </td>
+                                        <td class="text-right">
+                                            <span>{{charge.orgAmountVND | number: '.0-3'}}</span>
+                                        </td>
+                                        <td class="text-right">
+                                            <span>{{charge.exchangeRate | number: '.0-3'}}</span>
+                                        </td>
+                                        <td class="text-left">
+                                            <span><input type="text" [disabled]="charge.type=='OBH' ? 'disabled': null"
+                                                    class="form-control text-left"
+                                                    (ngModelChange)="onChangeNote(i,j,$event)"
+                                                    [(ngModel)]="charge.note" /></span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr class="font-weight-bold font-15">
+                                        <td colspan="5" ALIGN="center">TOTAL</td>
+                                        <td class="text-right">{{chargeGrp.totalOrgAmountUSD | number: '.0-3'}} $ |
+                                            {{chargeGrp.totalOrgAmountVND| number: '.0-3'}} Đ</td>
+                                        <td class="text-right">{{chargeGrp.totalNetDebit | number: '.0-3'}}</td>
+                                        <td class="text-right">{{chargeGrp.totalVat | number: '.0-3'}}</td>
+                                        <td class="text-right">{{chargeGrp.totalAdjustedVND | number: '.0-3'}}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </ng-container>
+                </div>
+                <!-- </div> -->
+            </div>
+            <div class="modal-footer m--align-center">
+                <button class="btn btn-brand m-btn--square m-btn--icon m-btn--uppercase" (click)="save()">
+                    <span>
+                        Save
+                    </span>
+                </button>
+                <button type="button" class="btn btn-danger m-btn--square m-btn--icon m-btn--uppercase"
+                    (click)="closePopup()">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span>
+                            Cancel
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

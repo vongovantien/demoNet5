@@ -1,0 +1,499 @@
+<form novalidate [formGroup]="formEdit">
+	<div class="div-inside bg-secondary m--margin-bottom-15">
+		<h3 class="c-block-title">General Information</h3>
+		<hr>
+
+		<div class="row">
+			<div class="col-lg-4">
+				<div class="form-group">
+					<label class="form-control-label" for="">
+						Job ID
+					</label>
+					<input type="text" class="form-control m-input m-input--square" placeholder="Job ID" name="jobNo"
+						disabled=true formControlName="jobNo">
+
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="form-group" [ngClass]="{'m-form__group has-danger': (serviceDate.dirty && !serviceDate.value)
+					|| (isSubmitted && !serviceDate.value)
+					|| (isSubmitted && !serviceDate.valid)
+					|| (isSubmitted && !serviceDate.value.startDate)}">
+					<label class="form-control-label" required>
+						Service Date
+					</label>
+					<div class="m-input-icon m-input-icon--right down daterange-rtl">
+						<input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+							[locale]="{format: 'DD/MM/YYYY'}" [autoApply]="true" [singleDatePicker]="true"
+							[alwaysShowCalendars]="true" name="daterange" readonly placeholder="DD/MM/YYYY"
+							formControlName="serviceDate" calendar
+							[allowRemove]="!!serviceDate.value && !!serviceDate.value.startDate"
+							(remove)="resetFormControl(serviceDate)" />
+					</div>
+					<div class="form-control-feedback" *ngIf="(serviceDate.dirty && !serviceDate.value)
+						|| (isSubmitted && !serviceDate.value)
+						|| (isSubmitted && !serviceDate.value.startDate)">
+						Service Date is required!
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="form-group"
+					[ngClass]="{ 'has-danger': isSubmitted && finishDate.value.startDate && (serviceDate.value.startDate > finishDate.value.startDate)}">
+					<label class="form-control-label" for="">
+						Finish Date
+					</label>
+					<div class="m-input-icon m-input-icon--right down daterange-rtl">
+						<input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+							[locale]="{format: 'DD/MM/YYYY'}" [autoApply]="true" [singleDatePicker]="true"
+							[alwaysShowCalendars]="true" name="daterange" readonly placeholder="DD/MM/YYYY"
+							formControlName="finishDate" calendar
+							[allowRemove]="!!finishDate.value && !!finishDate.value.startDate"
+							(remove)="resetFormControl(finishDate)" />
+					</div>
+					<div class="form-control-feedback"
+						*ngIf="isSubmitted && finishDate.value.startDate && (serviceDate.value.startDate > finishDate.value.startDate)">
+						Finish Date must be greater or equal to Service Date
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-4">
+				<div class="form-group"
+					[ngClass]="{'m-form__group has-danger': (productService.dirty && !productService.valid) || (isSubmitted && !productService.valid)}">
+					<label class="form-control-label" required>
+						Product Service
+					</label>
+					<ng-select class="custom" [items]="productServices" placeholder="Please select"
+						formControlName="productService" [clearable]="false">
+					</ng-select>
+					<div class="form-control-feedback"
+						*ngIf="(productService.dirty && !productService.valid) || (isSubmitted && !productService.valid)">
+						Product Service is required!
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="form-group"
+					[ngClass]="{'m-form__group has-danger': (serviceMode.dirty && !serviceMode.valid) || (isSubmitted && !serviceMode.valid)}">
+					<label class="form-control-label" required>
+						Service Mode
+					</label>
+					<ng-select class="custom" [clearable]="false" [items]="serviceModes" placeholder="Please select"
+						formControlName="serviceMode">
+					</ng-select>
+					<div class="form-control-feedback"
+						*ngIf="(serviceMode.dirty && !serviceMode.valid) || (isSubmitted && !serviceMode.valid)">
+						Service Mode is required!
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="form-group"
+					[ngClass]="{'m-form__group has-danger': (shipmentMode.dirty && !shipmentMode.valid) || (isSubmitted && !shipmentMode.valid)}">
+					<div class="row">
+						<div class="col-lg-{{shipmentMode.value === 'Internal' && shipmentInfo ? 4 : 8}}">
+							<label class="form-control-label" required>
+								Shipment Mode
+							</label>
+						</div>
+						<div class="col-lg-{{shipmentMode.value === 'Internal' && shipmentInfo ? 8 : 4}}"
+							*ngIf="shipmentMode.value === 'Internal'" style="text-align: right;">
+							<a class="pointer" style="text-decoration: underline;" (click)="getASInfoToLink()">Link
+								Air/Sea </a>&nbsp;&nbsp;
+							<span class="text-warning">{{shipmentInfo}}</span>
+						</div>
+					</div>
+					<ng-select class="custom" [clearable]="false" [items]="shipmentModes" placeholder="Please select"
+						formControlName="shipmentMode">
+					</ng-select>
+					<div class="form-control-feedback"
+						*ngIf="(shipmentMode.dirty && !shipmentMode.valid) || (isSubmitted && !shipmentMode.valid)">
+						Shipment Mode is required!
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-4">
+				<div class="form-group"
+					[ngClass]="{'m-form__group has-danger':formEdit.get('hwbno').value?.length==0||!hwbno.valid||(formEdit.get('hwbno').value==null&&isSubmitted)}">
+					<label class="form-control-label" required>
+						HBL No
+					</label>
+					<input type="text" class="form-control" placeholder="Enter text" formControlName="hwbno">
+					<div class="form-control-feedback" *ngIf="!hwbno.valid">
+						HBL No must be not have special character!
+					</div>
+					<div class="form-control-feedback"
+						*ngIf="formEdit.get('hwbno').value?.length==0||(formEdit.get('hwbno').value==null&&isSubmitted)">
+						HBL No is required!
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="form-group"
+					[ngClass]="{'m-form__group has-danger':formEdit.get('mblno').value?.length==0||!mblno.valid||(formEdit.get('mblno').value==null&&isSubmitted)}">
+					<label class="form-control-label" required>
+						MBL No
+					</label>
+					<input type="text" class="form-control" placeholder="Enter text" formControlName="mblno">
+					<div class="form-control-feedback" *ngIf="!mblno.valid">
+						MBL No must be not have special charater!
+					</div>
+					<div class="form-control-feedback"
+						*ngIf="formEdit.get('mblno').value?.length==0||(formEdit.get('mblno').value==null&&isSubmitted)">
+						MBL No is required!
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="form-group" [ngClass]="{'m-form__group has-danger':  isSubmitted && !customerId.value}">
+					<label class="form-control-label" required>
+						Customer
+					</label>
+					<app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event, 'customer')"
+						[currentActiveItemId]="{ field: 'id', value: customerId.value, hardValue: customerName}"
+						[selectedDisplayFields]="['shortName']" [dataSources]="customers | async"
+						[displayFields]="displayFieldsCustomer" placeholder="Please select" name="customerId"
+						[clearable]="false">
+					</app-combo-grid-virtual-scroll>
+					<div class="form-control-feedback" *ngIf="isSubmitted && !customerId.value">
+						Customer is required!
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-4">
+				<div class="form-group"
+					[ngClass]="{'m-form__group has-danger': isSubmitted && (formEdit.errors | equalError:'invalidPort')}">
+					<label class="form-control-label">
+						Port Of Loading
+					</label>
+					<app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event, 'pol')"
+						[currentActiveItemId]="{ field: 'id', value: pol.value}" [selectedDisplayFields]="['nameEn']"
+						[dataSources]="ports | async" [displayFields]="displayFieldPort" placeholder="POL"
+						(remove)="resetFormControl(pol)">
+					</app-combo-grid-virtual-scroll>
+					<div class="form-control-feedback"
+						*ngIf="isSubmitted && formEdit.errors | equalError:'invalidPort'">
+						Port of
+						Loading must be different from Port of Discharge
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="form-group"
+					[ngClass]="{'m-form__group has-danger': isSubmitted && (formEdit.errors | equalError:'invalidPort')}">
+					<label class="form-control-label">
+						Port Of Discharge
+					</label>
+					<app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event, 'pod')"
+						[currentActiveItemId]="{ field: 'id', value: pod.value }" [selectedDisplayFields]="['nameEn']"
+						[dataSources]="ports | async" [displayFields]="displayFieldPort" placeholder="POD"
+						(remove)="resetFormControl(pod)">
+					</app-combo-grid-virtual-scroll>
+					<div class="form-control-feedback"
+						*ngIf="isSubmitted && formEdit.errors | equalError:'invalidPort'">
+						Port of
+						Discharge must be different from Port of Loading
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="form-group" [ngClass]="{'m-form__group has-danger':  isSubmitted && !supplierId.valid}">
+					<label class="form-control-label" required>
+						Supplier/Carrier
+					</label>
+					<app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event, 'supplier')"
+						[currentActiveItemId]="{ field: 'id', value: supplierId.value}"
+						[selectedDisplayFields]="['shortName']" [dataSources]="carries | async"
+						[displayFields]="displayFieldsCustomer" placeholder="Select supplier"
+						(remove)="resetFormControl(supplierId)" [clearable]="false">
+					</app-combo-grid-virtual-scroll>
+					<div class="form-control-feedback" *ngIf="isSubmitted && !supplierId.valid">
+						Supplier/Carrier is required!
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-4">
+				<div class="form-group">
+					<label class="form-control-label">
+						Vessel/Flight
+					</label>
+					<input type="text" class="form-control" placeholder="Enter text" formControlName="flightVessel">
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="form-group">
+					<label class="form-control-label">
+						Agent
+					</label>
+					<app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event, 'agent')"
+						[currentActiveItemId]="{ field: 'id', value: agentId.value}"
+						[selectedDisplayFields]="['shortName']" [dataSources]="agents | async"
+						[displayFields]="displayFieldsCustomer" placeholder="Select agent"
+						(remove)="resetFormControl(agentId)">
+					</app-combo-grid-virtual-scroll>
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="form-group">
+					<label class="form-control-label" for="">
+						Warehouse
+					</label>
+					<app-combo-grid-virtual-scroll [currentActiveItemId]="{field:'id',value: warehouseId.value}"
+						(itemSelected)="onSelectDataFormInfo($event, 'warehouse')" [selectedDisplayFields]="['nameEn']"
+						[dataSources]="warehouses | async" [displayFields]="displayFieldWarehouse"
+						placeholder="Select warehouse">
+					</app-combo-grid-virtual-scroll>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-4">
+				<div class="form-group">
+					<label class="form-control-label" for="">
+						Invoice No
+					</label>
+					<input type="text" class="form-control m-input m-input--square" name="invoiceNo"
+						placeholder="Enter text" formControlName="invoiceNo">
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="form-group">
+					<label class="form-control-label" for="">
+						Purchase Order No
+					</label>
+					<input type="text" class="form-control m-input m-input--square" placeholder="Enter text"
+						name="purchaseOrderNo" formControlName="purchaseOrderNo">
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="form-group" [ngClass]="{'m-form__group has-danger':isSubmitted && !salemansId.value}">
+					<label class="form-control-label" for="" required>
+						Salesman
+					</label>
+					<app-combo-grid-virtual-scroll
+						[currentActiveItemId]="{field:'id',value: salemansId.value, hardValue: salesmanName}"
+						(itemSelected)="onSelectDataFormInfo($event, 'salesman')"
+						[selectedDisplayFields]="['employeeNameEn']" [dataSources]="salesmans" size="15"
+						[displayFields]="displayFieldSalesman" placeholder="Select salesman" [clearable]="false"
+						[disabled]="!opsTransaction?.isAllowChangeSaleman" name="salemansId">
+					</app-combo-grid-virtual-scroll>
+					<div class="form-control-feedback" *ngIf="isSubmitted && !salemansId.value">
+						Salesman is required!
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-4">
+				<div class="form-group">
+					<label class="form-control-label" for="">
+						Field OPS
+					</label>
+					<app-combo-grid-virtual-scroll [currentActiveItemId]="{field:'id', value: fieldOpsId.value}"
+						(itemSelected)="onSelectDataFormInfo($event, 'fieldOps')"
+						[selectedDisplayFields]="['employeeNameEn']" [dataSources]="users | async"
+						[displayFields]="displayFieldSalesman" (remove)="resetFormControl(fieldOpsId)"
+						placeholder="Select username">
+					</app-combo-grid-virtual-scroll>
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="form-group" [ngClass]="{'m-form__group has-danger':  isSubmitted && !billingOpsId.value}">
+					<label class="form-control-label" required>
+						Billing OPS
+					</label>
+					<app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event, 'billingOps')"
+						[currentActiveItemId]="{ field: 'id', value: billingOpsId.value}"
+						[selectedDisplayFields]="['username']" [dataSources]="users | async"
+						[displayFields]="displayFieldSalesman" placeholder="Please select" [clearable]="false">
+					</app-combo-grid-virtual-scroll>
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="form-group">
+					<label class="form-control-label" for="">
+						Clearance Location
+					</label>
+					<app-combo-grid-virtual-scroll [currentActiveItemId]="{field:'id', value: clearanceLocation.value}"
+						(itemSelected)="onSelectDataFormInfo($event, 'clearance')" [selectedDisplayFields]="['nameEn']"
+						[dataSources]="ports | async" [displayFields]="displayFieldPort" placeholder="Select location">
+					</app-combo-grid-virtual-scroll>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-4">
+				<div class="form-group">
+					<label class="form-control-label" for="">
+						Shipper
+					</label>
+					<input type="text" class="form-control m-input m-input--square" autocomplete="nope" min="0"
+						formControlName="shipper" name="shipper" placeholder="Enter text">
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="form-group">
+					<label class="form-control-label" for="">
+						Consignee
+					</label>
+					<input type="text" class="form-control m-input m-input--square" autocomplete="nope" name="consignee"
+						formControlName="consignee" placeholder="Enter text">
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="form-group" [ngClass]="{'m-form__group has-danger':  isSubmitted && !shipmentType.valid}">
+					<label class="form-control-label" required>
+						Shipment Type
+					</label>
+					<ng-select class="custom" [clearable]="false" [items]="shipmentTypes" placeholder="Package Type"
+						formControlName="shipmentType">
+					</ng-select>
+				</div>
+			</div>
+		</div>
+		<div class="row" *ngIf="opsTransaction && !isJobCopy">
+			<div class="col-md-4 m--margin-top-10 m--margin-bottom-5">
+				<span class="m--font-bolder">Created:</span>
+				<span class="m--font-success m--margin-left-5">
+					{{ opsTransaction.datetimeCreated | date : "dd/MM/yyyy HH:mm:ss" }}
+				</span>
+				<span class="m--font-bolder m--margin-left-5">by</span>
+				<span class="m--font-success m--margin-left-5">{{ opsTransaction.userCreatedName }}</span>
+			</div>
+			<div class="col-md-8 m--margin-top-10 m--margin-bottom-5">
+				<span class="m--font-bolder">Modified:</span>
+				<span class="m--font-success m--margin-left-5">
+					{{ opsTransaction.datetimeModified | date : "dd/MM/yyyy HH:mm:ss" }}
+				</span>
+				<span class="m--font-bolder m--margin-left-5">by</span>
+				<span class="m--font-success m--margin-left-5">{{ opsTransaction.userModifiedName }}</span>
+			</div>
+		</div>
+	</div>
+
+	<div class="div-inside bg-secondary">
+		<h3 class="c-block-title">Goods Information</h3>
+		<hr>
+		<div class="row">
+			<div class="col-lg-4">
+				<div class="form-group">
+					<label class="form-control-label" for="">
+						GW (kg)
+					</label>
+					<input type="number" autocomplete="nope" class="form-control m-input m-input--square"
+						placeholder="Enter number" name="sumGrossWeight" min="0.01" formControlName="sumGrossWeight">
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="form-group">
+					<label class="form-control-label" for="">
+						NW (kg)
+					</label>
+					<input type="number" autocomplete="nope" class="form-control m-input m-input--square"
+						placeholder="Enter number" name="sumNetWeight" min="0.01" formControlName="sumNetWeight">
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="form-group">
+					<label class="form-control-label" for="">
+						Container Qty
+					</label>
+					<input type="number" class="form-control m-input m-input--square" min="1" integer
+						name="sumContainers" placeholder="Enter number" formControlName="sumContainers">
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-4">
+				<div class="form-group">
+					<label class="form-control-label" for="">
+						Packages Qty
+					</label>
+					<div class="row">
+						<div class="col-md-6">
+							<input type="number" class="form-control m-input" min="1" autocomplete="nope" aria-label=""
+								name="sumPackages" integer placeholder="Enter number" formControlName="sumPackages">
+						</div>
+						<div class="col-md-6">
+							<ng-select [items]="packageTypes | async" placeholder="Package Type" class="custom"
+								[clearable]="false" formControlName="packageTypeId" bindValue="id"
+								bindLabel="unitNameEn">
+							</ng-select>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-lg-4">
+				<div class="form-group">
+					<label class="form-control-label" for="">
+						CBM
+					</label>
+					<input type="number" autocomplete="nope" class="form-control m-input m-input--square" min="0.01"
+						placeholder="Enter number" name="sumCbm" formControlName="sumCbm">
+				</div>
+			</div>
+
+			<div class="col-lg-4">
+
+				<div class="form-group">
+					<label class="form-control-label">
+						Commonity Group
+					</label>
+					<ng-select [items]="commodityGroups | async" placeholder="Commodity Group" class="custom"
+						[clearable]="false" formControlName="commodityGroupId" bindValue="id" bindLabel="groupNameEn">
+					</ng-select>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-4">
+				<div class="form-group">
+					<label class="form-control-label" for="">
+						Detail of container & Packages
+					</label>
+					<textarea disabled formControlName="containerDescription" name="containerDescription"
+						class="form-control"></textarea>
+				</div>
+			</div>
+			<div class="col-4">
+				<div class="form-group">
+					<label class="form-control-label" for="">
+						Note
+					</label>
+					<textarea formControlName="note" name="note" placeholder="Note" class="form-control"></textarea>
+				</div>
+			</div>
+			<div class="col-4" *ngIf="opsTransaction">
+				<div class="text-right" *ngIf="!opsTransaction.isLocked">
+					<div class="m--margin-bottom-15 m--margin-top-25" *ngIf="opsTransaction.permission.allowUpdate">
+						<button type="button" class="btn btn-success  m-btn--icon m-btn--uppercase"
+							(click)="showListContainer()">
+							<span>
+								<i class="la la-list"></i>
+								<span> Container list </span>
+								<ng-container *ngIf="(containers | async).length > 0">
+									<span
+										class="m-badge m-badge--warning m-badge--rounded text-white font-weight-bold">{{(containers
+										| async).length}}</span>
+								</ng-container>
+							</span>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+<container-list-popup></container-list-popup>
+
+<ng-template inject></ng-template>

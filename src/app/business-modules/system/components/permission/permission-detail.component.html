@@ -1,0 +1,265 @@
+<!-- <app-sub-header> </app-sub-header> -->
+
+<form-create-permission (onSubmit)="updatePermission($event)"
+    *ngIf="type !== 'office' && type !=='user' && type!== 'group' && this.type !== 'department' && this.type !== 'company'">
+    <div class="title">Detail/Edit Permission</div>
+    <div class="date-time p-3 font-14" *ngIf="!!permissionSample">
+        <div class="row">
+            <div class="col-6">
+                <span>Created: {{permissionSample.datetimeCreated | date: 'dd/MM/yyyy HH:mm'}} by </span> <span
+                    class="text-success">{{permissionSample.nameUserCreated}}</span>
+            </div>
+            <div class="col-6">
+                <span>Modified: {{permissionSample.datetimeModified | date: 'dd/MM/yyyy HH:mm'}} by </span> <span
+                    class="text-success">{{permissionSample.nameUserModified}}</span>
+            </div>
+        </div>
+    </div>
+</form-create-permission>
+<div class="m-content">
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <div class="row m--padding-top-10"
+                *ngIf="type === 'office' || type =='user' || type =='group' || type =='department' || this.type == 'company'">
+                <div class="col-6">
+                    <h3 class="c-block-title">User's Permission</h3>
+                </div>
+                <div class="col-6" *ngIf="!!permissionSample && !!permissionSample.id ">
+                    <div class="form-actions m--align-right">
+                        <app-default-button [buttonSetting]="saveButtonSetting" (onClick)="showConfirm()">
+                        </app-default-button>
+                        <app-default-button [buttonSetting]="cancelButtonSetting" (click)="backToDetail()"
+                            class="m--margin-left-10">
+                        </app-default-button>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="form-group">
+                <div class="row"
+                    *ngIf=" !!permissionSample && !!permissionSample.id && ( type === 'office' || type ==='user' || type ==='company' || type ==='department' || type ==='group')">
+                    <div class="col-3">
+                        User name:
+                        <span class="text-success">
+                            {{permissionSample.userName }}
+                        </span>
+                    </div>
+                    <div class="col-3">
+                        Title: <span class="text-success"> {{permissionSample.userTitle}}</span>
+                    </div>
+                    <div class="col-3">
+                        Office: <span class="text-success">{{permissionSample.officeName}}</span>
+                    </div>
+                    <div class="col-3">
+                        Permission Name: <span class="text-success">{{permissionSample.permissionName}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row"
+                    *ngIf="!!permissionSample && !!permissionSample.id && ( type === 'office'  || type ==='user' || type ==='company' || type ==='department' || type ==='group')">
+                    <div class="col-6">
+                        Created: {{permissionSample.datetimeCreated | date: 'dd/MM/yyyy HH:mm'}} by <span
+                            class="text-success">{{permissionSample.nameUserCreated}}</span>
+                    </div>
+                    <div class="col-6">
+                        Modified: {{permissionSample.datetimeModified | date: 'dd/MM/yyyy HH:mm'}} by <span
+                            class="text-success">{{permissionSample.nameUserModified}} </span>
+                    </div>
+                </div>
+            </div>
+            <tabset>
+                <tab heading="General Permission">
+                    <div class="general-wrapper">
+                        <div class="header-permission row" #stickyMenu [class.sticky]="isSticky">
+                            <div class="p-2 col m-w-100">Module</div>
+                            <div class="p-2 col">Function</div>
+                            <div class="p-2 col">Access</div>
+                            <div class="p-2 col">Detail</div>
+                            <div class="p-2 col">Write</div>
+                            <div class="p-2 col">Delete</div>
+                            <div class="p-2 col">List</div>
+                            <div class="p-2 col">Import</div>
+                            <div class="p-2 col">Export</div>
+                        </div>
+                        <div class="list-permission-group-module-wrapper" *ngIf="!!permissionSample">
+                            <ul class="list-group list-module">
+                                <li class="list-group-item"
+                                    *ngFor="let permissionModulegroup of  permissionSample.sysPermissionSampleGenerals; let i = index; trackBy: trackByFn">
+                                    <div class="row">
+                                        <div class="col d-flex align-items-center m-w-100 justify-content-center">
+                                            <span class="font-15 font-weight-bold">{{permissionModulegroup.moduleName}}
+                                            </span>
+                                        </div>
+                                        <div class="col d-flex align-items-center">Quick Setup</div>
+                                        <div class="col text-center">
+                                            <app-switch
+                                                (toggleChange)="onChangeQuickSetup($event,'access',permissionModulegroup)">
+                                            </app-switch>
+                                        </div>
+                                        <div class="col">
+                                            <select class="form-control" [ngModel]="null"
+                                                (ngModelChange)="onChangeQuickSetup($event,'detail',permissionModulegroup)">
+                                                <option [value]="null">-</option>
+                                                <option *ngFor="let item of levelPermissions" [value]="item">
+                                                    {{item}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col">
+                                            <select class="form-control" [ngModel]="null"
+                                                (ngModelChange)="onChangeQuickSetup($event,'write',permissionModulegroup)">
+                                                <option [value]="null">-</option>
+                                                <option *ngFor="let item of levelPermissions" [value]="item">
+                                                    {{item}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col">
+                                            <select class="form-control" [ngModel]="null"
+                                                (ngModelChange)="onChangeQuickSetup($event,'delete',permissionModulegroup)">
+                                                <option [value]="null">-</option>
+                                                <option *ngFor="let item of levelPermissions" [value]="item">
+                                                    {{item}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col">
+                                            <select class="form-control" [ngModel]="null"
+                                                (ngModelChange)="onChangeQuickSetup($event,'list',permissionModulegroup)">
+                                                <option [value]="null">-</option>
+                                                <option *ngFor="let item of levelPermissions" [value]="item">
+                                                    {{item}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col text-center">
+                                            <app-switch
+                                                (toggleChange)="onChangeQuickSetup($event,'import',permissionModulegroup)">
+                                            </app-switch>
+                                        </div>
+                                        <div class="col text-center">
+                                            <app-switch
+                                                (toggleChange)="onChangeQuickSetup($event,'export',permissionModulegroup)">
+                                            </app-switch>
+                                        </div>
+                                    </div>
+                                    <ul class="list-group m--margin-top-10 list-permission">
+                                        <li class="list-group-item col"
+                                            *ngFor="let permission of permissionModulegroup.sysPermissionGenerals; let j = index; trackBy: trackByFn">
+                                            <div class="row">
+                                                <div
+                                                    class="col d-flex align-items-center m-w-100 justify-content-center">
+                                                    {{j + 1}}</div>
+                                                <div class="col  d-flex align-items-center">
+                                                    {{permission.menuName}}</div>
+                                                <div class="col text-center">
+                                                    <app-switch [(ngModel)]="permission.access">
+                                                    </app-switch>
+                                                </div>
+                                                <div class="col ">
+                                                    <select class="form-control" [(ngModel)]="permission.detail">
+                                                        <option *ngFor="let item of levelPermissions" [value]="item">
+                                                            {{item}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div class="col">
+                                                    <select class="form-control" [(ngModel)]="permission.write"
+                                                        [disabled]="!permission.access">
+                                                        <option *ngFor="let item of levelPermissions" [value]="item">
+                                                            {{item}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div class="col">
+                                                    <select class="form-control" [(ngModel)]="permission.delete"
+                                                        [disabled]="!permission.access">
+                                                        <option *ngFor="let item of levelPermissions" [value]="item">
+                                                            {{item}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div class="col">
+                                                    <select class="form-control" [(ngModel)]="permission.list"
+                                                        [disabled]="!permission.access">
+                                                        <option *ngFor="let item of levelPermissions" [value]="item">
+                                                            {{item}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div class="col text-center">
+                                                    <app-switch [(ngModel)]="permission.import"
+                                                        [disabled]="!permission.access">
+                                                    </app-switch>
+                                                </div>
+                                                <div class="col text-center">
+                                                    <app-switch [(ngModel)]="permission.export"
+                                                        [disabled]="!permission.access">
+                                                    </app-switch>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </tab>
+                <tab heading="Special Permission">
+                    <div class="special-wrapper" *ngIf="!!permissionSample">
+                        <ul class="list-group list-module">
+                            <li class="list-group-item"
+                                *ngFor="let permissionModulegroup of permissionSample.sysPermissionSampleSpecials; let i = index; trackBy: trackByFn">
+                                <span class="font-15 font-weight-bold">{{permissionModulegroup.moduleName}}</span>
+                                <ul class="list-group m--margin-top-10 list-permission ">
+                                    <li *ngFor="let permission of permissionModulegroup.sysPermissionSpecials; let j = index"
+                                        class="list-group-item">
+                                        <div class="row">
+                                            <div
+                                                class="col-md-1 d-flex align-items-center m-w-100 justify-content-center">
+                                                {{j + 1}}</div>
+                                            <div class="col-md-2  d-flex align-items-center">
+                                                {{permission.menuName}}</div>
+                                            <div class="col-md-9 text-center">
+                                                <ul class="list-unstyled list-permission-special d-flex flex-wrap ">
+                                                    <li *ngFor="let action of permission.permissionSpecialActions">
+                                                        <div class="d-flex " style="width: 135px">
+                                                            <app-switch [(ngModel)]="action.isAllow" [size]="'sm'">
+                                                            </app-switch>
+                                                            <div class="d-flex permission-special-item-name">
+                                                                {{action.nameEn}}
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </tab>
+            </tabset>
+            <div class="row m--margin-top-10">
+                <div class="col-md-6"></div>
+                <div class="col-md-6">
+                    <div class="m--align-right">
+                        <app-default-button *ngIf="!!permissionSample && !!permissionSample.id "
+                            [buttonSetting]="saveButtonSetting" (onClick)="showConfirm()">
+                        </app-default-button>
+                        <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="backToDetail()"
+                            class="m--margin-left-10">
+                        </app-default-button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<confirm-popup (onSubmit)="onSavePermissionSample()" [body]="'Do you want to save this permission ?'"
+    [labelConfirm]="'Yes'">
+</confirm-popup>

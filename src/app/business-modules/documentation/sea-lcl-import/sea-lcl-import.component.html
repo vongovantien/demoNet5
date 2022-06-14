@@ -1,0 +1,149 @@
+<div class="sea-fcl-import-page">
+    <app-sub-header>
+        <div class="c-button-actions">
+            <app-permission-button title="create new job" (onClick)="gotoCreateJob()"></app-permission-button>
+        </div>
+    </app-sub-header>
+    <div class="m-content">
+        <form-search-sea [transaction]="transactionService" (onSearch)="onSearchMasterBills($event)"
+            (onReset)="onResetMasterBills($event)"></form-search-sea>
+        <div class="m-portlet">
+            <div class="m-portlet__body">
+                <div class="table-wrapper table-scrollable" id="masterbill-list-table">
+                    <table class="table table-hover table-brand dataTable table-hover">
+                        <thead app-table-header [headers]="headers"
+                            (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                            <th class="table-actions-col no-sorting first">Actions</th>
+                        </thead>
+                        <tbody class="tbody-group">
+                            <ng-container *ngIf="!!masterbills.length">
+                                <ng-container *ngFor="let item of masterbills; let i = index; trackBy: trackByFn">
+                                    <tr class="collapse-toggle-row">
+                                        <td class="table-actions-col">
+                                            <div class="table-actions" style="width: 100px">
+                                                <button type="button"
+                                                    class="btn btn-sm  m-btn--icon m-btn--icon-only collapsed"
+                                                    data-toggle="collapse" [attr.data-target]="'#cs-shipment-00' + i"
+                                                    title="Collapse" (click)="getListHouseBill(item.id, i)">
+                                                    <i class="la la-angle-up"></i>
+                                                </button>
+                                                <app-permission-button (onClick)="viewDetail(item.id)" type="detail"
+                                                    [user]="item.userCreated">
+                                                </app-permission-button>
+                                                <button type="button" *ngIf="item.isLocked"
+                                                    class="btn btn-fault btn-sm  m-btn--icon m-btn--icon-only">
+                                                    <i class="fa fa-lock"></i>
+                                                </button>
+                                                <ng-container *ngIf="!item.isLocked && !item.isLinkFee">
+                                                    <app-permission-button (onClick)="prepareDeleteShipment(item)"
+                                                        type="delete" [user]="item.userCreated">
+                                                    </app-permission-button>
+                                                </ng-container>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a class="text-underline pointer"
+                                                (click)="viewDetail(item.id)">{{item.jobNo}}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <span>{{item.mawb}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{item.eta | date: 'dd/MM/yyyy'}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{item.supplierName}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{item.agentName}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{item.polName}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{item.podName}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{item.sumCont}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{item.packageQty}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{item.grossWeight}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{item.cbm}}</span>
+                                        </td>
+                                        <td>
+                                            <span class="text-success">{{item.creatorName}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{item.datetimeModified | date: 'dd/MM/yyyy'}}</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="collapse-panel-row" app-table-collapse-row [id]="'cs-shipment-00' + i"
+                                        [parentId]="'#masterbill-list-table'">
+                                        <table class="table table-secondary dataTable">
+                                            <thead app-table-header [headers]="headerHouseBills"
+                                                (onClick)="sortHouseBills($event)">
+                                            </thead>
+                                            <tbody>
+                                                <ng-container *ngIf="!!housebills.length">
+                                                    <tr
+                                                        *ngFor="let housebill of housebills; let j = index; trackBy: trackByFn">
+                                                        <td>
+                                                            <span>{{housebill.hwbno}}</span>
+                                                        </td>
+                                                        <td>
+                                                            <span>{{housebill.customerName}}</span>
+                                                        </td>
+                                                        <td>
+                                                            <span>{{housebill.saleManName}}</span>
+                                                        </td>
+                                                        <td>
+                                                            <span>{{housebill.notifyParty}}</span>
+                                                        </td>
+                                                        <td>
+                                                            <span>{{housebill.finalDestinationPlace}}</span>
+                                                        </td>
+                                                        <td>
+                                                            <span>{{housebill.containers}}</span>
+                                                        </td>
+                                                        <td>
+                                                            <span>{{housebill.packages}}</span>
+                                                        </td>
+                                                        <td>
+                                                            <span>{{housebill.gw}}</span>
+                                                        </td>
+                                                        <td>
+                                                            <span>{{housebill.cbm}}</span>
+                                                        </td>
+                                                    </tr>
+                                                </ng-container>
+                                                <tr *ngIf="!(isLoading | async) && !housebills.length"
+                                                    app-table-none-record [colspan]="headerHouseBills.length">
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </tr>
+                                </ng-container>
+                            </ng-container>
+                            <tr app-table-none-record *ngIf="!(isLoading | async) && !masterbills.length"></tr>
+                            <tr app-table-row-loading *ngIf="isLoading | async"></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <app-pagination [total]="totalItems" [pageNum]="page" [itemPerPage]="pageSize"
+                    (onChange)="updatePagingData($event)"> </app-pagination>
+            </div>
+        </div>
+    </div>
+</div>
+
+<confirm-popup (onSubmit)="onDeleteMasterBill()" [body]="deleteMessage" [labelConfirm]="'Ok'"></confirm-popup>
+
+<info-popup [body]="'You are not allowed to delete this job'"></info-popup>
+<permission-403-popup></permission-403-popup>

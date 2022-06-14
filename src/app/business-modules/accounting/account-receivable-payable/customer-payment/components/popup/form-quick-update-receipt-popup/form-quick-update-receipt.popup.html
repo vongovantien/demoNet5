@@ -1,0 +1,98 @@
+<div class="quick-update-receipt-popup modal fade" role="dialog" bsModal #popup="bs-modal"
+    (onHide)="isSubmitted = false;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Quick Update Receipt</h5>
+                <button type="button" class="close" aria-label="Close" (click)=hide()>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="form" class="row m-form m-form--state">
+                    <div class="col-lg-12">
+
+                        <ng-container *ngIf="updateKey === 'paymentRefNo'">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger':isSubmitted && !paymentRefNo.valid }">
+                                <label required>Payment RefNo:</label>
+                                <div class="input-group m-input m-input--square-group m-input-icon">
+                                    <input type="text" placeholder="Please input receipt no"
+                                        class="form-control m-input m-input--square text-primary"
+                                        formControlName="paymentRefNo">
+                                    <div class="input-group-append">
+                                        <button title="Clear" class="btn btn-success" title="Auto generate receipt no"
+                                            (click)="autoGenerateReceiptNo()">
+                                            <i class="la la-refresh"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+
+                        <ng-container *ngIf="updateKey === 'paymentMethod'">
+                            <div class="form-group">
+                                <label required>Payment Method:</label>
+                                <ng-select [items]="paymentMethods" formControlName="paymentMethod" class="custom"
+                                    name="method" [clearable]="false">
+                                </ng-select>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="updateKey === 'bankAccountNo'">
+                            <div class="form-group">
+                                <label for="">Bank Account No</label>
+                                <input type="text" class="form-control" placeholder="123xxxx (VND)"
+                                    formControlName="bankAccountNo">
+                            </div>
+                        </ng-container>
+
+                        <ng-container *ngIf="updateKey === 'obhpartnerId'">
+                            <div class="form-group">
+                                <label for="">OBH Partner:</label>
+                                <app-combo-grid-virtual-scroll (itemSelected)="obhpartnerId.setValue($event.id)"
+                                    (remove)="obhpartnerId.setValue(null)"
+                                    [currentActiveItemId]="{field:'id', value: obhpartnerId.value}"
+                                    [selectedDisplayFields]="['shortName']" [dataSources]="obhPartners | async"
+                                    [displayFields]="displayFieldsPartner" placeholder="Select OBH Partner">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </ng-container>
+
+                        <ng-container *ngIf="updateKey === 'paymentDate'">
+                            <div class="form-group">
+                                <label>Payment Date</label>
+                                <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                    <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                        [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" [singleDatePicker]="true"
+                                        name="daterange" placeholder="Select request date" [autoApply]="true"
+                                        formControlName="paymentDate" readonly calendar />
+                                </div>
+                            </div>
+
+                        </ng-container>
+                    </div>
+
+
+                </form>
+            </div>
+            <div class="modal-footer m--align-center c-button-actions">
+                <button type="button" class="btn btn-primary  m-btn--icon m-btn--uppercase" (click)="onConfirmSave()">
+                    <span>
+                        <i class="la la-save"></i>
+                        <span>
+                            Save
+                        </span>
+                    </span>
+                </button>
+                <button type="button" class="btn btn-cancel  m-btn--icon m-btn--uppercase" (click)="hide()">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span>
+                            Cancel
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

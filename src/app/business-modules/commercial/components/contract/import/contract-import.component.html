@@ -1,0 +1,308 @@
+<!--begin:: subheader-->
+<div class="m-subheader">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <!--begin:: breadcrumbs-->
+            <app-breadcrumb></app-breadcrumb>
+            <!--end:: breadcrumbs-->
+        </div>
+    </div>
+</div>
+<!--end:: subheader-->
+<!--begin::m-content-->
+<div class="m-content">
+    <!--begin:: m-portlet-->
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <!--begin::Form-->
+            <div class="m-form m-form--state">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <input #fileInput type="file" class="form-control m-input m-input--square" placeholder=""
+                            (change)="chooseFile($event)" onclick="this.value=null;" accept=".xlsx">
+                        <span class="m-form__help">
+                            <a class="btn-link" href="javascript:void(0)" (click)="downloadSample()">Download sample</a>
+                        </span>
+                    </div>
+                    <div class="col-lg-7 offset-lg-1">
+                        <div class="row">
+                            <div class="col-sm-4 m--margin-top-10 text-right">
+                                <span class="m--font-brand m--font-bolder">
+                                    Total rows: {{ totalRows }}
+                                </span>
+                            </div>
+                            <div class="col-sm-4 m--margin-top-10 text-right">
+                                <span class="m--font-success m--font-bolder">
+                                    Valid rows: {{ totalValidRows }}
+                                </span>
+                            </div>
+                            <div class="col-sm-4 m--margin-top-10 text-right">
+                                <span class="m--font-danger  m--font-bolder">
+                                    Invalid rows: {{ totalRows - totalValidRows}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions m--margin-top-5 m--align-right">
+                    <button type="button" class="btn btn-danger  m-btn--icon m-btn--uppercase" (click)="hideInvalid()">
+                        <span>
+                            <span *ngIf="isShowInvalid">
+                                Show invalid rows
+                            </span>
+                            <span *ngIf="isShowInvalid == false">
+                                Show All
+                            </span>
+                        </span>
+                    </button>
+                    <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase"
+                        (click)="import(fileInput)">
+                        <span>
+                            <i class="la la-save"></i>
+                            <span>
+                                save
+                            </span>
+                        </span>
+                    </button>
+                    <button type="button" class="btn  m-btn--icon m-btn--uppercase" (click)="close()">
+                        <span>
+                            <i class="la la-ban"></i>
+                            <span>
+                                close
+                            </span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+            <!--end::Form-->
+        </div>
+    </div>
+    <!--end::m-portlet-->
+    <!--begin:: m-portlet-->
+    <div class="m-portlet" style="position: relative">
+        <div class="m-portlet__body">
+            <!--begin: Datatable -->
+            <div class="table-wrapper" id="">
+                <table class="table table-striped table-brand dataTable table-scrollable">
+                    <thead>
+                        <tr>
+                            <th class="sorting_asc">
+                                <span>No</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'customerId'), 'sorting_desc': (!isDesc && sortKey == 'customerId') }"
+                                (click)="sort('customerId')">
+                                <span>Customer ID *</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'salesman'), 'sorting_desc': (!isDesc && sortKey == 'salesman') }"
+                                (click)="sort('salesman')">
+                                <span>Salesman</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'company'), 'sorting_desc': (!isDesc && sortKey == 'company') }"
+                                (click)="sort('company')">
+                                <span>Company *</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'office'), 'sorting_desc': (!isDesc && sortKey == 'office') }"
+                                (click)="sort('office')">
+                                <span>Office *</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'contractNo'), 'sorting_desc': (!isDesc && sortKey == 'contractNo') }"
+                                (click)="sort('contractNo')">
+                                <span>Agreement/Contract No </span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'contractType'), 'sorting_desc': (!isDesc && sortKey == 'contractType') }"
+                                (click)="sort('contractType')">
+                                <span>Agreement Type * </span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'saleService'), 'sorting_desc': (!isDesc && sortKey == 'saleService') }"
+                                (click)="sort('saleService')">
+                                <span>Sale Service *</span>
+                            </th>
+
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'effectDate'), 'sorting_desc': (!isDesc && sortKey == 'effectDate') }"
+                                (click)="sort('effectDate')">
+                                <span>Effective Date *</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'expireDate'), 'sorting_desc': (!isDesc && sortKey == 'expireDate') }"
+                                (click)="sort('expireDate')">
+                                <span>Expired Date</span>
+                            </th>
+
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'paymentMethod'), 'sorting_desc': (!isDesc && sortKey == 'paymentMethod') }"
+                                (click)="sort('paymentMethod')">
+                                <span>Payment Method *</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'currencyId'), 'sorting_desc': (!isDesc && sortKey == 'currencyId') }"
+                                (click)="sort('currencyId')">
+                                <span>Currency</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'vas'), 'sorting_desc': (!isDesc && sortKey == 'vas') }"
+                                (click)="sort('vas')">
+                                <span>VAS</span>
+                            </th>
+
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'paymentTermTrialDay'), 'sorting_desc': (!isDesc && sortKey == 'paymentTermTrialDay') }"
+                                (click)="sort('paymentTermTrialDay')">
+                                <span>Payment Term/Trial Day</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'baseOn'), 'sorting_desc': (!isDesc && sortKey == 'baseOn') }"
+                                (click)="sort('baseOn')">
+                                <span>Base On</span>
+                            </th>
+
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'creditLimit'), 'sorting_desc': (!isDesc && sortKey == 'creditLimit') }"
+                                (click)="sort('creditLimit')">
+                                <span>Credit Limited</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'creditLimitRate'), 'sorting_desc': (!isDesc && sortKey == 'creditLimitRate') }"
+                                (click)="sort('creditLimitRate')">
+                                <span>Credit Limited Rate(%)</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'description'), 'sorting_desc': (!isDesc && sortKey == 'description') }"
+                                (click)="sort('description')">
+                                <span>Description</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="data">
+                        <ng-container *ngFor="let item of pagedItems; let i = index">
+                            <tr [ngClass]="{ 'invalid-row': !item.isValid }">
+                                <td>
+                                    <span>{{ (i + this.pager.startIndex + 1) }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.customerIdError === null">{{ item.customerId }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.customerIdError !== null">{{ item.customerIdError }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.salesmanError === null">{{ item.salesman }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.salesmanError !== null">{{ item.salesmanError }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.companyError === null">{{ item.company }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.companyError !== null">{{ item.companyError }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.officeError === null">{{ item.office }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.officeError !== null">{{ item.officeError }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.contractNoError === null">{{ item.contractNo }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.contractNoError !== null">{{ item.contractNoError }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.agreementTypeError === null">{{ item.contractType }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.agreementTypeError !== null">{{ item.agreementTypeError }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.saleServiceError === null">{{ item.saleService }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.saleServiceError !== null">{{ item.saleServiceError }}</span>
+                                </td>
+
+                                <td>
+
+                                    <span *ngIf="item.effectDateError === null">
+                                        {{item.effectDate | date: 'dd/MM/yyyy'  }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.effectDateError !== null">{{ item.effectDateError }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.expiredtDateError === null">
+                                        {{item.expireDate | date: 'dd/MM/yyyy'  }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.expiredtDateError !== null">{{ item.expiredtDateError }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.paymentMethodError === null">{{ item.paymentMethod }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.paymentMethodError !== null">{{ item.paymentMethodError }}</span>
+                                </td>
+                                <td>
+                                    {{item.currencyId}}
+                                </td>
+                                <td>
+                                    {{item.vas}}
+                                </td>
+
+                                <td>
+                                    <span *ngIf="item.paymentTermError === null"> {{item.paymentTermTrialDay}}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.paymentTermError !== null">{{ item.paymentTermError }}</span>
+                                </td>
+                                <td>
+                                    {{item.baseOn}}
+                                </td>
+                                <td>
+                                    <span *ngIf="item.creditLimitError === null"> {{item.creditLimited}}</span>
+                                    <span class="m--font-danger" *ngIf="item.creditLimitError !== null">
+                                        {{item.creditLimitError}}</span>
+                                </td>
+                                <td>
+                                    {{item.creditLimitedRated}}
+                                </td>
+                                <td>
+                                    {{item.description}}
+                                </td>
+
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </div>
+            <!--end: Datatable -->
+
+            <!--begin::pagination-->
+            <div class="pagination-nav">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="select-box" style="max-width: 190px">
+                            <select class="form-control" id="" aria-label="" [(ngModel)]="pager.pageSize"
+                                (change)="selectPageSize()" name="pagesize">
+                                <ng-container *ngFor="let item of pager.numberToShow; index as i; first as isFirst">
+                                    <option [ngValue]="item" [selected]="isFirst">{{item}} entries / page</option>
+                                </ng-container>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6" *ngIf="pager.totalItems > pager.pageSize">
+                        <div class="float-right">
+                            <pagination [boundaryLinks]="true" [totalItems]="pager.totalItems"
+                                [itemsPerPage]="pager.pageSize" (pageChanged)="pageChanged($event)"
+                                [(ngModel)]="pager.currentPage" [maxSize]="pager.numberPageDisplay">
+                            </pagination>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--end::pagination-->
+        </div>
+    </div>
+    <!--end:: m-portlet-->
+</div>
+<!--end::m-content-->
+<!--begin::modal-->
+<info-popup [body]="'There are invalid data. Please check Import!'"></info-popup>
+<!--end::modal-->

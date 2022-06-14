@@ -1,0 +1,184 @@
+<div class="form-update-advpayment">
+    <form class="m-form m-form--state" [formGroup]="formCreate">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label">
+                        Advance No: <ng-content select="span"></ng-content>
+                    </label>
+                    <input type="text" class="form-control m-input m-input--square" placeholder="Advance no"
+                        formControlName="advanceNo">
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label">
+                        Requester:
+                    </label>
+                    <select class="form-control" formControlName="requester">
+                        <option *ngFor="let user of (users | async)" [ngValue]="user.id">{{user.username}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label">
+                        Request Date:
+                    </label>
+                    <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                        <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                            [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" [singleDatePicker]="true"
+                            name="daterange" placeholder="Select request date" [autoApply]="true"
+                            formControlName="requestDate" [attr.disabled]="isDisabled" [maxDate]="maxDate"
+                            (datesUpdated)="onUpdateRequestDate($event)" calendar />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label">
+                        Payment Method:
+                    </label>
+                    <select class="form-control" formControlName="paymentMethod" name="method"
+                        (change)="onChangePaymentMethod(paymentMethod.value)">
+                        <option *ngFor="let method of methods; let i = index" [value]="method.value">{{method.title}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label">
+                        Status Approval:
+                    </label>
+                    <input type="text" class="form-control m-input m-input--square text-info"
+                        placeholder="Status Approval" formControlName="statusApproval" readonly>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label">
+                        Deadline Payment:
+                    </label>
+                    <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                        <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                            [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" [singleDatePicker]="true"
+                            name="daterange" placeholder="Select Deadline Date" [autoApply]="true"
+                            formControlName="deadlinePayment" [attr.disabled]="isDisabled" calendar />
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label">
+                        Bank Account No:
+                    </label>
+                    <input type="text" class="form-control m-input m-input--square text-success"
+                        placeholder="0123456789xxxx" formControlName="bankAccountNo">
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label">
+                        Bank Account Name:
+                    </label>
+                    <input type="text" class="form-control m-input m-input--square text-info" placeholder="Nguyen Van A"
+                        formControlName="bankAccountName">
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label class="form-control-label">
+                        Bank Name:
+                    </label>
+                    <app-combo-grid-virtual-scroll (itemSelected)="onSelectDataBankInfo($event)"
+                        [selectedDisplayFields]="['bankNameEn']" [dataSources]="banks | async"
+                        [displayFields]="displayFieldBank" (remove)="resetFormControl(bankCode)"
+                        placeholder="Please Select Bank Name" allowFreeText formControlName="bankName">
+                    </app-combo-grid-virtual-scroll>
+                </div>
+            </div>
+            <div class="col-lg-1">
+                <div class="form-group">
+                    <label class="form-control-label">
+                        Bank Code:
+                    </label>
+                    <input type="input" class="form-control m-input m-input--square" formControlName="bankCode"
+                        placeholder="Please Enter Bank Code">
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group"
+                    [ngClass]="{'m-form__group has-danger': isSubmitted && isAdvCarrier && !payee.value }">
+                    <label *ngIf="!isAdvCarrier">Payee:</label>
+                    <label required *ngIf="isAdvCarrier">Payee:</label>
+                    <app-combo-grid-virtual-scroll [currentActiveItemId]="{field:'id',value:payee.value}"
+                        (itemSelected)="payee.setValue($event.id); onSelectPayee($event)"
+                        [dataSources]="customers | async" [displayFields]="[
+                        { field: 'shortName', label: 'Name ABBR' },
+                        { field: 'partnerNameEn', label: 'Name EN' },
+                        { field: 'taxCode', label: 'Tax Code' }]" [selectedDisplayFields]="['shortName']"
+                        [disabled]="isDisabled" placeholder="Select payee"
+                        (remove)="resetFormControl(payee);selectedPayee = null">
+                    </app-combo-grid-virtual-scroll>
+                    <div class="form-control-feedback" *ngIf="isSubmitted && isAdvCarrier && !payee.value">
+                        Payee is required!
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="row">
+                    <div [ngClass]="isAdvCarrier ? 'col-lg-6' : 'col-lg-12'">
+                        <div class="form-group">
+                            <label class="form-control-label" for="">
+                                Currency:
+                            </label>
+                            <select class="form-control" formControlName="currency" name="currency"
+                                (ngModelChange)="changeCurrency($event)">
+                                <option *ngFor="let currency of currencyList" [ngValue]="currency.id">{{currency.id}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-6" *ngIf="isAdvCarrier">
+                        <div class="form-group">
+                            <label class="form-control-label" for="">
+                                Advance For:
+                            </label>
+                            <ng-select formControlName="advanceFor" [clearable]="false" [items]="advanceForDatas" placeholder=""
+                                class="custom" (ngModelChange)="changeAdvanceFor($event)">
+                            </ng-select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label">
+                        Payment Term:
+                    </label>
+                    <input type="number" integer class="form-control m-input m-input--square "
+                        *ngIf="mode === 'create';else btnPaymentTerm" placeholder="days" formControlName="paymentTerm">
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="form-group">
+                    <label class="form-control-label">
+                        Note:
+                    </label>
+                    <textarea class="form-control m-input m-input--square" name="note" rows="5"
+                        formControlName="note"></textarea>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<ng-template #btnPaymentTerm>
+    <ng-content select="div.update-payment-term"></ng-content>
+</ng-template>

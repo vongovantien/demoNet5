@@ -1,0 +1,214 @@
+<div class=" form-add-charge">
+    <form [formGroup]="formGroup">
+        <div class="m-portlet">
+            <div class="m-portlet__body">
+                <div class="form-add-charge m-form m-form--state m--margin-bottom-20">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger': isSubmitted &&  !code.valid  }">
+                                <label class="form-control-label">
+                                    Code <span class="m--font-danger">(*)</span>
+                                </label>
+                                <input type="text" required formControlName="code" minlength="3" maxlength="50"
+                                    name="code" class="form-control m-input m-input--square"
+                                    placeholder="Please Enter Code">
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmitted && (code.errors | equalError: 'required')">
+                                    Unit code is required at least 3 characters and maximum 50 characters
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger': isSubmitted && !nameEn.valid }">
+                                <label class="form-control-label">
+                                    Name EN <span class="m--font-danger">(*)</span>
+                                </label>
+                                <input type="text" required minlength="3" name="nameEn"
+                                    class="form-control m-input m-input--square" formControlName="nameEn"
+                                    placeholder="Please Enter English Charge Name">
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmitted && (nameEn.errors | equalError: 'required')">
+                                    English name is required at least 3 characters
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger': isSubmitted && !nameVn.valid }">
+                                <label class="form-control-label">
+                                    Name Local <span class="m--font-danger">(*)</span>
+                                </label>
+                                <input type="text" required minlength="3" name="nameVn"
+                                    class="form-control m-input m-input--square" formControlName="nameVn"
+                                    placeholder="Please Enter Local Charge Name">
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmitted && (nameVn.errors | equalError: 'required')">
+                                    Local name is required at least 3 characters
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Unit
+                                </label>
+                                <ng-select [clearable]="true" [items]="ngDataUnit" placeholder="Select Unit"
+                                    class="custom" bindLabel="text" bindValue="id" formControlName="unit">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Unit Price
+                                </label>
+                                <input appTwoDigitDecimaNumber type="number" min="0" name="unitPrice"
+                                    formControlName="unitPrice" class="form-control m-input m-input--square"
+                                    placeholder="0000.00">
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Currency
+                                </label>
+                                <ng-select [clearable]="true" [items]="ngDataCurrentcyUnit" class="custom"
+                                    bindLabel="text" bindValue="id" placeholder="Select Currency"
+                                    formControlName="currency">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    VAT
+                                </label>
+                                <input type="number" formControlName="vat" class="form-control m-input m-input--square"
+                                    placeholder="VAT">
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSubmitted && !type.valid}">
+                                <label class="form-control-label" required>
+                                    Type
+                                </label>
+
+                                <ng-select #types [clearable]="false" [items]="ngDataType" placeholder="Select Type"
+                                    class="custom" formControlName="type">
+                                </ng-select>
+                                <div class="form-control-feedback" *ngIf="isSubmitted && !type.valid">
+                                    Type is required !
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSubmitted && !service.valid || requiredService}">
+                                <label class="form-control-label">
+                                    Service <span class="m--font-danger">(*)</span>
+                                </label>
+
+                                <ng-select (selected)="selected($event)" [multiple]="true" class="custom"
+                                    bindLabel="text" [items]="ngDataService" placeholder="Select Service"
+                                    formControlName="service">
+                                </ng-select>
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmitted && !service.valid || requiredService">
+                                    Service is required !
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4" *ngIf="isShowMappingBuying">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Buying Mapping
+                                </label>
+                                <app-combo-grid-virtual-scroll
+                                (itemSelected)="creditCharge.setValue($event.id); "
+                                [currentActiveItemId]="{ field: 'id', value: creditCharge.value}"
+                                [selectedDisplayFields]="['chargeNameEn']" [dataSources]="creditCharges | async"
+                                [displayFields]="[{ field: 'chargeNameEn', label: 'Name' }, { field: 'code', label: 'Code' }]"
+                                placeholder="Select charge"
+                                (remove)="resetFormControl(creditCharge); generateSelling.setValue(false) ">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-lg-4" *ngIf="isShowMappingSelling">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Selling Mapping
+                                </label>
+                                <app-combo-grid-virtual-scroll
+                                    (itemSelected)="debitCharge.setValue($event.id); !!debitCharge.value ? generateSelling.setValue(false) : generateSelling.setValue(true)"
+                                    [currentActiveItemId]="{ field: 'id', value: debitCharge.value}"
+                                    [selectedDisplayFields]="['chargeNameEn']" [dataSources]="debitCharges | async"
+                                    [displayFields]="[{ field: 'chargeNameEn', label: 'Name' }, { field: 'code', label: 'Code' }]"
+                                    placeholder="Select charge"
+                                    (remove)="resetFormControl(debitCharge); generateSelling.setValue(false) ">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Charge Group
+                                </label>
+                                <ng-select [clearable]="true" [items]="ngDataChargeGroup" class="custom"
+                                    bindLabel="text" bindValue="id" placeholder="Select Chare Group"
+                                    formControlName="chargeGroup">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-{{isShowMappingSelling ? 2 : 3}}">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Product Dept
+                                </label>
+                                <input type="text" required formControlName="productDept"
+                                    class="form-control m-input m-input--square" placeholder="Product Dept">
+                            </div>
+                        </div>
+                        <div class="col-lg-1">
+                            <div class="form-group">
+                                <label class="form-control-label"> Active </label>
+                                <div class="m-checkbox-inline">
+                                    <app-switch formControlName="active">
+                                    </app-switch>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1" *ngIf="isShowMappingSelling ">
+                            <div class="form-group">
+                                <label class="form-control-label"> Generate Selling </label>
+                                <div class="m-checkbox-inline">
+                                    <app-switch formControlName="generateSelling" [disabled]="!!debitCharge.value">
+                                    </app-switch>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Mode
+                                </label>
+                                <ng-select [items]="modes" class="custom" placeholder="INTERNAL/EXTERNAL"
+                                    formControlName="mode">
+                                </ng-select>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

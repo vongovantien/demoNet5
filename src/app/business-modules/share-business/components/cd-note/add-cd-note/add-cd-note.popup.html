@@ -1,0 +1,279 @@
+<div class="modal fade" role="dialog" bsModal #popup="bs-modal" aria-hidden="true">
+    <div class="modal-dialog c-modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" *ngIf="action !== 'update' else updateTitle">Create Credit/Debit Note</h5>
+                <ng-template #updateTitle class="modal-title">
+                    <h5 class="modal-title">Edit
+                        <b><span class="text-warning">{{CDNote.type === 'CREDIT' ? 'Credit Note': CDNote.type ===
+                                'DEBIT' ? 'Debit Note' : 'Invoice'}}</span></b>
+                        No: <b class="text-warning">{{CDNote.code}}</b>
+                    </h5>
+                </ng-template>
+
+                <button type="button" (click)="closePopup()" class="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="m-form m-form--state">
+                    <form class="div-inside bg-secondary m--margin-bottom-15" [formGroup]="formCreate">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="">
+                                        Subject to Partner
+                                    </label>
+                                    <app-combo-grid-virtual-scroll [disabled]="action === 'update'"
+                                        [currentActiveItemId]="selectedPartner"
+                                        (itemSelected)="onSelectDataFormInfo($event)"
+                                        [selectedDisplayFields]="configPartner.selectedDisplayFields"
+                                        [dataSources]="configPartner.dataSource"
+                                        [displayFields]="configPartner.displayFields" [height]="200"
+                                        [placeholder]="'Select subject to partner'">
+                                    </app-combo-grid-virtual-scroll>
+
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <label class="form-control-label">
+                                        Flex ID
+                                    </label>
+                                    <app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFlexID($event)"
+                                        [displayFields]="displayFieldFlexID" [selectedDisplayFields]="['referenceNo']"
+                                        [dataSources]="referenceNoLst" (remove)="flexId.setValue(null)"
+                                        placeholder="Please Select FlexId" allowFreeText formControlName="flexId">
+                                    </app-combo-grid-virtual-scroll>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="form-group m-form__group">
+                                    <label class="form-control-label">
+                                        Note Type
+                                    </label>
+                                    <div class="m-radio-inline" *ngIf="action !== 'update' else noteTypeUpdate">
+                                        <label class="m-radio m-radio--bold m-radio--state-brand"
+                                            *ngFor="let item of noteTypes; let i = index">
+                                            <input type="radio" [checked]="item.id === selectedNoteType"
+                                                name="radio_grp_note_type" (change)="onChangeNoteType(item)">
+                                            {{item.text}}
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                    <ng-template #noteTypeUpdate>
+                                        <div class="m-radio-inline">
+                                            <label class="m-radio m-radio--bold m-radio--state-brand"
+                                                *ngFor="let item of noteTypes; let i = index">
+                                                <input disabled type="radio" [checked]="item.id === selectedNoteType"
+                                                    name="radio_grp_note_type_update" (change)="onChangeNoteType(item)">
+                                                {{item.text}}
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                    </ng-template>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-2">
+                                <div class="form-group">
+                                    <label class="form-control-label">
+                                        Exc USD
+                                    </label>
+                                    <input type="text" class="form-control m-input m-input--square" formControlName="excRateUsdToLocal" formatDecimalFormControl format=".0-3" >
+                                </div>
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="form-group">
+                                    <label class="form-control-label">
+                                        Note
+                                    </label>
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        formControlName="note">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="m-form m-form--label-align-right">
+                        <div class="row align-items-center">
+                            <div class="col-lg-4 order-2 order-lg-1">
+                                <div class="form-group">
+                                    <div class="m-input-icon m-input-icon--left">
+                                        <input type="text" class="form-control" placeholder="Please enter keyword"
+                                            [(ngModel)]="keyword" name="keyword"
+                                            (ngModelChange)="onChangeKeyWord($event)">
+                                        <span class="m-input-icon__icon m-input-icon__icon--left">
+                                            <span>
+                                                <i class="la la-search"></i>
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-8 order-1 order-lg-2 c-button-actions m--align-right">
+                                <button type="button" class="btn btn-danger  m-btn--icon m-btn--uppercase"
+                                    (click)="removeCharge()">
+                                    <span>
+                                        <i class="la la-trash"></i>
+                                        <span>
+                                            remove selected
+                                        </span>
+                                    </span>
+                                </button>
+                                <button type="button" class="btn btn-success  m-btn--icon m-btn--uppercase"
+                                    data-toggle="modal" [disabled]="(selectedPartner | json) === '{}'"
+                                    (click)="openPopupAddCharge()">
+                                    <span>
+                                        <i class="la la-plus"></i>
+                                        <span>
+                                            add charge
+                                        </span>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-wrapper fit-height-div">
+                        <table class="table table-striped table-brand dataTable">
+                            <thead app-table-header [headers]="headers" (onClick)="sortBy($event.sortField)">
+                                <th class="table-actions-col no-sorting first">
+                                    <label class="m-checkbox m-checkbox--bold m-checkbox--state-success">
+                                        <input type="checkbox" [(ngModel)]="isCheckAllCharge"
+                                            (change)="checkUncheckAllCharge()">
+                                        <span></span>
+                                    </label>
+                                </th>
+                            </thead>
+                            <tbody class="tbody-group" *ngIf="listChargePartner.length > 0">
+                                <ng-container
+                                    *ngFor="let charges of listChargePartner; let i = index; trackBy: trackByFn">
+                                    <ng-container *ngIf="!charges.isDeleted">
+                                        <tr class="collapse-toggle-row tgroup">
+                                            <td colspan="12" *ngIf="charges.listCharges.length > 0">
+                                                <label class="m-checkbox m-checkbox--bold m-checkbox--state-brand">
+                                                    <input type="checkbox" (change)="onChangeCheckBoxGrpCharge(charges)"
+                                                        value="{{charges}}" [(ngModel)]="charges.isSelected"
+                                                        name="{{charges.hwbno}}">
+                                                    HBL No: {{charges.hwbno}}
+                                                    <span></span>
+                                                </label>
+                                            </td>
+                                        </tr>
+
+                                        <tr class="child"
+                                            *ngFor="let charge of charges.listCharges; let j = index; trackBy: trackByFn">
+                                            <ng-container *ngIf="!charge.isDeleted">
+                                                <td class="table-actions-col">
+                                                    <div class="table-actions">
+                                                        <label class="m-checkbox">
+                                                            <input type="checkbox" [(ngModel)]="charge.isSelected"
+                                                                [disabled]="!charge.canEdit"
+                                                                (change)="onChangeCheckBoxItemCharge(charges)">
+                                                            <span></span>
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span>{{charge.hwbno}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{charge.chargeCode}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{charge.nameEn}}</span>
+                                                </td>
+                                                <td class='m--align-right'>
+                                                    <span>{{charge.quantity}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{charge.unit}}</span>
+                                                </td>
+                                                <td class='m--align-right'>
+                                                    <span>{{charge.unitPrice | number:'1.0-3'}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{charge.currency}}</span>
+                                                </td>
+                                                <td class='m--align-right'>
+                                                    <span>{{charge.vatrate}}</span>
+                                                </td>
+                                                <td class='m--align-right'>
+                                                    <span>{{charge.credit | number:'1.3-3'}}</span>
+                                                </td>
+                                                <td class='m--align-right'>
+                                                    <span>{{charge.debit | number:'1.3-3'}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{charge.notes}}</span>
+                                                </td>
+                                            </ng-container>
+                                        </tr>
+                                    </ng-container>
+                                </ng-container>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="m--margin-top-10">
+                        <div class="m-alert m-alert--square alert alert-info m--align-right m--marginless">
+                            <div class="row">
+                                <div class="col">
+                                    <strong>Total Credit:</strong><span class="m--margin-left-5">{{totalCredit}}</span>
+                                </div>
+                                <div class="col-md-auto">
+                                    <strong>Total Dedit:</strong> <span class="m--margin-left-5"> {{totalDebit}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="m-alert m-alert--square alert alert-brand m--align-right m--marginless">
+                            <strong>Balance Amount:</strong><span class="m--margin-left-5">
+                                {{balanceAmount}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer m--align-center">
+                <button class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="saveCDNote()"
+                    [disabled]="listCharges.length === 0">
+                    <span>
+                        <i class="la la-save"></i>
+                        <span>
+                            Save
+                        </span>
+                    </span>
+                </button>
+                <button type="button" class="btn btn-cancel  m-btn--icon m-btn--uppercase" (click)="cancel()">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span>
+                            cancel
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<confirm-popup #changePartnerPopup (onSubmit)="onSubmitChangePartnerPopup()" [title]="'Alert'"
+    (onCancel)="onCancelChangePartnerPopup()"
+    [body]="'If you change partner, all Selected Charges will be lost. Are you sure about this?'" [labelCancel]="'No'">
+</confirm-popup>
+
+<info-popup #notExistsChargePopup (onSubmit)="onSubmitNotExistsChargePopup()"
+    [body]="'Look like you have not selected any charges for the C/D Note. Please recheck and try again!'"
+    [title]="'Alert'">
+</info-popup>
+
+<add-remaining-charge-popup (onAddCharge)="onAddMoreCharge($event)"></add-remaining-charge-popup>
+
+<confirm-popup #confirmCloseAddPopup (onSubmit)="onSubmitConfirmCloseAdd()" [title]="'Alert'"
+    (onCancel)="onCancelConfirmCloseAdd()" [body]="'Do you want to exit without saving?'" [labelCancel]="'No'">
+</confirm-popup>
+
+<info-popup #validateCDNotePopup [body]="messageValidate" [title]="'Alert'">
+</info-popup>

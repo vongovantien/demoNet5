@@ -1,0 +1,209 @@
+<!--begin:: subheader-->
+<div class="m-subheader">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <!--begin:: breadcrumbs-->
+            <app-breadcrumb></app-breadcrumb>
+            <!--end:: breadcrumbs-->
+        </div>
+    </div>
+</div>
+<!--end:: subheader-->
+<!--begin::m-content-->
+<div class="m-content">
+    <!--begin:: m-portlet-->
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <!--begin::Form-->
+            <div class="m-form m-form--state">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <form #form>
+                            <input type="file" id="inputFile" class="form-control m-input m-input--square"
+                                name="inputimport" placeholder="" (change)="chooseFile($event)"
+                                onclick="this.value=inputFile=null;" [(ngModel)]="inputFile" accept=".xlsx">
+                        </form>
+                        <span class="m-form__help">
+                            <a class="btn-link" href="javascript:void(0)" (click)="downloadSample()">Download sample</a>
+                        </span>
+                    </div>
+                    <div class="col-lg-7 offset-lg-1">
+                        <div class="row">
+                            <div class="col-sm-4 m--margin-top-10 text-right">
+                                <span class="m--font-brand m--font-bolder">
+                                    Total rows: {{ totalRows }}
+                                </span>
+                            </div>
+                            <div class="col-sm-4 m--margin-top-10 text-right">
+                                <span class="m--font-success m--font-bolder">
+                                    Valid rows: {{ totalValidRows }}
+                                </span>
+                            </div>
+                            <div class="col-sm-4 m--margin-top-10 text-right">
+                                <span class="m--font-danger  m--font-bolder">
+                                    Invalid rows: {{ totalRows - totalValidRows }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions m--margin-top-5 m--align-right">
+                    <button type="button" class="btn btn-danger  m-btn--icon m-btn--uppercase" (click)="hideInvalid()">
+                        <span>
+                            <span *ngIf="isShowInvalid">
+                                Show invalid rows
+                            </span>
+                            <span *ngIf="isShowInvalid == false">
+                                Show All
+                            </span>
+                        </span>
+                    </button>
+                    <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="import()">
+                        <span>
+                            <i class="la la-save"></i>
+                            <span>
+                                save
+                            </span>
+                        </span>
+                    </button>
+                    <button type="button" class="btn  m-btn--icon m-btn--uppercase"
+                        routerLink="/home/catalogue/location">
+                        <span>
+                            <i class="la la-ban"></i>
+                            <span>
+                                close
+                            </span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+            <!--end::Form-->
+        </div>
+    </div>
+    <!--end::m-portlet-->
+    <!--begin:: m-portlet-->
+    <div class="m-portlet" style="position: relative">
+        <div class="m-portlet__body">
+            <!--begin: Datatable -->
+            <div class="table-wrapper" id="">
+                <table class="table table-striped table-brand dataTable">
+                    <thead>
+                        <tr>
+                            <th class="sorting_asc">
+                                <span>No</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'code'), 'sorting_desc': (!isDesc && sortKey == 'code') }"
+                                (click)="sortData('code')">
+                                <span>Code</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'nameEn'), 'sorting_desc': (!isDesc && sortKey == 'nameEn') }"
+                                (click)="sortData('nameEn')">
+                                <span>Name(EN)</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'nameVn'), 'sorting_desc': (!isDesc && sortKey == 'nameVn') }"
+                                (click)="sortData('nameVn')">
+                                <span>Name(Local)</span>
+                            </th>
+                            <th *ngIf="type != 'country'" class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'countryName'), 'sorting_desc': (!isDesc && sortKey == 'countryName') }"
+                                (click)="sortData('countryName')">
+                                <span>Country</span>
+                            </th>
+                            <th *ngIf="type != 'city' && type != 'country'" class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'provinceName'), 'sorting_desc': (!isDesc && sortKey == 'provinceName') }"
+                                (click)="sortData('provinceName')">
+                                <span>Province</span>
+                            </th>
+                            <th *ngIf="type != 'city' && type != 'country' && type != 'district'" class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'districtName'), 'sorting_desc': (!isDesc && sortKey == 'districtName') }"
+                                (click)="sortData('districtName')">
+                                <span>District</span>
+                            </th>
+                            <th>
+                                <span>Status</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="data">
+                        <ng-container *ngFor="let item of pagedItems; let i = index">
+                            <tr [ngClass]="{ 'invalid-row': !item.isValid }">
+                                <td> {{ (i + this.pager.startIndex + 1) }}
+                                </td>
+                                <td>
+                                    <span *ngIf="item.codeError === null">{{ item.code }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.codeError !== null">{{ item.codeError }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.nameEnError === null">{{ item.nameEn }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.nameEnError !== null">{{ item.nameEnError }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.nameVnError === null">{{ item.nameVn }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.nameVnError !== null">{{ item.nameVnError }}</span>
+                                </td>
+                                <td *ngIf="type != 'country'">
+                                    <span *ngIf="item.countryNameError === null">{{ item.countryName }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.countryNameError !== null">{{ item.countryNameError }}</span>
+                                </td>
+                                <td *ngIf="type != 'city' && type != 'country'">
+                                    <span *ngIf="item.provinceNameError === null">{{ item.provinceName }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.provinceNameError !== null">{{ item.provinceNameError }}</span>
+                                </td>
+                                <td *ngIf="type != 'city' && type != 'country' && type != 'district'">
+                                    <span *ngIf="item.districtNameError === null">{{ item.districtName }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.districtNameError !== null">{{ item.districtNameError }}</span>
+                                </td>
+                                <td>
+                                    <span>{{ item.status }}</span>
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </div>
+            <!--end: Datatable -->
+
+            <!--begin::pagination-->
+            <!-- <app-pagination *ngIf="pager.totalItems>0" [config]="pager" (pagerObject)="setPage($event)">
+            </app-pagination> -->
+            <div class="pagination-nav">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="select-box" style="max-width: 190px">
+                            <select class="form-control" id="" aria-label="" [(ngModel)]="pager.pageSize"
+                                (change)="selectPageSize()" name="pagesize">
+                                <ng-container *ngFor="let item of pager.numberToShow; index as i; first as isFirst">
+                                    <option [ngValue]="item" [selected]="isFirst">{{item}} entries / page</option>
+                                </ng-container>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6" *ngIf="pager.totalItems > pager.pageSize">
+                        <div class="float-right">
+                            <pagination [boundaryLinks]="true" [totalItems]="pager.totalItems"
+                                [maxSize]="pager.numberPageDisplay" [itemsPerPage]="pager.pageSize"
+                                (pageChanged)="pageChanged($event)" [(ngModel)]="pager.currentPage">
+                            </pagination>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--end::pagination-->
+        </div>
+    </div>
+    <!--end:: m-portlet-->
+</div>
+<!--end::m-content-->
+<!--begin::modal-->
+<info-popup [body]="'There are invalid data. Please check Import!'" [title]="'Notification'" [label]="'Ok'">
+</info-popup>
+<!--end::modal-->

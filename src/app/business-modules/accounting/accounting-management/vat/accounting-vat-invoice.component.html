@@ -1,0 +1,108 @@
+<div class="vat-invoice-wrapper  m-animate-fade-in">
+    <app-sub-header> </app-sub-header>
+    <div class="m-content">
+        <div class="m-portlet__body">
+            <tabset class="custom-class-tab">
+                <tab heading="Invoice List" (selectTab)="onSelectTab('cdi')">
+                </tab>
+                <tab *ngIf="menuSpecialPermission | async | specialPermission:'Invoice'" heading="VAT Invoice"
+                    (selectTab)="onSelectTab('vat')" [active]="true">
+
+                    <form-search-vat-voucher [accountType]="'Invoice'" (onSearch)="onSearchInvoice($event)">
+                    </form-search-vat-voucher>
+
+                    <div class="m-portlet">
+                        <div class="m-portlet__body">
+                            <div class="m-form m--margin-bottom-10">
+                                <div class="row">
+                                    <div class="col-lg-8 m--align-left">
+                                        <div class="form-group">
+                                            <div class="c-button-actions">
+                                                <app-permission-button type="add" title="Issue Invoice"
+                                                    routerLink="/home/accounting/management/vat-invoice/new">
+                                                </app-permission-button>
+                                                <app-permission-button type="import" title="Import Update"
+                                                    routerLink="/home/accounting/management/vat-invoice/import">
+                                                </app-permission-button>
+                                                <app-permission-button type="export" (onClick)="exportInvoice()">
+                                                </app-permission-button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-wrapper">
+                                <table class="table table-striped table-brand dataTable table-hover">
+                                    <thead app-table-header [headers]="headers"
+                                        (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                                        <th class="first table-actions-col">
+                                            Action
+                                        </th>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container *ngIf="!!invoices.length">
+                                            <tr *ngFor="let invoice of invoices; let i = index; trackBy: trackByFn">
+                                                <td class="table-actions-col">
+                                                    <div class="table-actions">
+                                                        <ng-container
+                                                            *ngIf="(!invoice.paymentStatus || invoice.paymentStatus == 'Unpaid') && !invoice.referenceNo">
+                                                            <app-permission-button
+                                                                (onClick)="prepareDeleteInvoice(invoice)" type="delete"
+                                                                [user]="invoice.userCreated">
+                                                            </app-permission-button>
+                                                        </ng-container>
+                                                    </div>
+                                                </td>
+                                                <td class="text-primary pointer">
+                                                    <!-- <a [routerLink]="['./'+invoice.id]">{{invoice.voucherId}}</a> -->
+                                                    <a (click)="viewDetail(invoice)">{{invoice.voucherId}}</a>
+                                                </td>
+                                                <td>{{invoice.invoiceNoTempt}}</td>
+                                                <td>{{invoice.invoiceNoReal}}</td>
+                                                <td>{{invoice.serie}}</td>
+                                                <td>{{invoice.partnerName}}</td>
+                                                <td class="text-right">{{invoice.totalAmount | number: '.0-3'}}</td>
+                                                <td>{{invoice.currency}}</td>
+                                                <td>{{invoice.date | date: 'dd/MM/yyyy'}}</td>
+                                                <td>{{invoice.datetimeCreated | date: 'dd/MM/yyyy'}}</td>
+                                                <td class="text-success">{{invoice.creatorName}}</td>
+                                                <td
+                                                    [ngClass]="invoice.status !== 'New' ? 'text-success' : 'text-danger'">
+                                                    {{invoice.status}}</td>
+                                                <td>
+                                                    <ng-container [ngSwitch]="invoice.paymentStatus">
+                                                        <span class="text-success" *ngSwitchCase="'Paid'">
+                                                            {{ invoice.paymentStatus }}
+                                                        </span>
+                                                        <span class="text-warning" *ngSwitchCase="'Paid A Part'">
+                                                            {{ invoice.paymentStatus }}
+                                                        </span>
+                                                        <span class="text-danger" *ngSwitchDefault>
+                                                            {{ invoice.paymentStatus }}
+                                                        </span>
+                                                    </ng-container>
+                                                </td>
+                                            </tr>
+                                        </ng-container>
+                                        <tr app-table-none-record *ngIf="!(isLoading | async) && !invoices.length"
+                                            [colspan]="headers.length + 1">
+                                        </tr>
+                                        <tr app-table-row-loading *ngIf="(isLoading | async)"></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <app-pagination [total]="totalItems" [pageNum]="page" [itemPerPage]="pageSize"
+                                (onChange)="updatePagingData($event)"></app-pagination>
+                        </div>
+                    </div>
+                </tab>
+                <tab *ngIf="menuSpecialPermission | async | specialPermission:'Voucher'" heading="Voucher"
+                    (selectTab)="onSelectTab('voucher')"> </tab>
+            </tabset>
+        </div>
+    </div>
+</div>
+
+<confirm-popup [body]="confirmDeleteInvoiceText" (onSubmit)="onDeleteInvoice()"></confirm-popup>
+
+<permission-403-popup></permission-403-popup>

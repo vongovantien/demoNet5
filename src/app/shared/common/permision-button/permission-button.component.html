@@ -1,0 +1,132 @@
+<ng-container [ngSwitch]="type">
+    <ng-container *ngSwitchCase="'import'">
+        <button type="button" NoDbClick class="btn btn-{{class ? class : 'brand'}}  m-btn--icon m-btn--uppercase"
+            *ngIf="(menuPermission | async)?.import === true" (click)="onClicked($event)">
+            <span NoDbClick>
+                <i class="la la-upload"></i>
+                <span>
+                    {{title || 'Import'}}
+                </span>
+            </span>
+        </button>
+    </ng-container>
+    <ng-container *ngSwitchCase="'export'">
+        <button type="button" NoDbClick class="btn btn-{{class ? class : 'danger'}}  m-btn--uppercase"
+            *ngIf="(menuPermission | async)?.export === true" (click)="onClicked($event)"
+            [class.dropdown-toggle]="mode === 'dropdown'">
+            <i class="la la-download"></i>
+            {{title || 'Export'}}
+        </button>
+    </ng-container>
+    <ng-container *ngSwitchCase="'save'">
+        <button type="button" NoDbClick class="btn btn-{{class ? class : 'brand'}}  m-btn--icon m-btn--uppercase"
+            *ngIf="(menuPermission | async)?.write !== 'None'" (click)="onClicked($event)"
+            [class.dropdown-toggle]="mode === 'dropdown'">
+            <i class="la la-save"></i>
+            {{!!title ? title : 'Save'}}
+        </button>
+    </ng-container>
+    <ng-container *ngSwitchCase="'save-and-send'">
+        <button type="button" NoDbClick class="btn btn-{{class ? class : 'success'}}  m-btn--icon m-btn--uppercase"
+            *ngIf="(menuPermission | async)?.write !== 'None'" (click)="onClicked($event)">
+            <span>
+                <i class="la la-download"></i>
+                <span>
+                    {{title}}
+                </span>
+            </span>
+        </button>
+    </ng-container>
+    <ng-container *ngSwitchCase="'detail'">
+        <ng-container *ngIf="(menuPermission | async)?.detail !== 'None'">
+            <ng-container *ngIf="!!user && (menuPermission | async)?.detail=== 'Owner';else detailTpl">
+                <button type="button" NoDbClick
+                    class="btn btn-{{class ? class : 'success'}}  m-btn--icon m-btn--icon-only"
+                    (click)="onClicked($event)" *hasOwnerPermission="user">
+                    <i class="la la-edit"></i>
+                </button>
+            </ng-container>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="'copy'">
+        <ng-container *ngIf="(menuPermission | async)?.detail !== 'None'">
+            <ng-container *ngIf="!!user && (menuPermission | async)?.detail=== 'Owner';else copyTpl">
+                <button type="button" NoDbClick
+                    class="btn btn-{{class ? class : 'success'}}  m-btn--icon m-btn--icon-only"
+                    *hasOwnerPermission="user" (click)="onClicked($event)">
+                    <i class="la la-copy"></i>
+                </button>
+            </ng-container>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="'delete'">
+        <ng-container *ngIf="(menuPermission | async)?.delete !== 'None'">
+            <ng-container *ngIf="mode === 'context-menu'; else defaultDeleteTpl">
+                <ng-container
+                    *ngIf="!!user && (menuPermission | async)?.delete=== 'Owner';else deleteNotOwnerContextMenuTpl">
+                    <span NoDbClick (click)="onClicked($event)" *hasOwnerPermission="user">
+                        <i class="la la-trash {{icon}}"></i>
+                        <span>{{title}}</span>
+                    </span>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="'add'">
+        <button type="button" class="btn btn-{{class ? class : 'success'}} m-btn--icon m-btn--uppercase"
+            *ngIf="(menuPermission | async)?.allowAdd === true" (click)="onClicked($event)"
+            [class.dropdown-toggle]="mode === 'dropdown'">
+            <i className="{{icon ? icon : 'la la-plus'}}"></i>
+            {{!!title ? title : 'Add New'}}
+        </button>
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+        <button type="button" NoDbClick class="btn btn-{{class}}  m-btn--icon " *ngIf="(menuPermission | async)?.write"
+            (click)="onClicked($event)">
+            <span>
+                <i className="{{icon}}"></i>
+                <span>
+                    {{title}}
+                </span>
+            </span>
+        </button>
+    </ng-container>
+</ng-container>
+
+
+<ng-template #deleteNotOwnerTpl>
+    <button type="button" NoDbClick class="btn btn-{{class ? class : 'danger'}}  m-btn--icon m-btn--icon-only"
+        (click)="onClicked($event)">
+        <i className="la la-trash {{ icon}}"></i>
+    </button>
+</ng-template>
+
+<ng-template #detailTpl>
+    <button type="button" NoDbClick class="btn btn-{{class ? class : 'success'}}  m-btn--icon m-btn--icon-only"
+        (click)="onClicked($event)">
+        <i class="la la-edit"></i>
+    </button>
+</ng-template>
+
+<ng-template #copyTpl>
+    <button type="button" NoDbClick class="btn btn-{{class ? class : 'success'}}  m-btn--icon m-btn--icon-only"
+        (click)="onClicked($event)">
+        <i class="la la-copy"></i>
+    </button>
+</ng-template>
+
+<ng-template #defaultDeleteTpl>
+    <ng-container *ngIf="!!user && (menuPermission | async)?.delete=== 'Owner';else deleteNotOwnerTpl">
+        <button type="button" NoDbClick class="btn btn-{{class ? class : 'danger'}}  m-btn--icon m-btn--icon-only"
+            (click)="onClicked($event)" *hasOwnerPermission="user">
+            <i className="la la-trash {{icon}}"></i>
+        </button>
+    </ng-container>
+</ng-template>
+
+<ng-template #deleteNotOwnerContextMenuTpl>
+    <span NoDbClick (click)="onClicked($event)">
+        <i class="la la-trash {{icon}}"></i>
+        <span>{{title}}</span>
+    </span>
+</ng-template>

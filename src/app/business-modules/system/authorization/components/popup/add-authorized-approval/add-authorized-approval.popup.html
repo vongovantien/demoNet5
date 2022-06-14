@@ -1,0 +1,171 @@
+<div class="modal fade" id="add-authorization-modal" bsModal #popup="bs-modal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{isUpdate ? 'Update' : 'Add'}} Authorized Approval</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closePopup()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="m-form m-form--state" [formGroup]="formAuthorizedApproval">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger': isSubmitted && !type.value }">
+                                <label for="" required>Type</label>
+                                <ng-select class="custom" formControlName="type" [items]="typeList" [clearable]='false'>
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger': isSubmitted && !officeCommissioner.value }">
+                                <label for="" required>
+                                    Office
+                                </label>
+                                <ng-select [multiple]='false' formControlName="officeCommissioner" class="custom"
+                                    (change)="changeOffice($event)" [items]="officeList" bindLabel="text"
+                                    bindValue="id">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSubmitted && (!authorizer.value || userList.length === 0) }">
+                                <label for="" required>Authorizer</label>
+                                <app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event, null)"
+                                    [currentActiveItemId]="{ field: 'userId', value: authorizer.value}"
+                                    [selectedDisplayFields]="['userName']" [dataSources]="userList"
+                                    [displayFields]="[{field: 'userName', label: 'User Name'}, { field: 'employeeName', label: 'Full Name' }]"
+                                    placeholder="Select Authorizer" [height]="200" size="15">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger':isSubmitted && (!commissioner.value || userList.length === 0) }">
+                                <label for="" required>Commissioner</label>
+                                <app-combo-grid-virtual-scroll
+                                    (itemSelected)="onSelectDataFormInfo($event,'commisioner')"
+                                    [currentActiveItemId]="{ field: 'userId', value: commissioner.value}"
+                                    [selectedDisplayFields]="['userName']" [dataSources]="userList"
+                                    [displayFields]="[{field: 'userName', label: 'User Name'}, { field: 'employeeName', label: 'Full Name' }]"
+                                    placeholder="Select Commisioner" [height]="200" size="15">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Effective Date
+                                </label>
+                                <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                    <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                        [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" [singleDatePicker]="true"
+                                        name="daterange" [autoApply]="true" formControlName="effectiveDate" readonly
+                                        [minDate]="minDateEffective" />
+                                    <span class="m-input-icon__icon m-input-icon__icon--right">
+                                        <span>
+                                            <i class="la la-calendar"></i>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Expiration Date
+                                </label>
+                                <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                    <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                        [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" [singleDatePicker]="true"
+                                        name="daterange" [autoApply]="true" formControlName="expirationDate" readonly
+                                        [minDate]="minDateExpired" />
+                                    <span class="m-input-icon__icon m-input-icon__icon--right">
+                                        <span>
+                                            <i class="la la-calendar"></i>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>
+                                    Description
+                                </label>
+                                <textarea formControlName="description" class="form-control m-input m-input--square"
+                                    rows="6"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-lg-4 col-form-label form-control-label"> Status </label>
+                                    <div class="col-lg-8">
+                                        <app-switch formControlName="status" [disabled]="!isUpdate">
+                                        </app-switch>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="isUpdate">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Created: {{ authorized.datetimeCreated | date: 'dd/MM/yyyy HH:mm' }} by
+                                    <span class="text-success">{{authorized.nameUserCreated}}</span></label>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label *ngIf="authorized.datetimeModified">Modified:
+                                    {{ authorized.datetimeModified | date: 'dd/MM/yyyy HH:mm' }}
+                                    by <span class="text-success">{{authorized.nameUserModified}}</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer m--align-center">
+                <button class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="saveAuthorizedAprroval()"
+                    *ngIf="!!authorized && authorized.active && authorized.permission.allowUpdate">
+                    <span>
+                        <i class="la la-save"></i>
+                        <span>
+                            Save
+                        </span>
+                    </span>
+                </button>
+                <button type="button" class="btn btn-cancel  m-btn--icon m-btn--uppercase" (click)="closePopup()">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span>
+                            cancel
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<confirm-popup #confirmUpdatePopup [body]="'Do you want to save the changes?'" [labelConfirm]="'Yes'"
+    (onSubmit)="onUpdateAuthorizedApproval()">
+</confirm-popup>
+<confirm-popup #confirmCancelPopup [body]="'Do you want to exit without saving?'" [labelConfirm]="'Yes'"
+    (onSubmit)="onCancelAuthorization()">
+</confirm-popup>
+<confirm-popup #confirmTurnOfPopup [body]="'Do you want to turn off this authorization?'" [labelConfirm]="'Yes'"
+    (onSubmit)="onChangeStatus()">
+</confirm-popup>

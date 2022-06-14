@@ -1,0 +1,46 @@
+<div class="modal fade" role="dialog" bsModal #popup="bs-modal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Input Ref No</h5>
+                <button type="button" class="close" aria-label="Close" (click)=hide()>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="m-radio-inline d-flex justify-content-between">
+                            <ng-container *ngFor="let option of optionsType">
+                                <label class="m-radio m-radio--bold">
+                                    <input type="radio" [value]="option" name="option" [(ngModel)]="selectedOpion">
+                                    {{option.title}}<span></span>
+                                </label>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <textarea class="form-control" cols="30" rows="10" [(ngModel)]="keyword"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer m--align-center c-button-actions">
+                <button class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="searchRef()">
+                    <span>
+                        <i class="la la-search"></i>
+                        <span> Apply </span>
+                    </span>
+                </button>
+                <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="hide()">
+                </app-default-button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<select-partner-popup (onSelect)="hide()"></select-partner-popup>
+<select-requester-popup #requesterPopup (onSelect)="requesterPopup.hide();hide()"></select-requester-popup>

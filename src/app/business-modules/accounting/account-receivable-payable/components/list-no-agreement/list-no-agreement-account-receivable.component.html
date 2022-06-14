@@ -1,0 +1,95 @@
+<div class="m-portlet">
+    <div class="m-portlet__body">
+        <div class="m-form">
+            <div class="row">
+                <div class="col-lg-8 m--align-left">
+                    <div class="form-group">
+                        <div class="c-button-actions">
+                            <ng-container
+                                *ngIf="menuSpecialPermission | async | specialPermission: 'ExportARSumaryCash'">
+                                <app-permission-button type="export" (onClick)="exportExcel()"></app-permission-button>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 m--margin-top-20">
+                    <div class="table-wrapper table-scrollable" id="payment-table">
+                        <table class="table table-hover table-brand dataTable table-hover">
+                            <thead app-table-header [headers]="headers" (onClick)="sortBy($event.sortField)">
+                                <th class="m--w-50 first table-actions-col">
+                                    Action
+                                </th>
+                            </thead>
+                            <tbody>
+                                <tr app-table-none-record *ngIf="!(isLoading | async) && !otherList.length">
+                                </tr>
+                                <tr app-table-row-loading *ngIf="isLoading | async"></tr>
+                                <ng-container>
+                                    <ng-container *ngFor="let item of otherList; let i = index; trackBy: trackByFn">
+                                        <tr class="">
+                                            <td class="table-actions-col">
+                                                <div class="table-actions" style="width: 70px">
+                                                    <app-permission-button type="detail"
+                                                        (click)="viewDetail( item.partnerId,item.arSalesmanId)">
+                                                    </app-permission-button>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <a class="pointer" [routerLink]="'./detail'" [queryParams]="{partnerId: item.partnerId,salemanId:item.arSalesmanId}">{{item.partnerCode}}</a>
+                                            </td>
+                                            <td style="min-width: 200px; white-space:initial">{{ item.partnerNameAbbr }}</td>
+                                            <td class="text-right">{{ item.debitAmount | number: '.0-3' }}</td>
+                                            <td class="text-right">
+                                                <a href="javascript:void(0)" (click)="showDebitDetail(item.arSalesmanId,item.partnerId,'Unpaid')">
+                                                    {{ (item.billingAmount +(item.obhBillingAmount!=null?item.obhBillingAmount:0)) | negativeNumber :'.0-3' }}
+                                                </a>
+                                            </td>
+                                            <td class="text-right"><a href="javascript:void(0)" (click)="showDebitDetail(item.arSalesmanId,item.partnerId,'Paid A Part')">
+                                                {{ item.paidAmount + (item.obhPaidAmount!=null?item.obhPaidAmount:0)| negativeNumber:'.0-3'}}
+                                            </a></td>
+                                            <td class="text-right"><a href="javascript:void(0)" (click)="showDebitDetail(item.arSalesmanId,item.partnerId,'OutStanding')">
+                                                {{ item.billingUnpaid +(item.obhUnPaidAmount!=null?item.obhUnPaidAmount:0) |negativeNumber:'.0-3'}}
+                                            </a></td>
+                                            <td class="text-right">
+                                                <span [ngClass]="'text-danger'">
+                                                    <a href="javascript:void(0)"
+                                                        (click)="showDebitDetail(item.arSalesmanId,item.partnerId,'Over1To15Day')">
+                                                        {{ item.over1To15Day | negativeNumber: '.0-3' }}
+                                                    </a>
+                                                </span>
+                                            </td>
+                                            <td class="text-right">
+                                                <span [ngClass]="'text-danger'">
+                                                    <a href="javascript:void(0)"
+                                                        (click)="showDebitDetail(item.arSalesmanId,item.partnerId,'Over16To30Day')">
+                                                        {{ item.over16To30Day | negativeNumber: '.0-3' }}
+                                                    </a>
+                                                </span>
+                                            </td>
+                                            <td class="text-right">
+                                                <span [ngClass]="'text-danger'">
+                                                    <a href="javascript:void(0)"
+                                                        (click)="showDebitDetail(item.arSalesmanId,item.partnerId,'Over30Day')">
+                                                        {{ item.over30Day | negativeNumber: '.0-3' }}
+                                                    </a>
+                                                </span>
+                                            </td>
+                                            <td class="text-right">{{ item.arCurrency }}</td>
+                                            <td class="text-left text-success">{{ item.arSalesmanName }}</td>
+                                        </tr>
+                                    </ng-container>
+                                </ng-container>
+                            </tbody>
+                        </table>
+                    </div>
+                    <app-pagination [total]="totalItems" [pageNum]="page" [itemPerPage]="pageSize"
+                        (onChange)="updatePagingData($event)"></app-pagination>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<account-receivable-debit-detail-popup></account-receivable-debit-detail-popup>

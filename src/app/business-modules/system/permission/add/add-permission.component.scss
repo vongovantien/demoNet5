@@ -1,0 +1,61 @@
+:host /deep/ {
+    .general-wrapper {
+        .m-w-100 {
+            max-width: 100px;
+            padding: 0;
+        }
+        .header-permission {
+            padding: 7px 15px;
+            text-align: center;
+            margin: 0;
+            background: #dfdfdf;
+            font-weight: bold;
+            &.sticky {
+                top: 70px;
+                z-index: 2;
+                width: 70%;
+                position: fixed;
+                @media (max-width: 1279px) {
+                    width: 70%;
+                }
+                @media (max-width: 1365px) and (min-width: 1280px) {
+                    width: 73%;
+                }
+                @media (min-width: 1365px) {
+                    width: 80%;
+                }
+            }
+        }
+    }
+
+    .special-wrapper {
+        .list-permission {
+            .list-permission-special {
+                .permission-special-item-name {
+                    display: flex;
+                    height: 30px;
+                    align-items: center;
+                }
+                li {
+                    margin-right: 20px;
+                }
+            }
+        }
+    }
+    .permission-add-page {
+        .m-switch.m-switch--success:not(.m-switch--outline)
+            input:empty
+            ~ span:before {
+            background-color: #ebedf2;
+        }
+        .m-switch.m-switch--success:not(.m-switch--outline)
+            input:checked
+            ~ span:before {
+            background-color: #34bfa3;
+        }
+        .list-permission-group-module-wrapper {
+            height: 100vh;
+            overflow: auto;
+        }
+    }
+}

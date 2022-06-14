@@ -1,0 +1,154 @@
+:host /deep/ {
+    .buying-charge-wrapper {
+        .buying-charge-content {
+            .table-wrapper {
+                padding-bottom: 60px !important;
+                &.h {
+                    max-height: 510px;
+                    min-height: 400px;
+                    // padding-bottom: 175px;
+                }
+                .form-group {
+                    .form-control {
+                        font-size: 12px;
+                        color: #000;
+                    }
+                }
+            }
+            .dropdown-partner {
+                .dropdown-partner__content {
+                    width: 390px;
+                    position: absolute;
+                    z-index: 2;
+                    // min-height: 294px;
+                    // border-radius: 20px;
+                    // padding: 0px 2px;
+                    .dropdown-partner__header {
+                        padding: 10px 0px;
+                        border-bottom: 1px solid #dfdfdf;
+                        box-shadow: 0px 0px 15px 1px rgba(69, 65, 78, 0.2);
+                        background: #fff;
+                    }
+                    // * Combo grid
+                    .e--combogrid-content {
+                        // border-bottom-left-radius: 20px;
+                        // border-bottom-right-radius: 20px;
+                        .table-header {
+                            th:first-child {
+                                min-width: 130px;
+                            }
+                        }
+                    }
+                }
+            }
+            .cdk-virtual-scroll-viewport {
+                overflow-y: auto;
+                overflow-x: hidden;
+                height: 150px !important;
+            }
+            .table-editable {
+                // * Calendar
+                .table-date {
+                    .table-condensed {
+                        tr {
+                            th:not(:first-child) {
+                                min-width: 40px;
+                            }
+                            td:not(:first-child) {
+                                min-width: auto;
+                            }
+                        }
+                    }
+                }
+                .e--combogrid {
+                    table {
+                        white-space: pre-wrap;
+                    }
+                    .form-control {
+                        // border: unset;
+                        background: inherit;
+                        padding: 4px 8px;
+                    }
+                    tr {
+                        th:not(:first-child) {
+                            min-width: 130px;
+                        }
+                        td:not(:first-child) {
+                            min-width: 130px;
+                        }
+                        th:first-child {
+                            min-width: 130px;
+                        }
+                        td:first-child {
+                            min-width: 130px;
+                        }
+                    }
+                }
+                .bg-warning {
+                    .form-control {
+                        background: inherit;
+                    }
+                    .fixed-side {
+                        background: rgb(255,242,204) !important;
+                    }
+                    .e--combogrid_icon,
+                    .e--combogrid_icon__clear {
+                        background: rgb(255,242,204) !important;
+                    }
+                }
+                .bg-green{
+                    .form-control {
+                        background: inherit;
+                    }
+                    .fixed-side {
+                        background: #8af1b6 !important;
+                    }
+                    .e--combogrid_icon,
+                    .e--combogrid_icon__clear {
+                        background: #8af1b6 !important;
+                    }
+                }
+            }
+
+            .quantity-hint {
+                .p-l-none {
+                    padding-left: 0;
+                }
+                .p-r-none {
+                    padding-right: 0;
+                }
+            }
+            .m--w-90 {
+                min-width: 90px;
+            }
+
+            .fixed-side {
+                left: -1px;
+                background: #fff;
+            }
+
+            .dropdown-charge {
+                position: absolute;
+                z-index: 2;
+            }
+        }
+    }
+    .invisibleHeader {
+        display: none !important;
+    }
+
+    .list-master-unit {
+        .e--combogrid-content {
+            min-width: 265px;
+        }
+    }
+
+    .list-master-charge {
+        .e--combogrid-content {
+            min-width: 520px;
+        }
+    }
+    .detail-linkfee{
+        text-align: left;
+    }
+}

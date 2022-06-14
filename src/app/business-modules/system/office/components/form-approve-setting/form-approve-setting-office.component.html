@@ -1,0 +1,241 @@
+<div class="m-portlet m-form m-form--state">
+    <div class="m-portlet__body">
+        <div class="m-form m--margin-bottom-10">
+            <div class="m--align-right c-button-actions">
+                <app-default-button [buttonSetting]="saveButtonSetting" (onClick)="onSave()">
+                </app-default-button>
+                <app-default-button [buttonSetting]="cancelButtonSetting"></app-default-button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <h6 class="text-primary">Approval Advance and Settlement :
+                    <span>
+                        <i class="la la-check-circle-o text-success" style="font-size:30px"></i>
+                    </span>
+                </h6>
+            </div>
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col"></div>
+                    <div class="col font-weight-bold">Leader</div>
+                    <div class="col font-weight-bold">Manager</div>
+                    <div class="col font-weight-bold">Accountant</div>
+                    <div class="col font-weight-bold">BOD</div>
+                </div>
+                <ng-container *ngFor="let approval of approvePayments; let i = index; trackBy: trackByFn">
+                    <div class="row m--margin-top-10">
+                        <div class="col">{{approval.type}}</div>
+                        <div class="col">
+                            <select [(ngModel)]="approval.leader" class="form-control">
+                                <option *ngFor="let setting of settings" [value]="setting.value">{{setting.title}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select [(ngModel)]="approval.manager" class="form-control">
+                                <option *ngFor="let setting of settings" [value]="setting.value">{{setting.title}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select [(ngModel)]="approval.accountant" class="form-control">
+                                <option *ngFor="let setting of settings" [value]="setting.value">{{setting.title}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select [(ngModel)]="approval.bod" class="form-control">
+                                <option *ngFor="let setting of settingSpecials" [value]="setting.value">
+                                    {{setting.title}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+        <hr />
+        <div class="row m--margin-top-20">
+            <div class="col-lg-12">
+                <h6 class="text-primary">Unlock Shipment, Advance and Settlement :
+                    <span>
+                        <i class="la la-unlock text-warning" style="font-size:30px"></i>
+                    </span>
+                </h6>
+            </div>
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col"></div>
+                    <div class="col font-weight-bold">Leader</div>
+                    <div class="col font-weight-bold">Manager</div>
+                    <div class="col font-weight-bold">Accountant</div>
+                    <div class="col font-weight-bold">BOD</div>
+                </div>
+                <ng-container *ngFor="let item of unlockShipments; let i = index; trackBy: trackByFn">
+                    <div class="row m--margin-top-10">
+                        <div class="col">{{item.type}}</div>
+                        <div class="col">
+                            <select [(ngModel)]="item.leader" class="form-control">
+                                <option *ngFor="let setting of settings" [value]="setting.value">
+                                    {{setting.title}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select [(ngModel)]="item.manager" class="form-control">
+                                <option *ngFor="let setting of settings" [value]="setting.value">
+                                    {{setting.title}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select [(ngModel)]="item.accountant" class="form-control">
+                                <option *ngFor="let setting of settings" [value]="setting.value">
+                                    {{setting.title}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select [(ngModel)]="item.bod" class="form-control">
+                                <option *ngFor="let setting of settingSpecials" [value]="setting.value">
+                                    {{setting.title}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+        <hr />
+        <div class="row m--margin-top-20">
+            <div class="col-lg-12">
+
+                <h6 class="text-primary">Account Receivable :
+                    <span>
+                        <i class="la la-user text-warning" style="font-size:30px"></i>
+                    </span>
+                </h6>
+            </div>
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col font-weight-bold"> Credit Limit </div>
+                    <div class="col font-weight-bold"> Over Payment Term </div>
+                    <div class="col font-weight-bold"> Expired Agreement </div>
+                    <div class="col font-weight-bold"> Apply Type </div>
+                    <div class="col font-weight-bold"> Apply Partner </div>
+                </div>
+                <ng-container>
+                    <div class="row m--margin-top-10">
+                        <div class="col">
+                            <app-switch [(ngModel)]="accountReceivable.creditLimit"></app-switch>
+                        </div>
+                        <div class="col">
+                            <app-switch [(ngModel)]="accountReceivable.overPaymentTerm"></app-switch>
+                        </div>
+                        <div class="col">
+                            <app-switch [(ngModel)]="accountReceivable.expiredAgreement"></app-switch>
+                        </div>
+                        <div class="col">
+                            <select [(ngModel)]="accountReceivable.applyType" class="form-control">
+                                <option *ngFor="let type of types" [value]="type.value">
+                                    {{type.title}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select [(ngModel)]="accountReceivable.applyPartner" class="form-control">
+                                <option *ngFor="let partner of partners" [value]="partner.value">
+                                    {{partner.title}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+        <hr />
+        <div class="row m--margin-top-20">
+            <div class="col-lg-12">
+                <h6 class="text-primary">Replicate Setting :
+                    <span>
+                        <i class="la la-clone text-primary" style="font-size:30px"></i>
+                    </span>
+                </h6>
+            </div>
+            <div class="col-lg-12">
+                <div class="row form-group">
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="">Replicate office</label>
+                            <ng-select [(ngModel)]="replicateOffice.replicateOfficeId" [items]="(offices | async)"
+                                class="custom" bindLabel="shortName" bindValue="id" placeholder="None">
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="">Replicate prefix</label>
+                            <input type="text" class="form-control"
+                                [attr.disabled]="!replicateOffice.replicateOfficeId ? true : null" placeholder="..R"
+                                [(ngModel)]="replicateOffice.replicatePrefix">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row m--margin-top-20">
+            <div class="col-lg-12">
+                <h6 class="text-primary">Lock Shipment Setting :
+                    <span>
+                        <i class="la la-lock text-warning" style="font-size:30px"></i>
+                    </span>
+                </h6>
+            </div>
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col-lg-3 font-weight-bold">Service</div>
+                    <div class="col-lg-3 font-weight-bold">Lock Date</div>
+                    <div class="col-lg-3 font-weight-bold">Lock After Unlock</div>
+                    <div class="col-lg-3 font-weight-bold text-center">Apply</div>
+                </div>
+                <ng-container *ngFor="let service of serviceLockSettings; let i = index; trackBy: trackByFn">
+                    <div class="row m--margin-top-20">
+                        <div class="col-lg-3">
+                            {{service.serviceType | serviceName}}
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSubmitted && !service.lockDate}">
+                                <select [(ngModel)]="service.lockDate" class="form-control">
+                                    <option [value]="null" disabled>Please select</option>
+                                    <option *ngFor="let date of dates" [value]="date">
+                                        {{date}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSubmitted && !service.lockAfterUnlocking}">
+                                <select [(ngModel)]="service.lockAfterUnlocking" class="form-control">
+                                    <option *ngFor="let date of dates" [value]="date">
+                                        {{date}}
+                                    </option>
+                                    <option [value]="null" disabled>Please select</option>
+                                </select>
+                            </div>
+
+                        </div>
+                        <div class="col-lg-3 text-center">
+                            <app-switch [(ngModel)]="service.isApply"></app-switch>
+                        </div>
+                    </div>
+                </ng-container>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,43 @@
+.add-charge-popup {
+    .form-charge {
+        .charge-list-selected {
+            border: 1px solid #eeeeee;
+            padding: 10px;
+            background: #fbfbfb;
+            border-bottom: none;
+
+            ul {
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                -ms-flex-wrap: wrap;
+                flex-wrap: wrap;
+
+                .charge-list-item {
+                    padding: 3px 5px;
+                    border-radius: 2px;
+                    -webkit-appearance: none;
+                    background-color: #3966b6;
+                    border-color: #3966b6;
+                    color: #fff;
+                    font-size: 13px;
+                    margin: 2px 5px;
+
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
+            }
+
+        }
+
+        .form-control {
+            border-top: none;
+
+            &:focus {
+                border-color: transparent;
+            }
+        }
+
+    }
+}

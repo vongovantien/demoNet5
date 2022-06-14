@@ -1,0 +1,39 @@
+<div class="unlock-shipment-wp bg-secondary p-4">
+    <div class="form-group m-form__group">
+        <h4 class="text-center text-info">Lock Shipment </h4>
+        <div class="m-radio-list">
+            <div class="row">
+                <div class="col-md-12">
+                    <label for="">Options</label>
+                    <div class="form-group">
+                        <ng-select class="custom" [items]="options" [(ngModel)]="selectedOption" bindLabel="text"
+                            bindValue="id" [clearable]="false"></ng-select>
+                    </div>
+                </div>
+
+                <div class="col-md-12 m-animate-fade-in">
+                    <div class="form-group">
+                        <label for="">Reference No</label>
+                        <textarea class="form-control" rows="10" [(ngModel)]="keyword"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row text-center">
+                <div class="col-md-12 m--margin-top-20">
+                    <button (click)="confirmPopup.show()" type="button"
+                        class="btn btn-warning btn-block m-btn--icon m-btn--uppercase">
+                        <span>
+                            <i class="fa fa-lock"></i>
+                            <span>
+                                Lock
+                            </span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<confirm-popup #confirmPopup body="Are you sure to lock ?" (onSubmit)="confirmPopup.hide(); lock()">
+</confirm-popup>

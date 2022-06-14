@@ -1,0 +1,38 @@
+<div class="unlock-accounting-wp bg-secondary p-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h4 class="text-center text-info">Unlock Payment Request</h4>
+            <div class="form-group m-form__group">
+                <div class="m-radio-list">
+                    <ng-container *ngFor="let type of types">
+                        <label class="m-radio m-radio--bold m-radio--state-success">
+                            <input name="selectedType" [(ngModel)]="selectedType" [value]="type" type="radio">
+                            {{type.title}}
+                            <span></span>
+                        </label>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+                <label>Reference No</label>
+                <input type="text" class="form-control" [(ngModel)]="keyword" />
+            </div>
+        </div>
+        <div class="col-md-12 text-center m--margin-top-15">
+            <button (click)="unlockPaymentRequest($event)" type="button"
+                class="btn btn-primary  m-btn--icon m-btn--uppercase">
+                <span>
+                    <i class="fa fa-unlock"></i>
+                    <span>
+                        Unlock Payment Request
+                    </span>
+                </span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<unlock-history-popup [body]="lockHistory" (onUnlock)="onUnlockAccounting($event)"></unlock-history-popup>
+<info-popup [body]="listPaymentSynced" [title]="'Notification'" [label]="'Ok'"></info-popup>

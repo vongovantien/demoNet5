@@ -1,0 +1,63 @@
+<app-sub-header>
+    <div class="c-button-actions">
+        <app-permission-button title="Add New" (onClick)="showAdd()" title="Add New"></app-permission-button>
+        <app-permission-button routerLink="/home/catalogue/bank/import" title="Import" type="import">
+        </app-permission-button>
+        <app-permission-button type="export" (onClick)="export()" title="Export"></app-permission-button>
+    </div>
+</app-sub-header>
+
+<div class="m-content">
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <div class="m-form">
+                <app-search-options [configSearch]="configSearch" (search)="onSearch($event)"
+                    (reset_search)=resetSearch($event)></app-search-options>
+            </div>
+        </div>
+    </div>
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <div class="table-wrapper">
+                <table class="table table-brand table-striped dataTable">
+                    <thead app-table-header [headers]="headers"
+                        (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                        <th class="m--w-50 first table-actions-col">
+                            Actions
+                        </th>
+                    </thead>
+                    <tbody class="tbody-group">
+                        <ng-container *ngFor="let bank of banks; let i = index; trackBy: trackByFn">
+                            <tr>
+                                <td class="table-actions-col">
+                                    <div class="table-actions" style="width: 70px">
+                                        <app-permission-button type="detail" (onClick)="showDetail(bank)"
+                                            [user]="bank.userCreated">
+                                        </app-permission-button>
+                                        <app-permission-button type="delete" (onClick)="showConfirmDelete(bank)"
+                                            [user]="bank.userCreated">
+                                        </app-permission-button>
+                                    </div>
+                                </td>
+                                <td> <span>{{bank.code}}</span></td>
+                                <td> <span>{{bank.bankNameVn}}</span> </td>
+                                <td> <span>{{bank.bankNameEn}}</span> </td>
+                                <td [ngClass]="bank.active ? 'text-success' : 'text-danger'">
+                                    {{bank.active ? 'Active' : 'Inactive'}}</td>
+                            </tr>
+                        </ng-container>
+                        <tr *ngIf="!isLoading && !banks.length" app-table-none-record
+                            [colspan]="headers.length + 1"></tr>
+                        <tr *ngIf="isLoading" app-table-row-loading></tr>
+                    </tbody>
+                </table>
+            </div>
+            <app-pagination [total]="totalItems" [pageNum]="page" [itemPerPage]="pageSize"
+                (onChange)="updatePagingData($event)"></app-pagination>
+        </div>
+    </div>
+</div>
+
+<form-create-bank-popup (onChange)="resetSearch($event)"></form-create-bank-popup>
+
+<confirm-popup body="You want to delete this bank" (onSubmit)="onDelete()"></confirm-popup>

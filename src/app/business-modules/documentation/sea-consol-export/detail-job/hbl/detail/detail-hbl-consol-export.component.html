@@ -1,0 +1,30 @@
+<div class="sea-fcl-detail-hbl-page">
+    <app-sub-header>
+        <div class="c-button-actions">
+            <app-menu-preview-hbl-sea-export [hblDetail]="hblDetail"></app-menu-preview-hbl-sea-export>
+
+            <app-default-button (click)="showCreatepoup()" [buttonSetting]="saveButtonSetting"
+                *ngIf=" (permissionHblDetail | async)?.allowUpdate"></app-default-button>
+
+            <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="gotoList()"></app-default-button>
+        </div>
+    </app-sub-header>
+    <div class="m-content">
+        <div class="m-portlet__body">
+            <tabset class="custom-class-tab">
+                <tab heading="HAWB Detail">
+                    <app-form-create-hbl-sea-export [isUpdate]="true"></app-form-create-hbl-sea-export>
+                    <hbl-goods-summary-fcl type="export">HBL Goods Summary</hbl-goods-summary-fcl>
+                </tab>
+                <tab heading="Attach List">
+                    <attach-list-house-bill></attach-list-house-bill>
+                </tab>
+                <tab heading="Proof Of Delivery">
+                    <hbl-proof-of-delivery></hbl-proof-of-delivery>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+</div>
+
+<ng-template inject></ng-template>

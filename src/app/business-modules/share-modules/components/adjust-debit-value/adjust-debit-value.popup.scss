@@ -1,0 +1,20 @@
+:host /deep/ {
+    .adjust-debit-value-popup {
+        .item-shipment-wrapper {
+            max-height: 600px;
+            overflow-y: scroll;
+        }
+        .table-scrollable {
+            .table {
+                tr {
+                    th,
+                    td {
+                        &.table-actions-col {
+                            min-width: 50px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

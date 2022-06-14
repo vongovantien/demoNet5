@@ -1,0 +1,239 @@
+<div class="modal fade" role="dialog" bsModal #popup="bs-modal">
+    <div class="modal-dialog c-modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{title}}</h5>
+                <button type="button" class="close" aria-label="Close"
+                    (click)="formGroup.reset(); hide(); isSubmitted = false">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="formGroup">
+                    <div class="form">
+                        <div class="row m-form m-form m-form--state">
+                            <div class="col-md-4">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger': (ruleName.dirty && !ruleName.valid) || (isSubmitted && !ruleName.valid) }">
+                                    <label required>Rule Name</label>
+                                    <input type="text" class="form-control" formControlName="ruleName">
+                                    <div class="form-control-feedback" *ngIf="(ruleName.dirty && !ruleName.valid) || (isSubmitted && !ruleName.valid)">
+                                        Rule Name is required !
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div class="col-md-4">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger': (serviceSelling.dirty && !serviceSelling.valid) || (isSubmitted && !serviceSelling.valid)}">
+                                    <label required>Service Selling</label>
+                                    <select formControlName="serviceSelling" class="form-control"
+                                        (ngModelChange)="enableSelling()">
+                                        <option *ngFor="let item of services" [ngValue]="item.value">
+                                            {{item.displayName}}
+                                        </option>
+                                    </select>
+                                    <div class="form-control-feedback" *ngIf="(serviceSelling.dirty && !serviceSelling.valid) || (isSubmitted && !serviceSelling.valid)">
+                                        Service Selling is required !
+                                    </div>
+                                </div>
+                            </div> -->
+                            <div class="col-lg-4">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger': isSubmitted && !serviceSelling.valid}">
+                                    <label class="form-control-label">
+                                        Service Selling<span class="m--font-danger">(*)</span>
+                                    </label>
+    
+                                    <ng-select [multiple]="false" class="custom"
+                                        bindLabel="text" [items]="services" placeholder="Select Service Selling"
+                                        formControlName="serviceSelling" (ngModelChange)="enableSelling()">
+                                    </ng-select>
+                                    <div class="form-control-feedback"
+                                        *ngIf="isSubmitted && !serviceSelling.valid">
+                                        Service is required !
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger': isSubmitted && !selectedChargeSelling.value}">
+                                    <label required for="">Charge Selling</label>
+                                    <app-combo-grid-virtual-scroll [currentActiveItemId]="selectedChargeSelling"
+                                        (itemSelected)="onSelectDataFormInfo($event, 'chargeSelling')"
+                                        [selectedDisplayFields]="configChargeSelling.selectedDisplayFields"
+                                        [dataSources]="configChargeSelling.dataSource" [disabled]="this.isSelling"
+                                        [displayFields]="configChargeSelling.displayFields" [height]="200"
+                                        (remove)="resetChargeSelling()"
+                                        >
+                                    </app-combo-grid-virtual-scroll>
+                                    <div class="form-control-feedback" *ngIf="isSubmitted && !selectedChargeSelling.value">
+                                        Charge Selling is required !
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="">Partner Selling</label>
+                                    <app-combo-grid-virtual-scroll [currentActiveItemId]="selectedPartnerSelling"
+                                        (itemSelected)="onSelectDataFormInfo($event, 'partnerSelling')"
+                                        [selectedDisplayFields]="configPartner.selectedDisplayFields"
+                                        [dataSources]="configPartner.dataSource" [disabled]="this.isSelling"
+                                        [displayFields]="configPartner.displayFields" [height]="200"
+                                        (remove)="resetPartnerSelling()"
+                                        >
+                                    </app-combo-grid-virtual-scroll>
+                                    <!-- <div class="form-control-feedback" *ngIf="isSubmitted && !selectedPartnerSelling.value">
+                                        Partner Selling is required !
+                                    </div> -->
+                                </div>
+                            </div>
+                            <!-- <div class="col-md-4">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger': (serviceBuying.dirty && !serviceBuying.valid) || (isSubmitted && !serviceBuying.valid)}">
+                                    <label required>Service Buying</label>
+                                    <select formControlName="serviceBuying" class="form-control"
+                                        (ngModelChange)="enableBuying()">
+                                        <option *ngFor="let item of services" [ngValue]="item.value">
+                                            {{item.displayName}}
+                                        </option>
+                                    </select>
+                                    <div class="form-control-feedback" *ngIf="(serviceBuying.dirty && !serviceBuying.valid) || (isSubmitted && !serviceBuying.valid)">
+                                        Service Buying is required !
+                                    </div>
+                                </div>
+                            </div> -->
+                            <div class="col-lg-4">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger': isSubmitted && !serviceBuying.valid}">
+                                    <label class="form-control-label">
+                                        Service Buying<span class="m--font-danger">(*)</span>
+                                    </label>
+    
+                                    <ng-select [multiple]="false" class="custom"
+                                        bindLabel="text" [items]="services" placeholder="Select Service Buying"
+                                        formControlName="serviceBuying" (ngModelChange)="enableBuying()">
+                                    </ng-select>
+                                    <div class="form-control-feedback"
+                                        *ngIf="isSubmitted && !serviceBuying.valid">
+                                        Service is required !
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger': isSubmitted && !selectedChargeBuying.value}">
+                                    <label required for="">Charge Buying</label>
+                                    <app-combo-grid-virtual-scroll [currentActiveItemId]="selectedChargeBuying"
+                                        (itemSelected)="onSelectDataFormInfo($event, 'chargeBuying')"
+                                        [selectedDisplayFields]="configChargeBuying.selectedDisplayFields"
+                                        [dataSources]="configChargeBuying.dataSource" [disabled]="this.isBuying"
+                                        [displayFields]="configChargeBuying.displayFields" [height]="200"
+                                        (remove)="resetChargeBuying()"
+                                        >
+                                    </app-combo-grid-virtual-scroll>
+                                    <div class="form-control-feedback" *ngIf="isSubmitted && !selectedChargeBuying.value">
+                                        Charge Buying is required !
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger': isSubmitted && !selectedPartnerBuying.value}">
+                                    <label required for="">Partner Buying</label>
+                                    <app-combo-grid-virtual-scroll [currentActiveItemId]="selectedPartnerBuying"
+                                        [disabled]="this.isBuying"
+                                        (itemSelected)="onSelectDataFormInfo($event, 'partnerBuying')"
+                                        [selectedDisplayFields]="configPartner.selectedDisplayFields"
+                                        [dataSources]="configPartner.dataSource"
+                                        [displayFields]="configPartner.displayFields" [height]="200"
+                                        (remove)="resetPartnerBuying()">
+                                    </app-combo-grid-virtual-scroll>
+                                    <div class="form-control-feedback" *ngIf="isSubmitted && !selectedPartnerBuying.value">
+                                        Partner Buying is required !
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group" [ngClass]="{'m-form__group has-danger': isSubmitted && !effectiveDate.value.startDate}">
+                                    <label required>Effective Date</label>
+                                    <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                        <input type="text" class="form-control m-input m-input--square"
+                                            ngxDaterangepickerMd [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}"
+                                            [minDate]="minDateEffective" name="daterange" placeholder="Please Select"
+                                            readonly [singleDatePicker]="true" formControlName="effectiveDate"
+                                            [alwaysShowCalendars]="true" [autoApply]="true" />
+                                        <span class="m-input-icon__icon m-input-icon__icon--right">
+                                            <span>
+                                                <i class="la la-calendar"></i>
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <div class="form-control-feedback" *ngIf="isSubmitted && !effectiveDate.value.startDate">
+                                        Effective Date is required !
+                                    </div>
+                                </div>
+                            </div>
+                                <div class="col-md-4">
+                                    <div class="form-group"  >
+                                        <label>Expiration Date</label>
+                                        <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                            <input type="text" class="form-control m-input m-input--square"
+                                                ngxDaterangepickerMd [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}"
+                                                [minDate]="minDateExpired" name="daterange" placeholder="Please Select"
+                                                readonly [singleDatePicker]="true" formControlName="expiredDate"
+                                                [allowRemove]="!!expiredDate.value && !!expiredDate.value.startDate"
+                                                (remove)="resetExpiredDate()"
+                                                [alwaysShowCalendars]="true" [autoApply]="true"/>
+                                            <span class="m-input-icon__icon m-input-icon__icon--right">
+                                                <span>
+                                                    <i class="la la-calendar"></i>
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12" *ngIf="!!isShowUpdate"> 
+                                    <div class="form-group">
+                                        <label class="form-control-label">Status</label>
+                                        <div class="m-checkbox-inline">
+                                            <app-switch formControlName="status">
+                                            </app-switch>
+                                        </div>
+                                    </div>
+                                </div>
+                            <ng-container *ngIf="!!isShowUpdate">
+                                <div class="col-md-6 m--margin-top-10 m--margin-bottom-5">
+                                    <span class="m--font-bolder">Create:</span>
+                                    <span class="m--font-success m--margin-left-5">{{datetimeCreated | 
+                                        date:'dd/MM/yyyy h:mm:ss a'}}</span>
+                                    <span class="m--font-bolder m--margin-left-5">by</span>
+                                    <span class="m--font-success m--margin-left-5">{{userNameCreated}}</span>
+                                </div>
+                                <div class="col-md-6 m--margin-top-10 m--margin-bottom-5">
+                                    <span class="m--font-bolder">Modified:</span>
+                                    <span class="m--font-success m--margin-left-5">{{datetimeModified |
+                                        date:'dd/MM/yyyy h:mm:ss a'}}</span>
+                                    <span class="m--font-bolder m--margin-left-5">by</span>
+                                    <span class="m--font-success m--margin-left-5">{{userNameModified}}</span>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer m--align-center c-button-actions">
+                <ng-container>
+                    <app-default-button [buttonSetting]="saveButtonSetting" (onClick)="saveRule()">
+                    </app-default-button>
+                </ng-container>
+
+                <app-default-button [buttonSetting]="cancelButtonSetting"
+                    (onClick)="isSubmitted = false; formGroup.reset(); hide()">
+                </app-default-button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<confirm-popup *ngIf="this.isShowUpdate" body="Do you want to save this Rule?" (onSubmit)="saveRule()"></confirm-popup>
+<info-popup body="Please recheck Data can't be Empty"></info-popup>

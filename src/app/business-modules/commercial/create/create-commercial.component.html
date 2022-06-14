@@ -1,0 +1,55 @@
+<div class="create-commercial-page">
+    <app-sub-header> </app-sub-header>
+
+    <div class="m-content">
+        <div class="m-portlet">
+            <div class="m-portlet__body">
+                <div class="d-flex align-items-center justify-content-between p-1">
+                    <h3>{{type == 'Customer'? 'Customer': 'Agent'}}</h3>
+                    <div>
+                        <div class="c-button-actions">
+                            <button (click)="onSave(true)"
+                                *ngIf="(menuSpecialPermission | async | specialPermission: 'ActiveContract') === false  "
+                                class="btn btn-brand m-btn--square m-btn--icon m-btn--uppercase">
+                                <span>
+                                    <i class="la la-send"></i>
+                                    <span> Save & Request Approval </span>
+                                </span>
+                            </button>
+                            <app-default-button [buttonSetting]="saveButtonSetting" (onClick)="onSave(false)">
+                            </app-default-button>
+                            <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="gotoList()">
+                            </app-default-button>
+
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <form-create-commercial (partnerLocationString)="onChangePartnerLocation($event)">
+                </form-create-commercial>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="m-content">
+    <div class="m-portlet__body">
+
+        <tabset class="custom-class-tab">
+            <tab heading="Agreement">
+                <commercial-contract-list></commercial-contract-list>
+            </tab>
+            <tab heading="Branch/Sub">
+                <app-commercial-branch-sub-list></app-commercial-branch-sub-list>
+            </tab>
+            <tab heading="Email">
+                <app-commercial-email-list></app-commercial-email-list>
+            </tab>
+        </tabset>
+    </div>
+</div>
+<info-popup [body]="invalidFormText"></info-popup>
+
+
+<info-popup #taxCodeInfo [body]="invalidTaxCode"></info-popup>
+<confirm-popup #internalReferenceConfirmPopup (onSubmit)="onFocusInternalReference()" [body]="invalidTaxCode"
+    [labelConfirm]="'Ok'" [labelCancel]="'Cancel'" [align]="'left'"></confirm-popup>

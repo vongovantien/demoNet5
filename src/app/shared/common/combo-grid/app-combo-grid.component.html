@@ -1,0 +1,48 @@
+<div class="dropdown e--combogrid combogrid-autocomplete" (clickOutside)="onClickOutSide()">
+    <div class="dropdown-menu e--combogrid-content d-block">
+        <div class="tabel-wrapper table-fixed">
+            <div class="table-head-fixed">
+                <div class="table-filter-block">
+                    <div class="search-field">
+                        <input [(ngModel)]="keyword" name="keyword" (click)="clickSearch($event)" [hidden]="hideInput"
+                            class="form-control m-input m-input--square cbgr-input-search" type="text"
+                            placeholder="Search..." #inputSearch>
+                        <i class="icon-search"></i>
+                    </div>
+                </div>
+                <div class="table-header">
+                    <table class="table table-hover">
+                        <thead app-table-header [headers]="headers"> </thead>
+                    </table>
+                </div>
+            </div>
+            <ng-container *ngIf="!!data && !!data.length;else nodata">
+                <cdk-virtual-scroll-viewport [ngStyle]="{'height.px': 200}" itemSize="20" minBufferPx="80"
+                    maxBufferPx="160">
+                    <table class="table table-hover">
+                        <tbody>
+                            <ng-container *ngIf="!!data && !!data.length">
+                                <tr class="data-row " (click)="selectItem(item)"
+                                    *cdkVirtualFor="let item of data | filter: keyword: fields; let i = index; trackBy: trackByFn"
+                                    [class.data-selected]="!!active && item.id === active">
+                                    <td *ngFor="let header of headers">
+                                        <span [innerHTML]="item[header.field] | highlight : keyword"></span>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                            <!-- <tr *ngIf="!!data && !data.length" app-table-none-record [colspan]="headers.length"> </tr> -->
+                        </tbody>
+                    </table>
+                </cdk-virtual-scroll-viewport>
+            </ng-container>
+
+        </div>
+    </div>
+</div>
+
+<ng-template #nodata>
+    <div class="no-data">
+        <i class="flaticon-coins"></i>
+        <span class="no-data-text">No records found</span>
+    </div>
+</ng-template>

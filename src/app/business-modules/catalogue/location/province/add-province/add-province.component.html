@@ -1,0 +1,97 @@
+<div class="modal fade" id="add-city-province-modal" bsModal #popup="bs-modal" role="dialog" (onHide)="onHide($event)"
+    (onShow)="onShow($event)">
+    <div class="modal-dialog modal-xs" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{isUpdate ? 'Update' : 'Add'}} City-Province</h5>
+                <button type="button" class="close" aria-label="Close" (click)="cancelAdd()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="formProvince">
+                    <div class="m-form m-form m-form--state">
+                        <div class="form-group row"
+                            [ngClass]="{'m-form__group has-danger': (code.dirty && !code.valid) || (isSubmitted && !code.valid)}">
+                            <label class="col-lg-4 col-form-label form-control-label" required>
+                                Province - City Code
+                            </label>
+                            <div class="col-lg-8">
+                                <input type="text" formControlName="code" class="form-control m-input m-input--square"
+                                    name="code" required placeholder="Please enter province-city code"
+                                    [attr.disabled]="!isUpdate ? null : 'disabled'">
+                                <div class="form-control-feedback" *ngIf="isSubmitted && !code.valid">
+                                    Code is required!
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row"
+                            [ngClass]="{ 'm-form__group has-danger': (nameEn.dirty && !nameEn.valid) || (isSubmitted && !nameEn.valid) }">
+                            <label class="col-lg-4 col-form-label form-control-label" required>
+                                English Name
+                            </label>
+                            <div class="col-lg-8">
+                                <input type="text" formControlName="nameEn" class="form-control m-input m-input--square"
+                                    required minlength="3" name="nameEn" placeholder="Please enter english name">
+                                <div class="form-control-feedback" *ngIf="isSubmitted && !nameEn.valid">
+                                    English name is required at least 3 characters
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group row"
+                            [ngClass]="{ 'm-form__group has-danger': (nameVn.dirty && !nameVn.valid) || (isSubmitted && !nameVn.valid) }">
+                            <label class="col-lg-4 col-form-label form-control-label" required>
+                                Local Name
+                            </label>
+                            <div class="col-lg-8">
+                                <input type="text" formControlName="nameVn" class="form-control m-input m-input--square"
+                                    required minlength="3" name="local_name" placeholder="Please enter local name">
+                                <div class="form-control-feedback" *ngIf="isSubmitted && !nameVn.valid">
+                                    Local name is required at least 3 characters
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row"
+                            [ngClass]="{'m-form__group has-danger': (country.dirty && !country.valid) || (isSubmitted && !country.valid)}">
+                            <label class="col-lg-4 col-form-label form-control-lab" required>
+                                Country
+                            </label>
+                            <div class="col-lg-8">
+                                <app-combo-grid-virtual-scroll (itemSelected)="country.setValue($event.id)"
+                                    [currentActiveItemId]="{ field: 'id', value: country.value}"
+                                    [selectedDisplayFields]="['nameEn']" [dataSources]="countries"
+                                    [displayFields]="[{field: 'code', label: 'Code'}, {field: 'nameEn', label: 'Name' }]"
+                                    [height]="150">
+                                </app-combo-grid-virtual-scroll>
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmitted && (country.errors | equalError: 'required') || (country.errors | equalError: 'required') && country.dirty">
+                                    Country is required
+                                </div>
+                            </div>
+                        </div>
+
+                        <ng-container *ngIf="!!isUpdate">
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label form-control-label" required>
+                                    Active
+                                </label>
+
+                                <div class="col-lg-8">
+                                    <app-switch formControlName="active"></app-switch>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer m--align-center c-button-actions">
+                <app-default-button [buttonSetting]="saveButtonSetting" (click)="saveProvince()"></app-default-button>
+                <app-default-button [buttonSetting]="cancelButtonSetting" (click)="cancelAdd()"></app-default-button>
+            </div>
+        </div>
+    </div>
+</div>

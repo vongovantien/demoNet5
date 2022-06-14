@@ -1,0 +1,117 @@
+<div id="ops-add-remaining-charge-modal" class="modal fade" role="dialog" bsModal #popup="bs-modal" aria-hidden="true">
+    <div class="modal-dialog c-modal-fullscreen" role="document">
+        <div class="modal-content" *ngIf="listChargePartnerAddMore">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Charge</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closePopup()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!--begin::Form-->
+                <div class="m-form m-form--state">
+                    <!--begin::m-portlet -->
+                    <h5 class="m--margin-left-15">Remaining Charges</h5>
+                    <!--begin: Datatable-->
+                    <div class="table-wrapper fit-height-div">
+                        <table class="table table-striped table-brand dataTable">
+                            <thead app-table-header [headers]="headers" (onClick)="sortBy($event.sortField)">
+                                <th class="table-actions-col no-sorting first">
+                                    <label class="m-checkbox m-checkbox--bold m-checkbox--state-success">
+                                        <input type="checkbox" [(ngModel)]="isCheckAllCharge"
+                                            (change)="checkUncheckAllCharge()">
+                                        <span></span>
+                                    </label>
+                                </th>
+                            </thead>
+                            <tbody class="tbody-group">
+                                <ng-container
+                                    *ngFor="let charges of listChargePartnerAddMore; let i = index; trackBy: trackByFn">
+                                    <!-- <tr class="collapse-toggle-row tgroup" *ngIf='charges.listCharges.length > 0'>
+                                        <td colspan="12">
+                                            <label class="m-checkbox m-checkbox--bold m-checkbox--state-success">
+                                                <input type="checkbox" (change)="onChangeCheckBoxGrpCharge(charges)"
+                                                    value="{{charges}}" [(ngModel)]="charges.isSelected"
+                                                    name="{{charges.hwbno}}">
+                                                HBL No: {{charges.hwbno}}
+                                                <span></span>
+                                            </label>
+                                        </td>
+                                    </tr> -->
+                                    <tr class="child"
+                                        *ngFor="let charge of charges.listCharges; let j = index; trackBy: trackByFn">
+                                        <td class="table-actions-col">
+                                            <div class="table-actions">
+                                                <label class="m-checkbox">
+                                                    <input type="checkbox" [(ngModel)]="charge.isSelected"
+                                                        (change)="onChangeCheckBoxItemCharge(charges)">
+                                                    <span></span>
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span>{{charge.hwbno}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{charge.chargeCode}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{charge.nameEn}}</span>
+                                        </td>
+                                        <td class='m--align-right'>
+                                            <span>{{charge.quantity}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{charge.unit}}</span>
+                                        </td>
+                                        <td class='m--align-right'>
+                                            <span>{{charge.unitPrice | number:'1.0-3'}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{charge.currency}}</span>
+                                        </td>
+                                        <td class='m--align-right'>
+                                            <span>{{charge.vatrate}}</span>
+                                        </td>
+                                        <td class='m--align-right'>
+                                            <span>{{charge.credit | number:'1.3-3'}}</span>
+                                        </td>
+                                        <td class='m--align-right'>
+                                            <span>{{charge.debit | number:'1.3-3'}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{charge.notes}}</span>
+                                        </td>
+                                    </tr>
+
+                                </ng-container>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!--end: Datatable-->
+                    <!--end::m-portlet -->
+                </div>
+                <!--end::Form-->
+            </div>
+            <div class="modal-footer m--align-center">
+                <button class="btn btn-success  m-btn--icon m-btn--uppercase" (click)="addCharge()">
+                    <span>
+                        <i class="la la-edit"></i>
+                        <span>
+                            Add Charge
+                        </span>
+                    </span>
+                </button>
+                <button type="button" class="btn btn-default  m-btn--icon m-btn--uppercase" data-dismiss="modal"
+                    (click)="closePopup()">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span>
+                            Cancel
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

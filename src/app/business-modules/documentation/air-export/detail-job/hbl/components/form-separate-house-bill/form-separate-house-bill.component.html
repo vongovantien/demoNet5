@@ -1,0 +1,34 @@
+<div class="sea-fcl-create-hbl-page">
+    <app-sub-header>
+        <div class="c-button-actions">
+            <div class="dropdown m-dropdown m-dropdown--inline">
+                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                    <i class="la la-print"></i>Preview<span class="caret"></span>
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item pointer" (click)="preview('LASTEST_ITL', hblSeparateId)">ITL AWB Preview</a>
+                    <a class="dropdown-item pointer" (click)="preview('LASTEST_ITL_FRAME',hblSeparateId)">ITL AWB
+                        (Frame) Preview</a>
+                    <a class="dropdown-item pointer" (click)="previewAttachList()">Attach List Preview</a>
+                </div>
+            </div>
+            <app-default-button [buttonSetting]="saveButtonSetting" (click)="saveHBLSeparate()">
+            </app-default-button>
+            <app-default-button [buttonSetting]="cancelButtonSetting" (click)="onCancel()"></app-default-button>
+        </div>
+    </app-sub-header>
+</div>
+<div class="m-content">
+    <div class="m-portlet__body">
+        <air-export-hbl-form-create [isUpdate]="true"></air-export-hbl-form-create>
+    </div>
+</div>
+
+<ng-container *ngIf="dataReport">
+    <app-report-preview [data]="dataReport"></app-report-preview>
+</ng-container>
+
+<info-popup body="Opps, It looks like you missed something, Please recheck the highlighted field below.'"
+    [title]="'Cannot Update HB Separate'"></info-popup>
+
+<ng-template inject></ng-template>

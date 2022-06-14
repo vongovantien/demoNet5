@@ -1,0 +1,66 @@
+<div class="sea-fcl-create-hbl-page">
+    <app-sub-header>
+        <div class="c-button-actions">
+            <div class="dropdown m-dropdown m-dropdown--inline">
+                <ng-container *ngIf="(isLocked | async) === false">
+                    <button *ngIf="(permissionHblDetail | async)?.allowUpdate"
+                        class="btn btn-success  m-btn--icon m-btn--uppercase" (click)="gotoSeparate()">
+                        <span>
+                            <i class="la la-plus"></i>
+                            <span>
+                                Separate HAWB
+                            </span>
+                        </span> </button>
+                </ng-container>
+                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                    <i class="la la-print"></i>Preview<span class="caret"></span>
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item pointer" (click)="preview('LASTEST_ITL')">ITL AWB Preview</a>
+                    <a class="dropdown-item pointer" (click)="preview('LASTEST_ITL_FRAME')">ITL AWB (Frame) Preview</a>
+                    <a class="dropdown-item pointer" (click)="preview('LASTEST_HAWB')">HAWB Preview</a>
+                    <a class="dropdown-item pointer" (click)="preview('HAWB_FRAME')">HAWB (Frame) Preview </a>
+                    <a class="dropdown-item pointer" (click)="previewAttachList()">Attach List Preview</a>
+                    <a class="dropdown-item pointer" (click)="exportNeutralHawb()">Print NEUTRAL HAWB</a>
+                    <a class="dropdown-item pointer" (click)="openInputBookingNote('BN_SCSC')">Booking Note SCSC
+                        Preview</a>
+                    <a class="dropdown-item pointer" (click)="openInputBookingNote('BN_TCS')">Booking Note TCS
+                        Preview</a>
+                </div>
+            </div>
+
+            <app-default-button *ngIf="(permissionHblDetail | async)?.allowUpdate" [buttonSetting]="saveButtonSetting"
+                (onClick)="confirmSaveHBL()">
+            </app-default-button>
+
+            <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="confirmCancel()">
+            </app-default-button>
+        </div>
+    </app-sub-header>
+</div>
+
+<div class="m-content">
+    <div class="m-portlet__body">
+        <tabset class="custom-class-tab">
+            <tab heading="HAWB Detail">
+                <air-export-hbl-form-create [isUpdate]="true"></air-export-hbl-form-create>
+            </tab>
+            <tab heading="Attach List">
+                <attach-list-house-bill action="UPDATE"></attach-list-house-bill>
+            </tab>
+            <tab heading="Proof Of Delivery">
+                <hbl-proof-of-delivery></hbl-proof-of-delivery>
+            </tab>
+        </tabset>
+    </div>
+</div>
+
+<ng-template inject></ng-template>
+
+<input-booking-note-popup></input-booking-note-popup>
+
+<ul class="m-nav-sticky fms-shipment-sidebar">
+    <li class="m-nav-sticky__item">
+        <a title="Send Pre Alert" [routerLink]="['./manifest']">Send P.A</a>
+    </li>
+</ul>

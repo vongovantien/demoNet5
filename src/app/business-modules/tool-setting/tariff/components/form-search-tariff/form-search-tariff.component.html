@@ -1,0 +1,118 @@
+<div class="m-portlet form-sarch-company-wrapper">
+    <div class="m-portlet__body">
+        <div class="m-form">
+            <div class="row" [formGroup]="formSearchTariff">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="">Tariff Name</label>
+                        <input type="text" class="form-control" formControlName="tariffName">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="">Customer</label>
+                        <app-combo-grid-virtual-scroll [currentActiveItemId]="selectedCustomer"
+                            (itemSelected)="onSelectDataFormInfo($event, 'customer')"
+                            [selectedDisplayFields]="configCustomer.selectedDisplayFields"
+                            [dataSources]="configCustomer.dataSource" [displayFields]="configCustomer.displayFields"
+                            [height]="200">
+                        </app-combo-grid-virtual-scroll>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="">Tariff Type</label>
+                        <select formControlName="tariffType" class="form-control">
+                            <option *ngFor="let type of tariffTypes" [ngValue]="type">{{type.displayName}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="">Shipment Mode</label>
+                        <select formControlName="tariffShipmentMode" class="form-control">
+                            <option *ngFor="let mode of shipmentModes" [ngValue]="mode">{{mode.displayName}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="">Date</label>
+                        <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                            <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" [ranges]="ranges"
+                                [maxDate]="maxDate" [alwaysShowCalendars]="true" name="daterange"
+                                placeholder="From date - to date" readonly formControlName="tariffDate" />
+                            <span class="m-input-icon__icon m-input-icon__icon--right">
+                                <span>
+                                    <i class="la la-calendar"></i>
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="">Date Type</label>
+                        <select formControlName="tariffDateType" class="form-control">
+                            <option *ngFor="let type of dateTypes" [ngValue]="type">{{type.displayName}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="">Status</label>
+                        <select formControlName="tariffStatus" class="form-control">
+                            <option *ngFor="let status of status" [ngValue]="status">{{status.displayName}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="">Supplier</label>
+                        <app-combo-grid-virtual-scroll [currentActiveItemId]="selectedSupplier"
+                            (itemSelected)="onSelectDataFormInfo($event, 'supplier')"
+                            [selectedDisplayFields]="configCustomer.selectedDisplayFields" [dataSources]="suppliers"
+                            [displayFields]="configCustomer.displayFields" [height]="200">
+                        </app-combo-grid-virtual-scroll>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="">Office</label>
+                        <app-combo-grid-virtual-scroll [currentActiveItemId]="selectedOffice"
+                            (itemSelected)="onSelectDataFormInfo($event, 'office')"
+                            [selectedDisplayFields]="configOffice.selectedDisplayFields"
+                            [dataSources]="configOffice.dataSource" [displayFields]="configOffice.displayFields"
+                            [height]="200">
+                        </app-combo-grid-virtual-scroll>
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions">
+                <div class="row">
+                    <div class="col-lg-6"></div>
+                    <div class="col-lg-6 m--align-right">
+                        <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase"
+                            (click)="onSearchRequest(formSearchTariff.value)">
+                            <span>
+                                <i class="la la-search"></i>
+                                <span>
+                                    Search
+                                </span>
+                            </span>
+                        </button>
+                        <button type="button" class="btn btn-default  m-btn--icon m-btn--uppercase" (click)="reset()">
+                            <span>
+                                <i class="la la-refresh"></i>
+                                <span>
+                                    Reset
+                                </span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

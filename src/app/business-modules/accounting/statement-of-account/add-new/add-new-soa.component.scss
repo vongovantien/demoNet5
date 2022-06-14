@@ -1,0 +1,81 @@
+:host /deep/ {
+    .summary-wp {
+        // min-height: 200px;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+
+        .card-header {
+            background: none;
+            border-bottom: 0;
+        }
+
+        .m-portlet__head {
+            border-bottom: 0;
+        }
+
+        .panel {
+            .m-portlet__head-text {
+                .hide {
+                    display: none;
+                }
+
+                .show {
+                    display: initial;
+                }
+            }
+
+            &.panel-open {
+                .m-portlet__head-text {
+                    .hide {
+                        display: initial;
+                    }
+
+                    .show {
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+
+    .form-charge {
+        .charge-list-selected {
+            border: 1px solid #eeeeee;
+            padding: 10px;
+            background: #fbfbfb;
+            border-bottom: none;
+
+            ul {
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                -ms-flex-wrap: wrap;
+                flex-wrap: wrap;
+
+                .charge-list-item {
+                    padding: 3px 5px;
+                    border-radius: 2px;
+                    -webkit-appearance: none;
+                    background-color: #3966b6;
+                    border-color: #3966b6;
+                    color: #fff;
+                    font-size: 13px;
+                    margin: 2px 5px;
+
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+
+        .form-control {
+            border-top: none;
+
+            &:focus {
+                border-color: transparent;
+            }
+        }
+    }
+}

@@ -1,0 +1,36 @@
+export class AccountingApprove {
+    accountant: string;
+    accountantApr: string;
+    accountantAprDate: string;
+    accountantName: string;
+    advanceNo: string;
+    buHeadName: string;
+    buhead: string;
+    buheadApr: string;
+    buheadAprDate: string;
+    comment: string;
+    dateCreated: string;
+    dateModified: string;
+    id: string;
+    isDeny: string;
+    isShowAccountant: boolean;
+    isShowBuHead: boolean;
+    isShowLeader: boolean;
+    isShowManager: boolean;
+    leader: string;
+    leaderApr: string;
+    leaderAprDate: string;
+    leaderName: string;
+    levelApprove: string;
+    manager: string;
+    managerApr: string;
+    managerAprDate: string;
+    managerName: string;
+    numOfDeny: number
+    requester: string;
+    requesterAprDate: string;
+    requesterName: string;
+    statusApproval: string;
+    userCreated: string;
+    userModified: string;
+}

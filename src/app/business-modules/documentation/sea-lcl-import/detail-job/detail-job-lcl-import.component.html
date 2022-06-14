@@ -1,0 +1,102 @@
+<div class="detail-job-lcl-import">
+    <app-sub-header>
+        <job-detail-button-list [shipmentDetail]="shipmentDetail" [isDuplicate]="isDuplicate"
+            [selectedTab]="selectedTab" (onCancel)="handleCancelForm()" (onDelete)="prepareDeleteJob()"
+            (onDuplicate)="showDuplicateConfirm()" (onSave)="onSaveJob()" (onPreviewPL)="previewPLsheet($event)"
+            (onLock)="lockShipment()">
+        </job-detail-button-list>
+    </app-sub-header>
+
+    <div class="m-content">
+        <div class="m-portlet__body">
+            <tabset class="custom-class-tab">
+                <tab heading="Shipment Detail" [active]="selectedTab === 'SHIPMENT'"
+                    (selectTab)="onSelectTab('shipment')">
+                    <app-form-create-sea-import service='SLI'>
+                        <ng-container *ngIf="!!shipmentDetail">
+                            <date-time-modified [timeCreated]="shipmentDetail.datetimeCreated"
+                                [userCreated]="shipmentDetail.userNameCreated"
+                                [timeModified]="shipmentDetail.datetimeModified"
+                                [userModified]="shipmentDetail.userNameModified">
+
+                                <ng-container *ngIf="!shipmentDetail.isLocked">
+                                    <div class="col-md-4 text-right" *ngIf="shipmentDetail.permission.allowUpdate">
+                                        <button class="btn btn-info  m-btn--icon m-btn--uppercase" type="button"
+                                            (click)="confirmSyncHBL.show()">
+                                            <span><i class="la la-refresh"></i>
+                                                <span> Sync to HBL </span>
+                                            </span>
+                                        </button>
+                                    </div>
+                                </ng-container>
+                            </date-time-modified>
+                        </ng-container>
+                    </app-form-create-sea-import>
+
+                    <app-shipment-good-summary-lcl> Shipment Goods Summary </app-shipment-good-summary-lcl>
+
+                    <grant-total-profit></grant-total-profit>
+
+
+                </tab>
+                <tab heading="House Bills List" (selectTab)="onSelectTab('hbl')" [disabled]="ACTION === 'COPY'">
+                </tab>
+                <tab heading="Debit Note & Credit Note" (selectTab)="onSelectTab('cdNote')"
+                    [disabled]="ACTION === 'COPY'" [active]="selectedTab === 'CDNOTE'">
+                    <ng-container *ngIf="selectedTab === 'CDNOTE'" loadModule="SeaLCLImport_cdNote">
+                    </ng-container>
+                </tab>
+                <tab heading="Assignment" (selectTab)="onSelectTab('assignment')" [disabled]="ACTION === 'COPY'"
+                    [active]="selectedTab === 'ASSIGNMENT'">
+                    <ng-container *ngIf="selectedTab === 'ASSIGNMENT'" loadModule="SeaLCLImport_assignment">
+                    </ng-container>
+                </tab>
+                <tab heading="Attach Files" (selectTab)="onSelectTab('files')" [active]="selectedTab === 'FILES'"
+                    [disabled]="ACTION === 'COPY'">
+                    <ng-container *ngIf="selectedTab === 'FILES'" loadModule="SeaLCLImport_attachFile">
+                    </ng-container>
+                </tab>
+                <tab heading="Advance/Settlement" (selectTab)="onSelectTab('advance-settle')"
+                    [active]="selectedTab === 'ADVANCE-SETTLE'" [disabled]="isDuplicate">
+                    <ng-container *ngIf="selectedTab === 'ADVANCE-SETTLE'" loadModule="Share_advanceSettle">
+                    </ng-container>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+    <ul class="m-nav-sticky fms-shipment-sidebar" *ngIf="ACTION !== 'COPY'">
+        <li class="m-nav-sticky__item">
+            <a title="Preview Shipment Cover Page" style="cursor: pointer;" (click)="previewShipmentCoverPage()">CP</a>
+        </li>
+    </ul>
+</div>
+
+
+
+<info-popup [body]="'Opps, It looks like you missed something, Please recheck the highlighted field below.'"
+    [title]="'Cannot Update Job'"></info-popup>
+
+<confirm-popup #deleteConfirmTemplate [body]="'You you sure you want to delete this Job'" [title]="'Alert'"
+    [labelConfirm]="'Yes'" (onSubmit)="onDeleteJob()"></confirm-popup>
+
+<confirm-popup #duplicateconfirmTemplate [body]="'Are you sure you want to duplicate this Job?'"
+    [title]="'Duplicate job detail'" [labelConfirm]="'Yes'" (onSubmit)="duplicateConfirm()"></confirm-popup>
+
+<confirm-popup #confirmLockShipment (onSubmit)="onLockShipment()" [body]="'Do you want to lock this shipment ?'"
+    [labelConfirm]="'Yes'"></confirm-popup>
+
+
+<confirm-popup #confirmCancelPopup body="All entered data will be discard. Are you sure you want to leave?"
+    (onSubmit)="confirmCancel()"></confirm-popup>
+
+<confirm-popup #confirmSyncHBL (onSubmit)="confirmSyncHBL.hide(); onSyncHBL()" [body]="confirmSyncHBLText"
+    title="Sync HAWB" [labelConfirm]="'Yes'">
+</confirm-popup>
+
+<ng-container *ngIf="dataReport">
+    <app-report-preview [data]="dataReport"></app-report-preview>
+</ng-container>
+
+<info-popup #notAllowDelete [body]="'You are not allowed to delete this job'"></info-popup>
+
+<permission-403-popup></permission-403-popup>

@@ -1,0 +1,166 @@
+<div class="m-portlet">
+    <div class="m-portlet__body">
+        <!--begin::Form-->
+        <form class="m-form m-form--state" [formGroup]="formSearch" (ngSubmit)="searchShipment()">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="form-group">
+                        <label class="form-control-label" for="">
+                            Search text
+                        </label>
+                        <input type="text" id="searchText" class="form-control m-input m-input--square"
+                            autocomplete="nope" placeholder="Search text" formControlName="searchText">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label class="form-control-label">
+                            Select filter
+                        </label>
+                        <select class="form-control" formControlName="filterType">
+                            <option *ngFor="let type of filterTypes" [ngValue]="type">{{type.title}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!--begin::Advance-search-->
+            <div class="collapse" [collapse]="isCollapsed" [isAnimated]="true" (collapsed)="collapsed()"
+                (expanded)="expanded()">
+                <div class="div-inside bg-secondary">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-control-label" for="">
+                                    Customer
+                                </label>
+                                <app-combo-grid-virtual-scroll
+                                    [currentActiveItemId]="{ field: 'id', value: customer.value}"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'customer')"
+                                    [selectedDisplayFields]="['partnerNameEn']" [dataSources]="customers | async"
+                                    [displayFields]="displayFieldsCustomer" [height]="150"
+                                    (remove)="resetFormControl(customer)" placeholder="Select Customer">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-control-label" for="">
+                                    {{labelColoader}}
+                                </label>
+                                <app-combo-grid-virtual-scroll
+                                    [currentActiveItemId]="{ field: 'id', value: supplier.value}"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'supplier')"
+                                    [selectedDisplayFields]="['partnerNameEn']" [dataSources]="suppliers | async"
+                                    [displayFields]="displayFieldsCustomer" [height]="150"
+                                    (remove)="resetFormControl(supplier)" [placeholder]="'Select ' + labelColoader">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-control-label" for="">
+                                    Agent
+                                </label>
+                                <app-combo-grid-virtual-scroll
+                                    [currentActiveItemId]="{ field: 'id', value: agent.value}"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'agent')"
+                                    [selectedDisplayFields]="['partnerNameEn']" [dataSources]="agents | async"
+                                    [displayFields]="displayFieldsCustomer" [height]="150"
+                                    (remove)="resetFormControl(agent)" [placeholder]="'Select Agent'">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-control-label" for="">
+                                    Salesman
+                                </label>
+                                <app-combo-grid-virtual-scroll
+                                    [currentActiveItemId]="{ field: 'id', value: saleman.value}"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'saleman')"
+                                    [selectedDisplayFields]="['employeeNameVn']" [dataSources]="creators | async"
+                                    [displayFields]="displayFieldsSaleMan" [height]="150"
+                                    (remove)="resetFormControl(saleman)" placeholder="Select Salesman">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group form-control-serviceDateFromTo daterange-rtl">
+                                <label class="form-control-label" for="">
+                                    Shipment date: From - To
+                                </label>
+                                <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                    [autoApply]="true" [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}"
+                                    [ranges]="ranges" [alwaysShowCalendars]="true" formControlName="serviceDate"
+                                    name="daterange" placeholder="From date - to date" readonly />
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group form-control-createdDateFromTo daterange-rtl">
+                                <label class="form-control-label" for="">
+                                    Create date: From - To
+                                </label>
+                                <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                    [autoApply]="true" [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}"
+                                    [ranges]="ranges" [alwaysShowCalendars]="true" formControlName="createdDate"
+                                    name="daterange" placeholder="From date - to date" readonly />
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-control-label" for="">
+                                    Creator
+                                </label>
+                                <app-combo-grid-virtual-scroll
+                                    [currentActiveItemId]="{ field: 'id', value: creator.value}"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'creator')"
+                                    [selectedDisplayFields]="['employeeNameVn']" [dataSources]="creators | async"
+                                    [displayFields]="displayFieldsSaleMan" [height]="150"
+                                    (remove)="resetFormControl(creator)" [placeholder]="'Select Creator'">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--end::Advance-search-->
+            <div class="form-actions">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <a class="btn btn-link collapsed" role="button" aria-expanded="false" data-toggle="collapse"
+                            (click)="isCollapsed = !isCollapsed">
+                            <span>
+                                <i class="la"
+                                    [ngClass]="{'la-angle-up': !isCollapsed, 'la-angle-down': isCollapsed}"></i>
+                                <span>Advance Search</span>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="col-lg-6 m--align-right">
+                        <button type="submit" class="btn btn-brand  m-btn--icon m-btn--uppercase">
+                            <span>
+                                <i class="la la-search"></i>
+                                <span>
+                                    Search
+                                </span>
+                            </span>
+                        </button>
+                        <button type="button" class="btn btn-default  m-btn--icon m-btn--uppercase"
+                            (click)="resetSearch()">
+                            <span>
+                                <i class="la la-refresh"></i>
+                                <span>
+                                    Reset
+                                </span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!--end::Form-->
+    </div>
+</div>

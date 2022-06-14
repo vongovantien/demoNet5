@@ -1,0 +1,133 @@
+<div class="m-portlet">
+    <div class="m-portlet__body">
+        <form class="m-form m-form--state" [formGroup]="formSearch">
+            <div class="collapse" id="advance-filter-search-payment">
+                    </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Reference No</label>
+                        <ng-select formControlName="searchType" [items]="referenceTypes" class="custom" bindLabel="title"
+                            bindValue="value">
+                        </ng-select>
+                        <textarea [rows]="showAdvanceSearch ? 6 : 4" class="form-control" formControlName="referenceNo"></textarea>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="row">
+                        <div [ngClass]="showAdvanceSearch ? 'col-lg-6' : 'col-lg-12'">
+                            <div class="form-group">
+                                <label for="">Partner</label>
+                                <app-combo-grid-virtual-scroll [currentActiveItemId]="{ field: 'id', value: partnerId.value}"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'partner')"
+                                    [selectedDisplayFields]="['shortName']" [dataSources]="partners | async"
+                                    [displayFields]="displayFieldsPartner" (remove)="resetFormControl(partnerId)"
+                                    placeholder="Select Partner">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-lg-6" *ngIf="showAdvanceSearch">
+                            <div class="form-group">
+                                <label>As At Date</label>
+                                <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                    <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                        [autoApply]="true" [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}"
+                                        [singleDatePicker]="true" [alwaysShowCalendars]="true" name="daterange"
+                                        placeholder="Select date" readonly calendar formControlName="issuedDate"
+                                        [allowRemove]="!!issuedDate.value && !!issuedDate.value.startDate"
+                                        (remove)="resetFormControl(issuedDate)" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="showAdvanceSearch">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="">Payment Date</label>
+                                <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                    <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                        [autoApply]="true" [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}"
+                                        [ranges]="ranges" [alwaysShowCalendars]="true" name="daterange"
+                                        [alwaysShowCalendars]="true" placeholder="/ /" readonly calendar
+                                        formControlName="paidDate"
+                                        [allowRemove]="!!paidDate.value && !!paidDate.value.startDate"
+                                        (remove)="resetFormControl(paidDate)" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="">Due Date</label>
+                                        <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                            <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                                [autoApply]="true" [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}"
+                                                [singleDatePicker]="true" [alwaysShowCalendars]="true" name="daterange"
+                                                placeholder="Due date" readonly calendar formControlName="dueDate"
+                                                [allowRemove]="!!dueDate.value && !!dueDate.value.startDate"
+                                                (remove)="resetFormControl(dueDate)" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="">Overdue Days</label>
+                                        <ng-select [items]="overDueDays" formControlName="overdueDate" class="custom" bindLabel="text"
+                                            bindValue="id">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6" *ngIf="showAdvanceSearch">
+                            <div class="form-group">
+                                <label class="form-control-label" for="">
+                                    Office
+                                </label>
+                                <ng-select [items]="offices" formControlName="office" class="custom"
+                                     [multiple]="true" bindLabel="shortName" bindValue="id">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div [ngClass]="showAdvanceSearch ? 'col-lg-6' : 'col-lg-12'">
+                            <div class="form-group">
+                                <label for="">Payment Status</label>
+                                <ng-select [items]="payments" formControlName="paymentStatus" class="custom"
+                                    (add)="selelectedStatus($event)" [multiple]="true"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'paymentStatus')">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <div class="row">
+                    <div class="col-lg-6 m--align-left">
+                        <div class="form-group">
+                            <label class="form-control-label" for="">&nbsp;</label>
+                            <a class="btn btn-link collapsed collapse-toggle" data-toggle="collapse"
+                                href="#advance-filter-search-payment" role="button" aria-expanded="false"
+                                aria-controls="advance-filter-search-payment" (click)="showAdvanceSearch = !showAdvanceSearch">
+                                <span>
+                                    <i class="la la-angle-up"></i>
+                                    <span>Advance Filter</span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 m--align-right c-button-actions">
+                        <app-default-button [buttonSetting]="searchlButtonSetting" (click)="submitSearch()">
+                        </app-default-button>
+                        <app-default-button [buttonSetting]="resetButtonSetting" (click)="resetSearch()">
+                        </app-default-button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

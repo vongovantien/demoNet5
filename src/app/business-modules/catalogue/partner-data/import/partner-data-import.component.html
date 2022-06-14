@@ -1,0 +1,466 @@
+<!--begin:: subheader-->
+<div class="m-subheader">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <!--begin:: breadcrumbs-->
+            <app-breadcrumb></app-breadcrumb>
+            <!--end:: breadcrumbs-->
+        </div>
+    </div>
+</div>
+<!--end:: subheader-->
+<!--begin::m-content-->
+<div class="m-content">
+    <!--begin:: m-portlet-->
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <!--begin::Form-->
+            <div class="m-form m-form--state">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <input #fileInput type="file" class="form-control m-input m-input--square" placeholder=""
+                            (change)="chooseFile($event)" onclick="this.value=null;" accept=".xlsx">
+                        <span class="m-form__help">
+                            <a class="btn-link" href="javascript:void(0)" (click)="downloadSample()">Download sample</a>
+                        </span>
+                    </div>
+                    <div class="col-lg-7 offset-lg-1">
+                        <div class="row">
+                            <div class="col-sm-4 m--margin-top-10 text-right">
+                                <span class="m--font-brand m--font-bolder">
+                                    Total rows: {{ totalRows }}
+                                </span>
+                            </div>
+                            <div class="col-sm-4 m--margin-top-10 text-right">
+                                <span class="m--font-success m--font-bolder">
+                                    Valid rows: {{ totalValidRows }}
+                                </span>
+                            </div>
+                            <div class="col-sm-4 m--margin-top-10 text-right">
+                                <span class="m--font-danger  m--font-bolder">
+                                    Invalid rows: {{ totalRows - totalValidRows}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions m--margin-top-5 m--align-right">
+                    <button type="button" class="btn btn-danger  m-btn--icon m-btn--uppercase" (click)="hideInvalid()">
+                        <span>
+                            <span *ngIf="isShowInvalid">
+                                Show invalid rows
+                            </span>
+                            <span *ngIf="isShowInvalid == false">
+                                Show All
+                            </span>
+                        </span>
+                    </button>
+                    <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase"
+                        (click)="import(fileInput)">
+                        <span>
+                            <i class="la la-save"></i>
+                            <span>
+                                save
+                            </span>
+                        </span>
+                    </button>
+                    <button type="button" class="btn  m-btn--icon m-btn--uppercase"
+                        routerLink="/home/catalogue/partner-data">
+                        <span>
+                            <i class="la la-ban"></i>
+                            <span>
+                                close
+                            </span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+            <!--end::Form-->
+        </div>
+    </div>
+    <!--end::m-portlet-->
+    <!--begin:: m-portlet-->
+    <div class="m-portlet" style="position: relative">
+        <div class="m-portlet__body">
+            <!--begin: Datatable -->
+            <div class="table-wrapper" id="">
+                <table class="table table-striped table-brand dataTable table-scrollable">
+                    <thead>
+                        <tr>
+                            <th class="sorting_asc">
+                                <span>No</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'shortName'), 'sorting_desc': (!isDesc && sortKey == 'shortName') }"
+                                (click)="sort('shortName')">
+                                <span>Name ABBR *</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'partnerNameEn'), 'sorting_desc': (!isDesc && sortKey == 'partnerNameEn') }"
+                                (click)="sort('partnerNameEn')">
+                                <span>Name(EN) *</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'partnerNameVn'), 'sorting_desc': (!isDesc && sortKey == 'partnerNameVn') }"
+                                (click)="sort('partnerNameVn')">
+                                <span>Name(Local) *</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'partnerLocation'), 'sorting_desc': (!isDesc && sortKey == 'partnerLocation') }"
+                                (click)="sort('partnerNameVn')">
+                                <span>Partner Location *</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'taxCode'), 'sorting_desc': (!isDesc && sortKey == 'taxCode') }"
+                                (click)="sort('taxCode')">
+                                <span>Tax Code *</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'internalReferenceNo'), 'sorting_desc': (!isDesc && sortKey == 'internalReferenceNo') }"
+                                (click)="sort('internalReferenceNo')">
+                                <span>Internal Reference</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'partnerMode'), 'sorting_desc': (!isDesc && sortKey == 'partnerMode') }"
+                                (click)="sort('partnerMode')">
+                                <span>Partner Mode</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'internalCode'), 'sorting_desc': (!isDesc && sortKey == 'internalCode') }"
+                                (click)="sort('internalCode')">
+                                <span>Internal Code</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'acReference'), 'sorting_desc': (!isDesc && sortKey == 'acReference') }"
+                                (click)="sort('acReference')">
+                                <span>A/C Reference</span>
+                            </th>
+
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'partnerGroup'), 'sorting_desc': (!isDesc && sortKey == 'partnerGroup') }"
+                                (click)="sort('partnerGroup')">
+                                <span>Category *</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'coloaderCode'), 'sorting_desc': (!isDesc && sortKey == 'coloaderCode') }"
+                                (click)="sort('coloaderCode')">
+                                <span>Airline Code/Co-Loader Code</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'creditPayment'), 'sorting_desc': (!isDesc && sortKey == 'creditPayment') }"
+                                (click)="sort('creditPayment')">
+                                <span>Credit Payment</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'addressShippingEn'), 'sorting_desc': (!isDesc && sortKey == 'addressShippingEn') }"
+                                (click)="sort('addressShippingEn')">
+                                <span>Shipping Address EN *</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'addressShippingVn'), 'sorting_desc': (!isDesc && sortKey == 'addressShippingVn') }"
+                                (click)="sort('addressShippingVn')">
+                                <span>Shipping Address Local *</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'countryShipping'), 'sorting_desc': (!isDesc && sortKey == 'countryShipping') }"
+                                (click)="sort('countryShipping')">
+                                <span>Shipping Country *</span>
+                            </th>
+
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'cityShipping'), 'sorting_desc': (!isDesc && sortKey == 'cityShipping') }"
+                                (click)="sort('cityShipping')">
+                                <span>Shipping City</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'zipCodeShipping'), 'sorting_desc': (!isDesc && sortKey == 'zipCodeShipping') }"
+                                (click)="sort('zipCodeShipping')">
+                                <span>Shipping Zipcode</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'addressEn'), 'sorting_desc': (!isDesc && sortKey == 'addressEn') }"
+                                (click)="sort('addressEn')">
+                                <span>Billing Address EN *</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'addressVn'), 'sorting_desc': (!isDesc && sortKey == 'addressVn') }"
+                                (click)="sort('addressVn')">
+                                <span>Billing Address Local *</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'countryBilling'), 'sorting_desc': (!isDesc && sortKey == 'countryBilling') }"
+                                (click)="sort('countryBilling')">
+                                <span>Billing Country*</span>
+                            </th>
+
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'cityBilling'), 'sorting_desc': (!isDesc && sortKey == 'cityBilling') }"
+                                (click)="sort('cityBilling')">
+                                <span>Billing City</span>
+                            </th>
+
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'zipCode'), 'sorting_desc': (!isDesc && sortKey == 'zipCode') }"
+                                (click)="sort('zipCode')">
+                                <span>Billing Zipcode</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'contactPerson'), 'sorting_desc': (!isDesc && sortKey == 'contactPerson') }"
+                                (click)="sort('contactPerson')">
+                                <span>Contact person</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'tel'), 'sorting_desc': (!isDesc && sortKey == 'tel') }"
+                                (click)="sort('tel')">
+                                <span>Contact Phone Number</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'fax'), 'sorting_desc': (!isDesc && sortKey == 'fax') }"
+                                (click)="sort('fax')">
+                                <span>Fax No</span>
+                            </th>
+
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'workPhoneEx'), 'sorting_desc': (!isDesc && sortKey == 'workPhoneEx') }"
+                                (click)="sort('fax')">
+                                <span>Work Phone(Ext No)</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'email'), 'sorting_desc': (!isDesc && sortKey == 'email') }"
+                                (click)="sort('email')">
+                                <span>Email</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'billingEmail'), 'sorting_desc': (!isDesc && sortKey == 'billingEmail') }"
+                                (click)="sort('billingEmail')">
+                                <span>Billing Email</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'billingPhone'), 'sorting_desc': (!isDesc && sortKey == 'billingPhone') }"
+                                (click)="sort('billingPhone')">
+                                <span>Billing Phone</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'bankAccountNo'), 'sorting_desc': (!isDesc && sortKey == 'bankAccountNo') }"
+                                (click)="sort('bankAccountNo')">
+                                <span>Bank Account No</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'bankAccountName'), 'sorting_desc': (!isDesc && sortKey == 'bankAccountName') }"
+                                (click)="sort('bankAccountName')">
+                                <span>Bank Name</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'bankAccountAddress'), 'sorting_desc': (!isDesc && sortKey == 'bankAccountAddress') }"
+                                (click)="sort('bankAccountAddress')">
+                                <span>Bank Account Address</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'swiftCode'), 'sorting_desc': (!isDesc && sortKey == 'swiftCode') }"
+                                (click)="sort('swiftCode')">
+                                <span>Swift Code</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'roundUpMethod'), 'sorting_desc': (!isDesc && sortKey == 'roundUpMethod') }"
+                                (click)="sort('roundUpMethod')">
+                                <span>Round Up Method</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'applyDim'), 'sorting_desc': (!isDesc && sortKey == 'applyDim') }"
+                                (click)="sort('applyDim')">
+                                <span>Apply For Dim</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'note'), 'sorting_desc': (!isDesc && sortKey == 'note') }"
+                                (click)="sort('note')">
+                                <span>Note</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="data">
+                        <ng-container *ngFor="let item of pagedItems; let i = index">
+                            <tr [ngClass]="{ 'invalid-row': !item.isValid }">
+                                <td>
+                                    <span>{{ (i + this.pager.startIndex + 1) }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.shortNameError === null">{{ item.shortName }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.shortNameError !== null">{{ item.shortNameError }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.partnerNameEnError === null">{{ item.partnerNameEn }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.partnerNameEnError !== null">{{ item.partnerNameEnError === null }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.partnerNameVnError === null">{{ item.partnerNameVn }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.partnerNameVnError !== null">{{ item.partnerNameVnError }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.partnerLocationError === null">{{ item.partnerLocation }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.partnerLocationError !== null">{{ item.partnerLocationError }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.taxCodeError === null">{{ item.taxCode }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.taxCodeError !== null">{{ item.taxCodeError }}</span>
+                                </td>
+                                <td>
+                                    <span> {{item.internalReferenceNo}}</span>
+                                </td>
+                                <td>
+                                    <span> {{item.partnerMode}} </span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.partnerInternalCodeError === null">{{ item.internalCode }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.partnerInternalCodeError !== null">{{ item.partnerInternalCodeError }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.acReferenceError === null">{{ item.acReference }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.acReferenceError !== null">{{ item.acReferenceError }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.partnerGroupError === null">{{ item.partnerGroup }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.partnerGroupError !== null">{{ item.partnerGroupError }}</span>
+                                </td>
+                                <td>
+                                    <span> {{ item.coLoaderCode }} </span>
+                                </td>
+                                <td>
+                                    <span> {{ item.creditPayment }} </span>
+                                </td>
+                                <td>
+                                    <span
+                                        *ngIf="item.addressShippingEnError === null">{{ item.addressShippingEn }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.addressShippingEnError !== null">{{ item.addressShippingEnError }}</span>
+                                </td>
+
+                                <td>
+                                    <span
+                                        *ngIf="item.addressShippingVnError === null">{{ item.addressShippingVn }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.addressShippingVnError !== null">{{ item.addressShippingVnError }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.countryShippingError === null">{{ item.countryShipping }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.countryShippingError !== null">{{ item.countryShippingError }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.cityShippingError === null"> {{item.cityShipping}} </span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.cityShippingError !== null">{{ item.cityShippingError }}</span>
+                                </td>
+                                <td>
+                                    <span>{{ item.zipCodeShipping }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.addressEnError === null">{{ item.addressEn }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.addressEnError !== null">{{ item.addressEnError }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.addressVnError === null">{{ item.addressVn }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.addressVnError !== null">{{ item.addressVnError }}</span>
+                                </td>
+
+                                <td>
+                                    <span *ngIf="item.countryBillingError === null">{{ item.countryBilling }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.countryBillingError !== null">{{ item.countryBillingError }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.cityBillingError === null">{{ item.cityBilling }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.cityBillingError !== null">{{ item.cityBillingError }}</span>
+                                </td>
+                                <td>
+                                    <span>{{item.zipCode}}</span>
+                                </td>
+                                <td> <span>{{item.contactPerson}} </span> </td>
+                                <td>
+                                    <span>{{ item.tel }}</span>
+                                </td>
+                                <td>
+                                    <span>{{ item.fax }}</span>
+                                </td>
+                                <td>
+                                    <span>{{ item.workPhoneEx }}</span>
+                                </td>
+                                <td>
+                                    <span>{{ item.email }}</span>
+                                </td>
+                                <td>
+                                    <span>{{ item.billingEmail}}</span>
+                                </td>
+                                <td>
+                                    <span>{{ item.billingPhone }} </span>
+                                </td>
+                                <td>
+                                    <span>{{ item.bankAccountNo }}</span>
+                                </td>
+                                <td>
+                                    <span>{{ item.bankAccountName }}</span>
+                                </td>
+                                <td>
+                                    <span>{{ item.bankAccountAddress }}</span>
+                                </td>
+                                <td>
+                                    <span>{{ item.swiftCode }}</span>
+                                </td>
+                                <td>
+                                    <span>{{ item.roundUpMethod }}</span>
+                                </td>
+                                <td>
+                                    <span>{{ item.applyDim }}</span>
+                                </td>
+                                <td>
+                                    <span>{{ item.note }}</span>
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </div>
+            <!--end: Datatable -->
+
+            <!--begin::pagination-->
+            <div class="pagination-nav">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="select-box" style="max-width: 190px">
+                            <select class="form-control" id="" aria-label="" [(ngModel)]="pager.pageSize"
+                                (change)="selectPageSize()" name="pagesize">
+                                <ng-container *ngFor="let item of pager.numberToShow; index as i; first as isFirst">
+                                    <option [ngValue]="item" [selected]="isFirst">{{item}} entries / page</option>
+                                </ng-container>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6" *ngIf="pager.totalItems > pager.pageSize">
+                        <div class="float-right">
+                            <pagination [boundaryLinks]="true" [totalItems]="pager.totalItems"
+                                [itemsPerPage]="pager.pageSize" (pageChanged)="pageChanged($event)"
+                                [(ngModel)]="pager.currentPage" [maxSize]="pager.numberPageDisplay">
+                            </pagination>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--end::pagination-->
+        </div>
+    </div>
+    <!--end:: m-portlet-->
+</div>
+<!--end::m-content-->
+<!--begin::modal-->
+<info-popup [body]="'There are invalid data. Please check Import!'"></info-popup>
+<!--end::modal-->

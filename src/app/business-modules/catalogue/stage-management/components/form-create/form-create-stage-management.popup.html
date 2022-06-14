@@ -1,0 +1,139 @@
+<div class="modal fade" role="dialog" bsModal #popup="bs-modal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{stageManagement.id != 0 ? 'Edit Stage' : 'Add Stage'}}</h5>
+                <button type="button" (click)="closePopup()" class="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="m-form m-form m-form--state">
+                    <form [formGroup]="formStage">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group"
+                                    [ngClass]="{ 'm-form__group has-danger': (stageCode.dirty && !stageCode.valid) || (isSubmited && !stageCode.valid) }">
+                                    <label>
+                                        Code <span class="m--font-danger">(*)</span>
+                                    </label>
+                                    <input type="text" formControlName="stageCode"
+                                        class="form-control m-input m-input--square" placeholder="Please enter detail">
+                                    <div class="form-control-feedback"
+                                        *ngIf="isSubmited && (stageCode.errors | equalError: 'required') || (stageCode.errors | equalError: 'required') && stageCode.dirty">
+                                        Code is required
+                                    </div>
+                                    <div class="form-control-feedback"
+                                        *ngIf="stageCode.errors | equalError: 'maxlength'">
+                                        Code is required at most 50 characters
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group"
+                                    [ngClass]="{ 'm-form__group has-danger': (stageNameEn.dirty && !stageNameEn.valid) || (isSubmited && !stageNameEn.valid) }">
+                                    <label>
+                                        Name (EN) <span class="m--font-danger">(*)</span>
+                                    </label>
+                                    <input type="text" minlength="6" formControlName="stageNameEn"
+                                        class="form-control m-input m-input--square" placeholder="Please enter detail">
+                                    <div class="form-control-feedback"
+                                        *ngIf="isSubmited && (stageNameEn.errors | equalError: 'required') || (stageNameEn.errors | equalError: 'required') && stageNameEn.dirty">
+                                        Name (EN) is required
+                                    </div>
+                                    <div class="form-control-feedback"
+                                        *ngIf="stageNameEn.errors | equalError: 'minlength'">
+                                        Name (EN) is required at least 6 characters
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group"
+                                    [ngClass]="{ 'm-form__group has-danger': (stageNameVn.dirty && !stageNameVn.valid) || (isSubmited && !stageNameVn.valid) }">
+                                    <label>
+                                        Name (Local) <span class="m--font-danger">(*)</span>
+                                    </label>
+                                    <input type="text" minlength="6" formControlName="stageNameVn"
+                                        class="form-control m-input m-input--square" placeholder="Please enter detail">
+                                    <div class="form-control-feedback"
+                                        *ngIf="isSubmited && (stageNameVn.errors | equalError: 'required') || (stageNameVn.errors | equalError: 'required') && stageNameVn.dirty">
+                                        Name (Local) is required
+                                    </div>
+                                    <div class="form-control-feedback"
+                                        *ngIf="stageNameVn.errors | equalError: 'minlength'">
+                                        Name (Local) is required at least 6 characters
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group"
+                                    [ngClass]="{ 'm-form__group has-danger': isSubmited && (stageDepartment.errors | equalError: 'required') }">
+                                    <label>
+                                        Department <span class="m--font-danger">(*)</span>
+                                    </label>
+                                    <ng-select formControlName="stageDepartment" placeholder="Select department"
+                                        class="custom" bindLabel="text" [clearable]="true" [items]="listDepartment"
+                                        (remove)="stageManagement.departmentId = null; isSubmited">
+                                    </ng-select>
+                                    <div class="form-control-feedback"
+                                        *ngIf="isSubmited && (stageDepartment.errors | equalError: 'required')">
+                                        Department is required
+                                    </div>
+                                </div>
+                                <div class="form-group row" *ngIf="stageManagement.id">
+                                    <label class="col-lg-4 col-form-label form-control-label"> Active </label>
+                                    <div class="col-lg-8">
+                                        <app-switch formControlName="active">
+                                        </app-switch>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label>
+                                        Description (Local)
+                                    </label>
+                                    <textarea formControlName="stageDescriptionVn"
+                                        class="form-control m-input m-input--square" placeholder="Please enter detail"
+                                        rows="6"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label>
+                                        Description (EN)
+                                    </label>
+                                    <textarea formControlName="stageDescriptionEn"
+                                        class="form-control m-input m-input--square" placeholder="Please enter detail"
+                                        rows="6"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer m--align-center c-button-actions">
+                            <button type="submit" class="btn btn-brand  m-btn--icon m-btn--uppercase"
+                                (click)="saveStage()">
+                                <span>
+                                    <i class="la la-save"></i>
+                                    <span>
+                                        {{stageManagement.id ? 'Save Change' : 'Save'}}
+                                    </span>
+                                </span>
+                            </button>
+                            <button type="reset" class="btn  m-btn--icon m-btn--uppercase" (click)="closePopup()">
+                                <span>
+                                    <i class="la la-ban"></i>
+                                    <span>
+                                        Cancel
+                                    </span>
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

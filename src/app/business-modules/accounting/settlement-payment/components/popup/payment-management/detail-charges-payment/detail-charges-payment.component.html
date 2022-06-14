@@ -1,0 +1,42 @@
+<div class="m-portlet">
+    <div class="m-portlet__body">
+        <div class="row">
+            <div class="col-12">
+                <div class="table-horizontal fit-height-div">
+                    <table class="table table-brand table-hover table-striped dataTable">
+                        <thead app-table-header [headers]="headers" (onClick)="sortBy($event.sortField)"></thead>
+                        <tbody class="tbody-group">
+                            <tr class="" *ngFor="let item of chargesSettlementPayment;let i = index;">
+                                <td>{{i + 1}}</td>
+                                <td>{{item.chargeCode}}</td>
+                                <td>{{item.chargeName}}
+                                </td>
+                                <td class='m--align-right'>
+                                    <span *ngIf="item.settlementCurrency === 'VND'">{{item.totalAmount | number: '.0-3'}} {{item.settlementCurrency}}</span>
+                                    <span *ngIf="item.settlementCurrency !== 'VND'">{{item.totalAmount | number: '.2-2'}} {{item.settlementCurrency}}</span>
+                                </td>
+                                <td>{{item.payer}}</td>
+                                <td>{{item.obhPartner}}</td>
+                                <td>{{item.invoiceNo}}</td>
+                                <td>{{item.settlementNo}}</td>
+                                <td [ngSwitch]="item.settlementStatus">
+                                    <div *ngSwitchCase="'New'" class="text-danger">
+                                        {{item.settlementStatus}}</div>
+                                    <div *ngSwitchCase="'Done'" class="text-success">
+                                        {{item.settlementStatus}}</div>
+                                    <div *ngSwitchCase="'Denied'" class="text-danger">
+                                        {{item.settlementStatus}}</div>
+                                    <div *ngSwitchDefault class="text-primary">
+                                        {{item.settlementStatus}}
+                                    </div>
+                                </td>
+                                <td>{{item.advanceNo}}</td>
+                                <td class="text-info">{{item.requester}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

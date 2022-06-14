@@ -1,0 +1,39 @@
+<div class="modal fade" id="payment-method-popup" bsModal #popup="bs-modal" role="dialog" (onHide)="onHide($event)"
+    (onShow)="onShow($event)">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Select Payment Method</h5>
+                <button type="button" class="close" aria-label="Close" (click)="closePopup()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" [formGroup]="formGroup">
+                <div class="form-group">
+                    <label>Payment Method</label>
+                    <ng-select [items]="paymentMethods" formControlName="paymentMethod" placeholder="Please select"
+                        class="custom"></ng-select>
+                </div>
+            </div>
+            <div class="modal-footer m--align-center c-button-actions">
+                <button type="button" class="btn btn-info m-btn--icon m-btn--uppercase" data-dismiss="modal"
+                    (click)="apply()">
+                    <span>
+                        <i class="la la-check"></i>
+                        <span>
+                            Apply
+                        </span>
+                    </span>
+                </button>
+                <button type="button" class="btn btn-default  m-btn--icon m-btn--uppercase" (click)="closePopup()">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span>
+                            Cancel
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

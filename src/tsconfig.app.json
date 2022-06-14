@@ -1,0 +1,18 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../out-tsc/app",
+    "types": [
+      "node"
+    ]
+  },
+  "compileOnSave": true,
+  "exclude": [
+    "test.ts",
+    "**/*.spec.ts"
+  ],
+    "angularCompilerOptions": {
+      "allowEmptyCodegenFiles": true,
+      "enableIvy": true    // do not enable Ivymode, it may cause to fail to build in product mode because Ivymode now just beta version
+    }
+}

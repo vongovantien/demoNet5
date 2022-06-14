@@ -1,0 +1,237 @@
+<div class="form-receipt-invoices">
+    <div [formGroup]="form" class="row m-form m-form--state">
+        <div class="col-lg-3">
+            <div class="form-group">
+                <label>Payment Date</label>
+                <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                    <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                        [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" [singleDatePicker]="true"
+                        name="daterange" placeholder="Select request date" [autoApply]="true"
+                        formControlName="paymentDate" readonly calendar
+                        (datesUpdated)="onSelectDataFormInfo($event,'payment-date')" [attr.disabled]="isReadonly" />
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="form-group"
+                [ngClass]="{'m-form__group has-danger': (paymentMethod.errors | equalError: 'method_invalid')  }">
+                <label>Payment Method</label>
+                <ng-select [items]="paymentMethods" formControlName="paymentMethod" class="custom" name="method"
+                    [clearable]="false" [readonly]="isReadonly"
+                    (change)="onSelectDataFormInfo($event, 'payment-method')">
+                </ng-select>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="form-group">
+                <label>Cus ADV USD</label>
+                <input class="form-control text-success font-15" type="number" formControlName="cusAdvanceAmountUsd"
+                    numeric [decimals]="2" autoFormatCurrency [attr.readOnly]="isReadonly"
+                    (change)="onSelectDataFormInfo($event,'cusAdvanceAmountUsd')">
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label>Currency</label>
+                        <ng-select formControlName="currencyId" class="custom" [items]="$currencyList | async"
+                            bindLabel="id" bindValue="id" (change)="onSelectDataFormInfo($event,'currency')"
+                            [clearable]="false" [readonly]="isReadonly">
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group"
+                        [ngClass]="{'m-form__group has-danger':isSubmitted && exchangeRate.value === null}">
+                        <label required> Exchange Rate </label>
+                        <input type="number" class="form-control m-input m-input--square font-15"
+                            formControlName="exchangeRate" [attr.readOnly]="isReadonly" numeric [decimals]="0"
+                            autoFormatCurrency (change)="onSelectDataFormInfo($event,'exchangeRate')">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="form-group"
+                [ngClass]="{'m-form__group has-danger':(isSubmitted && paidAmountVnd.value === null) || (paidAmountVnd.errors | equalError: 'validCus') }">
+                <label required>Collect Amount VND</label>
+                <input type="number" class="form-control m-input m-input--square text-success font-15"
+                    formControlName="paidAmountVnd" autoFormatCurrency [attr.readOnly]="isReadonly"
+                    (change)="onSelectDataFormInfo($event,'paid-amountVnd')">
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="form-group"
+                [ngClass]="{'m-form__group has-danger':isSubmitted && paidAmountUsd.value === null }">
+                <label required>Collect Amount USD</label>
+                <input type="number" class="form-control m-input m-input--square text-success font-15"
+                    formControlName="paidAmountUsd" autoFormatCurrency [attr.readOnly]="isReadonly"
+                    (change)="onSelectDataFormInfo($event,'paid-amountUsd')">
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="form-group"
+                [ngClass]="{'m-form__group has-danger': (cusAdvanceAmountVnd.errors | equalError: 'validCus')  }">
+                <label>Cus ADV VND</label>
+                <input class="form-control text-success font-15" type="number" formControlName="cusAdvanceAmountVnd"
+                    numeric [decimals]="2" autoFormatCurrency [attr.readOnly]="isReadonly"
+                    (change)="onSelectDataFormInfo($event,'cusAdvanceAmountVnd')">
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label for="">As Paid Amount</label>
+                        <app-switch size="sm" class="success" formControlName="isAsPaidAmount"
+                            (toggleChange)="onToggleAsPaidAmount($event)" [disabled]="isReadonly"></app-switch>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label for="">Auto convert</label>
+                        <app-switch size="sm" class="success" formControlName="isAutoConvert"
+                            (toggleChange)="onToggleAutoConvertPaid($event)" [disabled]="isReadonly"></app-switch>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="form-group">
+                <label>Total Netoff VND</label>
+                <input class="form-control text-success font-15" type="number" formControlName="creditAmountVnd" numeric
+                    [decimals]="0" autoFormatCurrency [attr.readOnly]="isReadonly"
+                    (change)="onSelectDataFormInfo($event,'creditAmountVnd')">
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="form-group">
+                <label>Total Netoff USD</label>
+                <input class="form-control text-success font-15" type="number" formControlName="creditAmountUsd"
+                    [decimals]="2" autoFormatCurrency [attr.readOnly]="isReadonly"
+                    (change)="onSelectDataFormInfo($event,'creditAmountUsd')">
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="form-group">
+                <label>Final Paid Amount USD</label>
+                <input type="text" class="form-control m-input m-input--square text-primary text-success font-15"
+                    formControlName="finalPaidAmountUsd" readonly formatDecimalFormControl format="1.2-2">
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="form-group">
+                <label>Final Paid Amount VND</label>
+                <input type="text" class="form-control m-input m-input--square text-primary text-success font-15"
+                    formControlName="finalPaidAmountVnd" formatDecimalFormControl readonly>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group"
+                        [ngClass]="{'m-form__group has-danger':isSubmitted && !obhpartnerId.value && (obhpartnerId.errors | equalError: 'required') }">
+                        <label>OBH
+                            Partner</label>
+                        <app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event, 'obhPartner')"
+                            (remove)="resetFormControl(obhpartnerId)"
+                            [currentActiveItemId]="{field:'id', value: obhpartnerId.value, hardValue: obhPartnerName}"
+                            [selectedDisplayFields]="['shortName']" [dataSources]="obhPartners | async"
+                            [displayFields]="displayFieldsPartner" placeholder="Select OBH Partner"
+                            [disabled]="isReadonly">
+                        </app-combo-grid-virtual-scroll>
+
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label>Bank Acount No</label>
+                        <input type="text" class="form-control m-input m-input--square" formControlName="bankAccountNo"
+                            [attr.readOnly]="isReadonly">
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label>Alert Department</label>
+                        <ng-select [items]="departments | async" formControlName="notifyDepartment" class="custom"
+                            [readonly]="isReadonly" bindLabel="deptNameAbbr" bindValue="id" [multiple]="true">
+                        </ng-select>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="row">
+                <div class="col-lg-{{!!syncInfoTemplate ? 6 : 12}}">
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea cols="30" rows="5" class="form-control" formControlName="description"
+                            [attr.readOnly]="isReadonly"></textarea>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label></label>
+                        <ng-container *ngTemplateOutlet="syncInfoTemplate"></ng-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <ng-content> </ng-content>
+
+    <div class="row m--margin-top-20">
+        <ng-container *ngIf="!isReadonly">
+            <div class="col-lg-12 m--align-left d-flex align-items-center justify-content-between">
+                <div>
+                    <button class="btn btn-info m-btn--icon m-btn--uppercase m--margin-right-10" type="button"
+                        (click)="processClear()">
+                        <span>
+                            <i class="la la-refresh"></i>
+                            <span> Process Clear </span>
+                        </span>
+                    </button>
+
+                    <ng-container
+                        *ngIf="((class$ | async) === 'Clear Debit') || ((class$ | async) === 'Net Off');else advTpl">
+                        <button class="btn btn-warning m-btn--icon m-btn--uppercase m--margin-right-10 dropdown-toggle"
+                            type="button" [dpToggle]="dropdownMenu" position="bottomCenter">
+                            <i class="la la-plus"></i>
+                            Add Other
+                        </button>
+                        <app-dropdown #dropdownMenu>
+                            <a class="dropdown-item pointer" (click)="insertOtherRowData('ADV')">
+                                <span> Advance </span>
+                            </a>
+                            <a class="dropdown-item pointer" (click)="insertOtherRowData('COLL_OBH')">
+                                <span> Collect OBH </span>
+                            </a>
+                            <a class="dropdown-item pointer" (click)="insertOtherRowData('PAY_OBH')">
+                                <span> Pay OBH </span>
+                            </a>
+                        </app-dropdown>
+                    </ng-container>
+                    <ng-template #advTpl>
+                        <button class="btn btn-warning m-btn--icon m-btn--uppercase m--margin-right-10" type="button"
+                            (click)="insertOtherRowData()">
+                            <span>
+                                <i class="la la-plus"></i>
+                                <span> Add Other </span>
+                            </span>
+                        </button>
+                    </ng-template>
+
+                </div>
+            </div>
+        </ng-container>
+        <div class="col-lg-12 m--margin-top-20">
+            <customer-payment-receipt-debit-list [isReadonly]="isReadonly"></customer-payment-receipt-debit-list>
+            <customer-payment-receipt-credit-list [isReadonly]="isReadonly" *ngIf="!isProduction">
+            </customer-payment-receipt-credit-list>
+        </div>
+    </div>
+</div>

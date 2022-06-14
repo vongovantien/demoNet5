@@ -1,0 +1,85 @@
+<div class="department-page">
+    <app-sub-header>
+        <div class="c-button-actions">
+            <app-permission-button title="Authorization" (onClick)="openPopupAddAuthorization()" type="add">
+            </app-permission-button>
+        </div>
+    </app-sub-header>
+    <div class="m-content">
+        <div class="m-portlet__body">
+            <tabset class="custom-class-tab">
+                <tab heading="Authorize Shipment" [active]="selectedTab === 'Authorize Shipment'"
+                    (selectTab)="onSelectTabAuthorize('Authorize Shipment')">
+                    <authorization-form-search (onSearch)="onSearchAuthorization($event)"></authorization-form-search>
+                    <div class="m-portlet">
+                        <div class="m-form">
+                            <div class="m-portlet__body">
+
+                                <div class="table-wrapper table-scrollabler" id="department-list-table">
+                                    <table class="table table-striped table-brand table-hover dataTable">
+                                        <thead app-table-header [headers]="headers"
+                                            (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                                            <th class="m--w-50 first table-actions-col">
+                                                Action
+                                            </th>
+                                        </thead>
+                                        <tbody class="tbody-group">
+                                            <ng-container *ngIf="!!authorizations.length">
+                                                <tr
+                                                    *ngFor="let authorization of authorizations; let i = index; trackBy: trackByFn">
+                                                    <td class="table-actions-col">
+                                                        <div class="table-actions" style="width: 70px">
+                                                            <app-permission-button (onClick)="viewDetail(authorization)"
+                                                                type="detail">
+                                                            </app-permission-button>
+                                                            <app-permission-button
+                                                                (onClick)="prepareDeleteAuthorization(authorization)"
+                                                                type="delete">
+                                                            </app-permission-button>
+                                                        </div>
+                                                    </td>
+                                                    <td>{{authorization.servicesName}}</td>
+                                                    <td class="text-info">{{authorization.userNameAssign}}</td>
+                                                    <td class="text-success">{{authorization.userNameAssignTo}}</td>
+                                                    <td>{{authorization.name}}</td>
+                                                    <td>{{authorization.startDate | date: 'dd/MM/yyyy'}}</td>
+                                                    <td>{{authorization.endDate | date: 'dd/MM/yyyy'}}</td>
+                                                    <td
+                                                        [ngClass]="authorization.active ? 'text-success' : 'text-danger'">
+                                                        {{authorization.active ? 'Active' : 'Inactive'}}</td>
+                                                </tr>
+                                            </ng-container>
+                                            <tr *ngIf="!authorizations.length" app-table-none-record
+                                                [colspan]="headers.length + 1">
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <app-pagination [total]="totalItems" [pageNum]="page" [itemPerPage]="pageSize"
+                                    (onChange)="updatePagingData($event)"> </app-pagination>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </tab>
+                <tab heading="Authorized Approval" [active]="selectedTab === 'Authorized Approval'"
+                    (selectTab)="onSelectTabAuthorize('Authorized Approval')">
+                    <ng-container *ngIf="selectedTab === 'Authorized Approval'">
+                        <authorized-approval-form-search (onSearch)="onSearchAuthorizedApproval($event)">
+                        </authorized-approval-form-search>
+                        <authorized-approval-list></authorized-approval-list>
+                    </ng-container>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+</div>
+
+<confirm-popup [body]="'Are you sure you want to delete?'" [labelConfirm]="'Yes'" (onSubmit)="onDeleteAuthorization()">
+</confirm-popup>
+<add-authorization-popup (onRequestAuthorization)="onRequestAuthorization()"></add-authorization-popup>
+<add-authorized-approval-popup (onRequestAuthorizedApproval)="onRequestAuthorizedApproval()">
+</add-authorized-approval-popup>
+<permission-403-popup></permission-403-popup>

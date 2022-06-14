@@ -1,0 +1,129 @@
+<div class="modal fade" id="edit-port-index-modal" bsModal #popup="bs-modal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ title }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onCancel()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="m-form m-form--state" [formGroup]="portindexForm">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger': isSubmitted && code.invalid }">
+                                <label class="form-control-label">
+                                    Port code <span class="m--font-danger">(*)</span>
+                                </label>
+                                <input type="text" class="form-control m-input m-input--square"
+                                    placeholder="Please enter code" name="code" autocomplete="nope"
+                                    formControlName="code">
+                                <div class="form-control-feedback" *ngIf="isSubmitted && code.invalid">
+                                    Code is required least 3 characters, a most 10 characters, a-z, A-Z, Unsigned
+                                    characters, Special Character, No distance
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger': isSubmitted && portIndexeNameEN.invalid }">
+                                <label class="form-control-label">
+                                    Name(EN) <span class="m--font-danger">(*)</span>
+                                </label>
+                                <input type="text" class="form-control m-input m-input--square"
+                                    placeholder="Please enter name" name="portIndexeNameEN" autocomplete="nope"
+                                    minlength="3" formControlName="portIndexeNameEN">
+                                <div class="form-control-feedback" *ngIf="isSubmitted && portIndexeNameEN.invalid">
+                                    Name(EN) is required least 3 characters
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger': isSubmitted && portIndexeNameLocal.invalid }">
+                                <label class="form-control-label">
+                                    Name(Local) <span class="m--font-danger">(*)</span>
+                                </label>
+                                <input type="text" class="form-control m-input m-input--square"
+                                    placeholder="Please enter name" name="portIndexeNameLocal" autocomplete="nope"
+                                    minlength="3" formControlName="portIndexeNameLocal">
+                                <div class="form-control-feedback" *ngIf="isSubmitted && portIndexeNameLocal.invalid">
+                                    Name(Local) is required least 3 characters
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger': isSubmitted && !country.valid }">
+                                <label class="form-control-label">
+                                    Country <span class="m--font-danger">(*)</span>
+                                </label>
+                                <ng-select #cty [clearable]="true" [items]="countries" placeholder="Select country"
+                                    bindLabel="text" class="custom" formControlName="country">
+                                </ng-select>
+                                <div class="form-control-feedback" *ngIf="isSubmitted && !country.valid">
+                                    Country is required
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Zone (Optional)
+                                </label>
+                                <ng-select #z [clearable]="true" [items]="areas" placeholder="Select zone"
+                                    bindLabel="text" class="custom" formControlName="zone">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger': isSubmitted && !mode.valid }">
+                                <label class="form-control-label">
+                                    Mode <span class="m--font-danger">(*)</span>
+                                </label>
+                                <ng-select #md [clearable]="true" [items]="modes" placeholder="Select mode"
+                                    bindLabel="text" class="custom" formControlName="mode">
+                                </ng-select>
+                                <div class="form-control-feedback" *ngIf="isSubmitted && !mode.valid">
+                                    Mode is required
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Warehouse Code
+                                </label>
+                                <ng-select #wh [clearable]="true" [items]="warehouses" placeholder="Select warehouse"
+                                    bindLabel="text" class="custom" formControlName="warehouseId">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <ng-container *ngIf="isUpdate">
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label class=" form-control-label"> Active </label>
+                                    <div class="">
+                                        <app-switch formControlName="active">
+                                        </app-switch>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer m--align-center c-button-actions">
+                <ng-container *ngIf="isShowUpdate">
+                    <app-default-button [buttonSetting]="saveButtonSetting" (click)="onSubmit()"></app-default-button>
+                </ng-container>
+
+                <app-default-button [buttonSetting]="cancelButtonSetting" (click)="onCancel()"></app-default-button>
+            </div>
+        </div>
+    </div>
+</div>

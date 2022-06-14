@@ -1,0 +1,407 @@
+<div class="modal existing-charge-popup m-animate-fade-in" role="dialog" bsModal #popup="bs-modal" aria-hidden="true">
+    <div class="modal-dialog c-modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{state == 'update' ? 'Update Charge Info' : 'Get Charge Info'}}</h5>
+                <button type="button" (click)="closePopup()" class="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Search -->
+
+                <!-- <div class="div-inside bg-secondary"> -->
+                <div class="shipment-list-wrapper m-animate-fade-in" *ngIf="state === 'new'">
+                    <accordion [isAnimated]="true" [closeOthers]="false">
+                        <accordion-group class="m--margin-bottom-20" [isOpen]="true">
+                            <!-- <div style="border-bottom: groove;" accordion-heading> -->
+                            <div class="row" accordion-heading>
+                                <div class="col-lg-6">
+                                    <label style="font-size: 13;">Filter Options</label>
+                                </div>
+                                <div class="col-lg-6">
+                                    <a class="float-right m--margin-right-10">
+                                        <i class="la la-angle-double-down"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <!-- </div> -->
+
+                            <form class="m-form m-form--state" [formGroup]="formSearch">
+                                <div class="row">
+                                    <!-- <div class="div-inside bg-secondary"> -->
+                                    <div class="col-lg-4">
+                                        <div class="form-group"
+                                        [ngClass]="{'m-form__group has-danger': isSubmitted && (!this.referenceNo.value || !this.referenceInput.value)}">
+                                            <label required>Reference No</label>
+                                            <ng-select formControlName="referenceNo" [items]="referenceNos"
+                                                class="custom" bindLabel="title" bindValue="value">
+                                            </ng-select>
+                                            <textarea name="" id="" cols="30" rows="5" class="form-control"
+                                                formControlName="referenceInput" placeholder="Reference No"></textarea>
+                                            <div class="form-control-feedback"
+                                                *ngIf="isSubmitted && (!this.referenceNo.value || !this.referenceInput.value)">Please Correct Reference!
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="form-group"
+                                                    [ngClass]="{'m-form__group has-danger': isSubmitted && !this.selectedPartnerData && (this.referenceNo.value !== 'Soa' && this.referenceNo.value !=='CreditNote')}">
+                                                    <label required>Partner</label>
+                                                    <app-combo-grid-virtual-scroll
+                                                        [currentActiveItemId]="selectedPartner"
+                                                        (itemSelected)="onSelectDataFormInfo($event, 'partner')"
+                                                        [selectedDisplayFields]="configPartner.selectedDisplayFields"
+                                                        [dataSources]="configPartner.dataSource"
+                                                        [displayFields]="configPartner.displayFields" [height]="200"
+                                                        (remove)="onRemoveDataFormInfo('partner')">
+                                                    </app-combo-grid-virtual-scroll>
+                                                    <div class="form-control-feedback"
+                                                        *ngIf="isSubmitted && !this.selectedPartnerData && (this.referenceNo.value !== 'Soa' && this.referenceNo.value !=='CreditNote')">Please Select Partner!
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    <label class="font-weight-bold">Service</label>
+                                                    <app-multiple-select [source]="services" [active]="selectedServices"
+                                                        (onChange)="onSelectDataFormInfo($event,'service')"
+                                                        [placeHolder]="'Select Service'">
+                                                    </app-multiple-select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    <label for="">Date</label>
+                                                    <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                                            <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                                            [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}"
+                                                            name="daterange" readonly formControlName="serviceDate" [ranges]="ranges"
+                                                            [alwaysShowCalendars]="true" placeholder="DD/MM/YYYY"
+                                                            [allowRemove]="!!serviceDate.value && !!serviceDate.value.startDate" calendar/>
+                                                        <span class="m-input-icon__icon m-input-icon__icon--right">
+                                                            <span>
+                                                                <i class="la la-calendar"></i>
+                                                            </span>
+                                                        </span>
+                                                    </div>
+                                                    <div></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    <label for="">PIC</label>
+                                                    <ng-select formControlName="personInCharge" [virtualScroll]='true' [multiple]='true' [clearable]='true'
+                                                        [items]="personInCharges" class="custom"
+                                                        bindLabel="username" bindValue="id">
+                                                    </ng-select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- </div> -->
+                            </form>
+
+                            <div class="form-actions">
+                                <div class="row">
+                                    <div class="col-lg-12 m--align-right">
+                                        <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase"
+                                            (click)="searchCharge()">
+                                            <span>
+                                                <i class="la la-search"></i>
+                                                <span>
+                                                    Apply
+                                                </span>
+                                            </span>
+                                        </button>
+                                        <button type="button" class="btn btn-default  m-btn--icon m-btn--uppercase"
+                                            (click)="reset()">
+                                            <span>
+                                                <i class="la la-refresh"></i>
+                                                <span>
+                                                    Reset
+                                                </span>
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </accordion-group>
+                    </accordion>
+                </div>
+                <!-- </div> -->
+                <!-- session 2 -->
+                <div class="div-inside bg-secondary">
+                    <div class="m-form m-form--state">
+                        <div class="row">
+                            <div class="col-lg-5">
+                                <div class="form-group">
+                                    <label>Total USD</label>
+                                    <span style="color:rgb(0, 140, 255);">{{total.totalUSDStr}}</span>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label>Total VND</label>
+                                    <span type="text" style="color:green">{{totalAmountVnd}}</span>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <label>Total Shipment/Charge:</label>
+                                    <span type="text" style="color:rgb(23, 94, 122)">{{total.totalShipment}}/{{total.totalCharges}}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-5">
+                                <div class="form-group">
+                                    <label>Exchange Update</label>
+                                    <div class="row">
+                                        <!-- <div class="col-lg-5"> -->
+                                        <div class="col-lg-7" style="padding-right: 0;">
+                                            <input type="text" class="form-control m-input m-input--square" autocomplete="nope"
+                                                placeholder="Search text" [(ngModel)]="exchangeRateInput" autoFormatCurrency
+                                                (change)="exchangeRateInput = exchangeRateInput <= 0 ? 1 : exchangeRateInput">
+                                        </div>
+                                        <div class="col-lg-5">
+                                            <button class="btn btn-success btn-sm m-btn--pill m-btn--icon m-btn--icon-only m--margin-left-10"
+                                                title="Update exchange rate to charges" (click)="updateExchangeRateForCharges()">
+                                                <i class="la la-calculator"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-default m-btn--pill m-btn--icon m-btn--icon-only"
+                                                (click)="resetUpdateExchangeRateForCharges()" title=" Reset update exchange rate">
+                                                <i class="la la-refresh" style="color: green; font-weight: 900;"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-7">
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <div class="form-group"
+                                        [ngClass]="{'m-form__group has-danger': confirmInvoice && !this.invoiceNoAll}">
+                                            <label>Invoice No</label>
+                                            <input type="text" class="form-control m-input m-input--square" autocomplete="nope" placeholder="Inv No"
+                                                [(ngModel)]="invoiceNoAll">
+                                        </div>
+                                    </div>
+                            
+                                    <div class="col-lg-5" [formGroup]="formSearch">
+                                        <div class="form-group" [ngClass]="{'m-form__group has-danger': confirmInvoice && (!this.invoiceDateAll.value || !this.invoiceDateAll.value.startDate)}">
+                                            <label>Invoice Date</label>
+                                            <div class="row">
+                                                <div class="col-lg-8"
+                                                >
+                                                    <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                                        <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                                            [locale]="{format: 'DD/MM/YYYY'}" [autoApply]="true" [singleDatePicker]="true"
+                                                            [alwaysShowCalendars]="true" name="daterange" placeholder="Select Service Date" readonly
+                                                            formControlName="invoiceDateAll" (remove)="resetInvoiceDateAll()" calendar
+                                                            [allowRemove]="!!invoiceDateAll.value && !!invoiceDateAll.value.startDate" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <button class="btn btn-success btn-sm m-btn--pill m-btn--icon m-btn--icon-only"
+                                                        title="Apply inoice no/date" (click)="onChangeAllInvoice()">
+                                                        <i class="la la-arrow-circle-down"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-default m-btn--pill m-btn--icon m-btn--icon-only"
+                                                        (click)="onResetInvoice()" title="Clear invoice">
+                                                        <i class="la la-close"></i>
+                                                    </button>
+                                                </div>
+                            
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- session 2 -->
+                <div class="col-lg-12 item-shipment-wrapper">
+                    <div class="m--margin-top-20">
+                        <ng-container *ngFor="let shipment of shipments; let j = index; trackBy:trackByFn">
+                        <div class="row d-flex align-items-center alert-block__heading">
+                            <div class="col-2"><span class="font-weight-bold">Job: </span><span>{{shipment.jobId}}</span>
+                            </div>
+                            <div class="col-2"><span class="font-weight-bold">HBL: </span><span>{{shipment.hbl}}</span>
+                            </div>
+                            <div class="col-2"><span class="font-weight-bold">MBL: </span><span>{{shipment.mbl}}</span>
+                            </div>
+                            <div class="col-2"><span class="font-weight-bold">Custom No: </span>
+                                <span>{{shipment.customNo}}</span>
+                            </div>
+                            <div class="col-2">
+                                    <ng-select [items]="shipment.advanceNoList"
+                                        class="custom" [(ngModel)]="shipment.advanceNo"
+                                        [placeholder]="'Advance No...'" (clear)="clearAdvance(shipment)"
+                                        (change)="setAdvanceToSurcharge(shipment, shipment.originAdvanceNo, shipment.advanceNo)">
+                                    </ng-select>
+                            </div>
+                            <div class="col-2"><span class="font-weight-bold">PIC: </span>
+                                <span class="text-success">{{shipment.chargeSettlements[0].picName}}</span>
+                            </div>
+                        </div>
+                        <div class="table-wrapper table-scrollable">
+                            <table class="table table-brand table-hover dataTable">
+                            <thead app-table-header [headers]="headers" (onClick)="sortSurcharge($event)">
+                                <th class="m--w-50 first table-actions-col">
+                                    <label class="m-checkbox">
+                                        <input type="checkbox" [(ngModel)]="shipment.isSelected"
+                                            (change)="checkUncheckAllCharge(shipment.hblId)" [disabled]="isSOACDNote">
+                                        <span></span>
+                                    </label>
+                                </th>
+                            </thead>
+                            <tbody class="tbody-group">                                
+                                    <tr class="child"
+                                        *ngFor="let charge of shipment.chargeSettlements; let i = index; trackBy:trackByFn">
+                                        <td class="table-actions-col">
+                                            <div class="table-actions">
+                                                <label class="m-checkbox">
+                                                    <input type="checkbox"
+                                                        value="{{charge}}" [(ngModel)]="charge.isSelected" [disabled]="isSOACDNote"
+                                                        (change)="onChangeCheckBoxCharge(shipment.hblId)">
+                                                    <span></span>
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="table-actions-col">
+                                            <div>
+                                                <span>{{i+1}}</span>
+                                            </div>
+                                        </td>
+                                        <td>{{charge.chargeCode}}</td>
+                                        <td>{{charge.chargeName}}</td>
+                                        <td class="text-right">{{charge.netAmount| number:'1.0-3'}}</td>
+                                        <td class="text-right">{{charge.vatrate| number:'1.0-3'}}</td>
+                                        <td class="text-right">{{charge.total | number:'1.0-3'}}</td>
+                                        <td>{{charge.currencyId}}</td>
+                                        <td class="text-right">{{charge.finalExchangeRate | number:'1.0-3'}}</td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input type="number" class="form-control text-right" [(ngModel)]="charge.amountVnd" name="amount"
+                                                    min="0" numeric [decimals]="digitDecimal" autoFormatCurrency (blur)="onBlurAmountCharge($event, charge.hblid)">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input type="number" class="form-control text-right" name="vat"
+                                                    [(ngModel)]="charge.vatAmountVnd" numeric
+                                                    [decimals]="digitDecimal" autoFormatCurrency (blur)="onBlurAmountCharge($event, charge.hblid)">
+                                            </div>
+                                        </td>
+                                        <td class="text-right">{{charge.amountVnd + charge.vatAmountVnd | number:'1.0-3'}}</td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" [(ngModel)]="charge.invoiceNo" name="invoiceNo"
+                                                (ngModelChange)="onChangeInvoiceNo(charge,$event)" (blur)="onBlurAnyCharge($event, charge.hblid)">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                    <input type="text" mask="d0/M0/0000" class="form-control" name="invoiceDate"
+                                                     [(ngModel)]="charge.invoiceDate" (blur)="onBlurAnyCharge($event, charge.hblid)"/>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group col-md-12 dropdown-partner" dropdown>
+                                                <input type="text" class="dropdown-toggle form-control" dropdownToggle
+                                                    readonly placeholder="Vat Partner" [(ngModel)]="charge.vatPartnerShortName" 
+                                                    (click)="loadDynamicComoGrid(charge,i)">
+                                                    <ng-container>
+                                                        <div class="d-flex justify-content-end dropdown-partner__header">
+                                                            <a class="text-primary text-underline m--margin-right-20 pointer"
+                                                                (click)="onSelectPartner($event, charge)"></a>
+                                                            </div>
+                                                        <ng-template #container></ng-template>
+                                                    </ng-container>
+                                                </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" [(ngModel)]="charge.seriesNo" name="seriesNo"
+                                                (blur)="onBlurAnyCharge($event, charge.hblid)">
+                                            </div>
+                                        </td>
+                                        <td>{{charge.advanceNo}}</td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" [(ngModel)]="charge.notes" name="notes">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="font-weight-bold">
+                                        <td class="table-actions-col"></td>
+                                        <td class="table-actions-col"></td>
+                                        <td>TOTAL</td>
+                                        <td></td>
+                                        <td class="text-right">{{shipment.totalNetAmount | number:'1.2-3'}}$ | {{shipment.totalNetAmountVND | number:'1.0-3'}}đ</td>
+                                        <td></td>
+                                        <td class="text-right">{{shipment.totalAmount | number:'1.2-3'}}$ | {{shipment.totalAmountVND | number:'1.0-3'}}đ</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td class="text-right">{{shipment.totalNetVND | number:'1.0-3'}}</td>
+                                        <td class="text-right">{{shipment.totalVATVND | number:'1.0-3'}}</td>
+                                        <td class="text-right">{{shipment.totalVND | number:'1.0-3'}}</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    </ng-container>
+                    <none-record-placeholder *ngIf="!shipments.length"></none-record-placeholder>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer m--align-center">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="m--align-center m--margin-top-20">
+                            <button class="btn btn-primary  m-btn--icon m-btn--uppercase m--margin-right-10"
+                                title="Save" (click)="submit()" *ngIf="allowUpdate">
+                                <span>
+                                    <i class="la la-save"></i>
+                                    <span *ngIf="state === 'new'">
+                                        Add Charge
+                                    </span>
+                                    <span *ngIf="state !== 'new'">
+                                        Update Charge
+                                    </span>
+                                </span>
+                            </button>
+                            <button class="btn btn-default  m-btn--icon m-btn--uppercase" title="Cancel"
+                                (click)="closePopup()">
+                                <span>
+                                    <i class="la la-ban"></i>
+                                    <span>
+                                        Cancel
+                                    </span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

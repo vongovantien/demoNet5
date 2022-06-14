@@ -1,0 +1,105 @@
+<div class="modal fade" id="add-authorization-modal" bsModal #popup="bs-modal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" *ngIf="action==='create'">Add Email Info</h5>
+                <h5 class="modal-title" *ngIf="action==='update'">Detail/Edit Email Info</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closePopup()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="m-form m-form--state" [formGroup]="formEmailSetting">
+                    <div class="row">
+
+                        <div class="col-md">
+                            <div class="form-group" [ngClass]="{'m-form__group has-danger': (emailType.dirty && !emailType.valid) || (isSubmited && !emailType.valid)}">
+                                <label class="form-control-label" required>
+                                    Email Type
+                                </label>
+                                <ng-select class="custom" formControlName="emailType" [items]="emailTypeList"
+                                    bindLabel="name" bindValue="name" [(ngModel)]="emailSelected.emailType">
+                                </ng-select>
+                                <div class="form-control-feedback"
+                                *ngIf="isSubmited && (emailType.errors | equalError: 'required') || (emailType.errors | equalError: 'required') && emailType.dirty">
+                                Email Type is required!
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md">
+                            <div class="form-group" [ngClass]="{'m-form__group has-danger': (emailInfo.dirty && !emailInfo.valid) || (isSubmited && !emailInfo.valid)}">
+                                <label required>
+                                    Email Info
+                                </label>
+                                <textarea formControlName="emailInfo" class="form-control m-input m-input--square"
+                                    rows="6" type="text" [(ngModel)]="emailSelected.emailInfo"></textarea>
+                                    <div class="form-control-feedback"
+                                    *ngIf="isSubmited && (emailInfo.errors | equalError: 'required') || (emailInfo.errors | equalError: 'required') && emailInfo.dirty">
+                                    Email Info is required!
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <ng-container *ngIf="action==='update'">
+                                <div class="row">
+
+                                    <div class="col-md-6 m--margin-top-10 m--margin-bottom-5">
+                                        <span class="m--font-bolder">Created:</span>
+                                        <span class="m--font-success m--margin-left-5">{{emailSelected.createDate
+                                            |date:'dd/MM/yyyy hh:mm '}}</span>
+                                        <span class="m--font-bolder m--margin-left-5">by</span>
+                                        <span
+                                            class="m--font-success m--margin-left-5">{{emailSelected.userNameCreated}}</span>
+                                    </div>
+                                    <div class="col-md-6 m--margin-top-10 m--margin-bottom-5">
+                                        <span class="m--font-bolder">Modified:</span>
+
+                                        <span class="m--font-success m--margin-left-5">{{emailSelected.modifiedDate
+                                            |
+                                            date:'dd/MM/yyyy hh:mm '}}</span>
+                                        <span class="m--font-bolder m--margin-left-5">by</span>
+                                        <span
+                                            class="m--font-success m--margin-left-5">{{emailSelected.userNameModified}}</span>
+
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer m--align-center">
+                <button class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="saveEmailInfo()">
+                    <span>
+                        <i class="la la-save"></i>
+                        <span>
+                            Save
+                        </span>
+                    </span>
+                </button>
+                <button type="button" class="btn btn-cancel  m-btn--icon m-btn--uppercase" (click)="closePopup()">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span>
+                            cancel
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<confirm-popup #confirmUpdatePopup [body]="'Do you want to save the changes?'" [labelConfirm]="'Yes'"
+    (onSubmit)="onUpdateEmailSetting()">
+</confirm-popup>
+<confirm-popup #confirmCancelPopup [body]="'Do you want to exit without saving?'" [labelConfirm]="'Yes'"
+    (onSubmit)="onCancelEmailSetting()">
+</confirm-popup>

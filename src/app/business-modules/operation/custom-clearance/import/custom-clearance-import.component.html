@@ -1,0 +1,290 @@
+<div class="m-subheader">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <app-breadcrumb></app-breadcrumb>
+        </div>
+    </div>
+</div>
+
+<div class="m-content">
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <div class="m-form m-form--state">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <input type="file" #fileInput id="inputFile" class="form-control m-input m-input--square"
+                            placeholder="" (change)="chooseFile($event)" onclick="this.value=null;" accept=".xlsx">
+                        <span class="m-form__help">
+                            <a class="btn-link" href="javascript:void(0)" (click)="downloadSample()">Download sample</a>
+                        </span>
+                    </div>
+                    <div class="col-lg-7 offset-lg-1">
+                        <div class="row">
+                            <div class="col-sm-4 m--margin-top-10 text-right">
+                                <span class="m--font-brand m--font-bolder">
+                                    Total rows: {{ totalRows }}
+                                </span>
+                            </div>
+                            <div class="col-sm-4 m--margin-top-10 text-right">
+                                <span class="m--font-success m--font-bolder">
+                                    Valid rows: {{ totalValidRows }}
+                                </span>
+                            </div>
+                            <div class="col-sm-4 m--margin-top-10 text-right">
+                                <span class="m--font-danger  m--font-bolder">
+                                    Invalid rows: {{ totalRows - totalValidRows }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions m--margin-top-5 m--align-right">
+                    <button type="button" class="btn btn-danger  m-btn--icon m-btn--uppercase" (click)="hideInvalid()">
+                        <span>
+                            <span *ngIf="isShowInvalid">
+                                Show invalid rows
+                            </span>
+                            <span *ngIf="isShowInvalid == false">
+                                Show All
+                            </span>
+                        </span>
+                    </button>
+                    <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase"
+                        (click)="import(fileInput)">
+                        <span>
+                            <i class="la la-save"></i>
+                            <span>
+                                save
+                            </span>
+                        </span>
+                    </button>
+                    <button type="button" class="btn btn-cancel  m-btn--icon m-btn--uppercase"
+                        routerLink="/home/operation/custom-clearance">
+                        <span>
+                            <i class="la la-ban"></i>
+                            <span>
+                                close
+                            </span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="m-portlet" style="position: relative">
+        <ng-progress [thick]="true" [color]="'#2ea2f4'" [spinner]="true"></ng-progress>
+        <div class="m-portlet__body">
+            <div class="table-wrapper table-scrollable" id="">
+                <table class="table table-striped table-brand dataTable">
+                    <thead>
+                        <tr>
+                            <th class="sorting_asc">No</th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'clearanceNo'), 'sorting_desc': (!isDesc && sortKey == 'clearanceNo') }"
+                                (click)="sort('clearanceNo')">
+                                <span>Clearance No*</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'type'), 'sorting_desc': (!isDesc && sortKey == 'type') }"
+                                (click)="sort('type')">
+                                <span>Type</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'clearanceDateStr'), 'sorting_desc': (!isDesc && sortKey == 'clearanceDateStr') }"
+                                (click)="sort('clearanceDateStr')">
+                                <span>Clearance Date*</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'customerName'), 'sorting_desc': (!isDesc && sortKey == 'customerName') }"
+                                (click)="sort('customerName')">
+                                <span>Customer*</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'mblid'), 'sorting_desc': (!isDesc && sortKey == 'mblid') }"
+                                (click)="sort('mblid')">
+                                <span>MBL*</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'hblid'), 'sorting_desc': (!isDesc && sortKey == 'hblid') }"
+                                (click)="sort('hblid')">
+                                <span>HBL*</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'gatewayName'), 'sorting_desc': (!isDesc && sortKey == 'gatewayName') }"
+                                (click)="sort('gatewayName')">
+                                <span>Gate Way*</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'grossWeightStr'), 'sorting_desc': (!isDesc && sortKey == 'grossWeightStr') }"
+                                (click)="sort('grossWeightStr')">
+                                <span>Gross Weight</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'netWeightStr'), 'sorting_desc': (!isDesc && sortKey == 'netWeightStr') }"
+                                (click)="sort('netWeightStr')">
+                                <span>Net Weight</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'cbmStr'), 'sorting_desc': (!isDesc && sortKey == 'cbmStr') }"
+                                (click)="sort('cbmStr')">
+                                <span>CBM</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'qtyContStr'), 'sorting_desc': (!isDesc && sortKey == 'qtyContStr') }"
+                                (click)="sort('qtyContStr')">
+                                <span>Cont Qty</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'pcsStr'), 'sorting_desc': (!isDesc && sortKey == 'pcsStr') }"
+                                (click)="sort('pcsStr')">
+                                <span>PCS</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'commodityName'), 'sorting_desc': (!isDesc && sortKey == 'commodityName') }"
+                                (click)="sort('commodityName')">
+                                <span>Commodity</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'cargoType'), 'sorting_desc': (!isDesc && sortKey == 'cargoType') }"
+                                (click)="sort('cargoType')">
+                                <span>Cargo Type</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'serviceType'), 'sorting_desc': (!isDesc && sortKey == 'serviceType') }"
+                                (click)="sort('serviceType')">
+                                <span>Service Type*</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'route'), 'sorting_desc': (!isDesc && sortKey == 'route') }"
+                                (click)="sort('route')">
+                                <span>Route*</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'importCountryName'), 'sorting_desc': (!isDesc && sortKey == 'importCountryName') }"
+                                (click)="sort('importCountryName')">
+                                <span>Import Country</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'exportCountryName'), 'sorting_desc': (!isDesc && sortKey == 'exportCountryName') }"
+                                (click)="sort('exportCountryName')">
+                                <span>Export Country</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'shipper'), 'sorting_desc': (!isDesc && sortKey == 'shipper') }"
+                                (click)="sort('shipper')">
+                                <span>Shipper (consigner)</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'consignee'), 'sorting_desc': (!isDesc && sortKey == 'consignee') }"
+                                (click)="sort('consignee')">
+                                <span>Consignee</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody *ngFor="let item of pagedItems; let i = index">
+                        <tr [ngClass]="{ 'invalid-row': !item.isValid }">
+                            <td>
+                                <span>{{(i + this.pager.startIndex + 1)}}</span>
+                            </td>
+                            <td>
+                                <span
+                                    [ngClass]="{'m--font-danger' : !item.clearanceNoValid}">{{ item.clearanceNo }}</span>
+                            </td>
+                            <td>
+                                <span [ngClass]="{'m--font-danger' : !item.typeValid}">{{item.type}}</span>
+                            </td>
+                            <td>
+                                <span
+                                    [ngClass]="{'m--font-danger' : !item.clearanceDateValid}">{{ item.clearanceDateStr }}</span>
+                            </td>
+                            <td>
+                                <span
+                                    [ngClass]="{'m--font-danger' : !item.partnerTaxCodeValid}">{{ item.customerName }}</span>
+                            </td>
+                            <td>
+                                <span [ngClass]="{'m--font-danger' : !item.mblidValid}">{{ item.mblid }}</span>
+                            </td>
+                            <td>
+                                <span [ngClass]="{'m--font-danger' : !item.hblidValid}">{{ item.hblid }}</span>
+                            </td>
+                            <td>
+                                <span [ngClass]="{'m--font-danger' : !item.gatewayValid}">{{ item.gatewayName }}</span>
+                            </td>
+                            <td>
+                                <span
+                                    [ngClass]="{'m--font-danger' : !item.grossWeightValid}">{{ item.grossWeightStr }}</span>
+                            </td>
+                            <td>
+                                <span
+                                    [ngClass]="{'m--font-danger' : !item.netWeightValid}">{{ item.netWeightStr }}</span>
+                            </td>
+                            <td>
+                                <span [ngClass]="{'m--font-danger' : !item.cbmValid}">{{ item.cbmStr }}</span>
+                            </td>
+                            <td>
+                                <span [ngClass]="{'m--font-danger' : !item.qtyContValid}">{{ item.qtyContStr }}</span>
+                            </td>
+                            <td>
+                                <span [ngClass]="{'m--font-danger' : !item.pcsValid}">{{ item.pcsStr }}</span>
+                            </td>
+                            <td>
+                                <span
+                                    [ngClass]="{'m--font-danger' : !item.commodityValid}">{{ item.commodityName }}</span>
+                            </td>
+                            <td>
+                                <span [ngClass]="{'m--font-danger' : !item.cargoTypeValid}">{{ item.cargoType }}</span>
+                            </td>
+                            <td>
+                                <span
+                                    [ngClass]="{'m--font-danger' : !item.serviceTypeValid}">{{ item.serviceType }}</span>
+                            </td>
+                            <td>
+                                <span [ngClass]="{'m--font-danger' : !item.routeValid}">{{ item.route }}</span>
+                            </td>
+                            <td>
+                                <span
+                                    [ngClass]="{'m--font-danger' : !item.importCountryCodeValid}">{{item.importCountryName}}</span>
+                            </td>
+                            <td>
+                                <span
+                                    [ngClass]="{'m--font-danger' : !item.exportCountryCodeValid}">{{item.exportCountryName}}</span>
+                            </td>
+                            <td>
+                                <span>{{item.shipper}}</span>
+                            </td>
+                            <td>
+                                <span>{{item.consignee}}</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination-nav">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="select-box" style="max-width: 190px">
+                            <select class="form-control" id="" aria-label="" [(ngModel)]="pager.pageSize"
+                                (change)="selectPageSize()" name="pagesize">
+                                <ng-container *ngFor="let item of pager.numberToShow; index as i; first as isFirst">
+                                    <option [ngValue]="item" [selected]="isFirst">{{item}} entries / page</option>
+                                </ng-container>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6" *ngIf="pager.totalItems > pager.pageSize">
+                        <div class="float-right">
+                            <pagination [boundaryLinks]="true" [totalItems]="pager.totalItems"
+                                [maxSize]="pager.numberPageDisplay" [itemsPerPage]="pager.pageSize"
+                                (pageChanged)="pageChanged($event)" [(ngModel)]="pager.currentPage">
+                            </pagination>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<info-popup body="There are invalid data. Please check Import!" title="Notification"></info-popup>

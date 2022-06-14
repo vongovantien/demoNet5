@@ -1,0 +1,179 @@
+<div class="m-portlet">
+    <div class="m-portlet__body">
+        <div class="m-form">
+            <div class="row">
+                <div class="col-lg-8 m--align-left">
+                    <div class="form-group">
+                        <div class="c-button-actions">
+                            <ng-container
+                                *ngIf="menuSpecialPermission | async | specialPermission: 'ExportARSumaryTrial'">
+                                <app-permission-button type="export" (onClick)="exportExcel()"></app-permission-button>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 m--margin-top-20">
+                    <div class="table-wrapper table-scrollable" id="payment-table">
+                        <table class="table table-hover table-brand table-editable dataTable table-summary ">
+                            <thead app-table-header [headers]="headers" (onClick)="sortBy($event.sortField)">
+                                <!-- <thead> -->
+                                <th class="first table-actions-col sticky-col first-col">
+                                    Action
+                                </th>
+                                <th class="sortable ng-star-inserted first sticky-col second-col"
+                                    [class]="sortClass('partnerCode')" (click)="sortBy('partnerCode')">
+                                    <span class="sort-indicator">Partner Id</span>
+                                </th>
+                                <th class="sortable ng-star-inserted first sticky-col three-col"
+                                    [class]="sortClass('partnerNameAbbr')" (click)="sortBy('partnerNameAbbr')"
+                                    style="min-width: 200px;max-width: 200px; white-space:initial">
+                                    <span class="sort-indicator">Partner Name</span>
+                                </th>
+                                <th class="sortable ng-star-inserted first sticky-col four-col "
+                                    [class]="sortClass('debitRate')" (click)="sortBy('debitRate')">
+                                    <span class="sort-indicator"> Rate (%)</span>
+                                </th>
+                            </thead>
+                            <tbody>
+                                <tr app-table-none-record *ngIf="!(isLoading | async) && !trialOfficialList.length">
+                                </tr>
+                                <tr app-table-row-loading *ngIf="isLoading | async"></tr>
+                                <ng-container>
+                                    <ng-container
+                                        *ngFor="let item of trialOfficialList; let i = index; trackBy: trackByFn">
+                                        <tr class="">
+                                            <td class="table-actions-col sticky-col first-col"
+                                                style="background-color: #fff;">
+                                                <div class="table-actions" style="width: 70px">
+                                                    <app-permission-button type="detail"
+                                                        (click)="viewDetail(item.agreementId)">
+                                                    </app-permission-button>
+                                                </div>
+                                            </td>
+                                            <td class="sticky-col second-col" style="background-color: #fff;">
+                                                <a class="pointer" [routerLink]="'./detail'"
+                                                    [queryParams]="{agreementId: item.agreementId}">{{
+                                                    item.partnerCode }}</a>
+                                            </td>
+                                            <td class="sticky-col three-col"
+                                                style="background-color: #fff;min-width: 200px; white-space:initial">{{
+                                                item.partnerNameAbbr }}
+                                            </td>
+                                            <td class="sticky-col four-col text-right" style="background-color: #fff;">
+                                                <span
+                                                    [ngClass]="item.debitRate < 70 ? 'text-success' : item.debitRate < 100 ? 'text-warning':'text-danger'">
+                                                    {{ item.debitRate | number: '.2-2'}}%
+                                                </span>
+                                            </td>
+
+
+                                            <td class="text-right">
+                                                <a href="javascript:void(0)" (click)="showDebitDetail(item, null)">
+                                                    {{ (item.billingAmount +
+                                                    (item.obhBillingAmount!=null?item.obhBillingAmount:0)) |
+                                                    negativeNumber :'.0-3' }}
+                                                </a>
+                                            </td>
+                                            <td class="text-right">
+                                                <a href="javascript:void(0)"
+                                                    (click)="showDebitDetail(item,'Paid A Part')">
+                                                    {{ item.paidAmount + (item.obhPaidAmount!=null?item.obhPaidAmount:0)
+                                                    | negativeNumber:'.0-3'}}
+                                                </a>
+                                            </td>
+                                            <td class="text-right">
+                                                <a href="javascript:void(0)" (click)="showDebitDetail(item, null)">
+                                                    {{ item.billingUnpaid +
+                                                    (item.obhUnPaidAmount!=null?item.obhUnPaidAmount:0) |
+                                                    negativeNumber:'.0-3'}}
+                                                </a>
+                                            </td>
+                                            <!-- <td>{{ item.obhAmount | negativeNumber: '.0-3'}}</td> -->
+                                            <td class="text-right">
+                                                <span [ngClass]="'text-danger'">
+                                                    <a href="javascript:void(0)"
+                                                        (click)="showDebitDetail(item,null, 'Over1To15')">
+                                                        {{ item.over1To15Day | negativeNumber: '.0-3' }}
+                                                    </a>
+                                                </span>
+                                            </td>
+                                            <td class="text-right">
+                                                <span [ngClass]="'text-danger'">
+                                                    <a href="javascript:void(0)"
+                                                        (click)="showDebitDetail(item, null, 'Over15To30')">
+                                                        {{ item.over16To30Day | negativeNumber: '.0-3' }}
+                                                    </a>
+                                                </span>
+                                            </td>
+                                            <td class="text-right">
+                                                <span [ngClass]="'text-danger'">
+                                                    <a href="javascript:void(0)"
+                                                        (click)="showDebitDetail(item, null, 'Over30')">
+                                                        {{ item.over30Day | negativeNumber: '.0-3' }}
+                                                    </a>
+                                                </span>
+                                            </td>
+                                            <td class="text-center">{{ item.agreementCurrency }}</td>
+                                            <td class="text-right" id="debitAmountStyle"
+                                                [contextMenu]="trialContextMenu" (onTouch)="onSelectTrial(item)">
+                                                {{item.debitAmount | negativeNumber:'.0-3'}}</td>
+                                            <td class="text-right">{{ item.creditLimited | negativeNumber: '.0-3' }}
+                                            </td>
+                                            <td class="text-right">{{ (item.debitAmount-item.creditLimited) |
+                                                negativeNumber:'.0-3' }}</td>
+                                            <td class="text-center text-success">{{ item.agreementSalesmanName}}</td>
+                                            <td>
+                                                {{ item.agreementNo}}
+                                                <span class="m--margin-right-5 badge "
+                                                    [ngClass]="item.agreementStatus === 'Active' ? 'badge-success' : 'badge-danger'">
+                                                    {{ item.agreementStatus }}
+                                                </span>
+                                                <span class="badge "
+                                                    [ngClass]="item.agreementType === 'Trial' ? 'badge-warning' : 'badge-info'">
+                                                    {{ item.agreementType }}
+                                                </span>
+                                                <span *ngIf="!!item.isExpired" title="Contract is expired">
+                                                    <i class="la la-history la-lg"></i>
+                                                </span>
+                                                <span *ngIf="!!item.isOverDue" title="Contract have overdued">
+                                                    <i class="la la-exclamation-triangle la-lg text-warning"></i>
+                                                </span>
+                                                <span *ngIf="!!item.isOverLimit" title="Contract is over credit limit">
+                                                    <i class="la la-exclamation la-lg text-danger"></i>
+                                                </span>
+
+                                            </td>
+
+                                            <td>{{ item.expriedDate | date: 'dd/MM/yyyy'}}</td>
+                                            <td>
+                                                <span [ngClass]="'text-danger'">
+                                                    {{ item.expriedDay | negativeNumber}}
+                                                </span>
+                                            </td>
+                                            <td style="min-width: 200px; white-space:initial">{{ item.parentNameAbbr }}
+                                            </td>
+
+                                        </tr>
+
+                                    </ng-container>
+                                </ng-container>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <app-pagination [total]="totalItems" [pageNum]="page" [itemPerPage]="pageSize"
+                        (onChange)="updatePagingData($event)"></app-pagination>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<app-context-menu #trialContextMenu (clickOutside)="this.selectedTrialOfficial = null">
+    <div class="menu-context__item" (click)="exportDebitAmount()">
+        <span><i class="la la-download"></i><span> Export Debit Amount Detail </span></span>
+    </div>
+</app-context-menu>
+<account-receivable-debit-detail-popup></account-receivable-debit-detail-popup>

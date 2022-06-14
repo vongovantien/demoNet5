@@ -1,0 +1,124 @@
+<div class="customer-payment-wrapper m-animate-fade-in">
+    <app-sub-header> </app-sub-header>
+
+    <div class="m-content">
+        <div class="m-portlet">
+            <div class="m-portlet__body">
+                <div class="d-flex align-items-center justify-content-between p-1">
+                    <h3>
+                        <span>
+                            <i class="la la-edit"></i>
+                        </span>
+                        {{receiptDetail?.type === 'Customer' ? 'Customer' : receiptDetail?.type}} Receipt Edit Detail
+                        <span
+                            class="m-badge m-badge--wide m-badge--{{receiptDetail?.status === 'Done' ? 'success' : (receiptDetail?.status ===  'Cancel' ? 'muted' :'danger')}}">
+                            {{receiptDetail?.status}}
+                        </span>
+
+                    </h3>
+                    <div>
+                        <div class="c-button-actions">
+                            <ng-container
+                                *ngIf="receiptDetail?.status === 'Done' && receiptDetail?.syncStatus !== 'Synced'">
+                                <app-permission-button title="Sync to Accountant" type="sync" class="info"
+                                    icon="la la-cloud-upload" (onClick)="confirmSync()">
+                                </app-permission-button>
+                            </ng-container>
+                            <ng-container
+                                *ngIf="receiptDetail?.status === 'Done' && receiptDetail.class !== 'Clear Debit' ">
+                                <app-permission-button title="Clear Debit" type="Add" class="success"
+                                    icon="la la-credit-card" (onClick)="confirmCreateClearDebit()">
+                                </app-permission-button>
+                            </ng-container>
+                            <ng-container>
+                                <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="confirmCancel()">
+                                </app-default-button>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+
+                <customer-payment-form-create-receipt [isUpdate]="true"></customer-payment-form-create-receipt>
+
+                <customer-payment-list-receipt [syncInfoTemplate]="syncInfoTemplate">
+                    <div class="row m--margin-top-20">
+                        <div class="col-md-6">
+                            <span>Created: {{receiptDetail?.datetimeCreated | date: 'dd/MM/yyyy HH:mm'}} by </span>
+                            <span class="text-success">{{receiptDetail?.userNameCreated}}</span>
+                        </div>
+                        <div class="col-md-6">
+                            <span>Modified: {{receiptDetail?.datetimeModified | date: 'dd/MM/yyyy HH:mm'}} by
+                            </span> <span class="text-success">{{receiptDetail?.userNameModified}}</span>
+                        </div>
+                    </div>
+                </customer-payment-list-receipt>
+
+                <div class="c-button-actions text-center">
+                    <ng-container
+                        *ngIf="receiptDetail?.status !== 'Done' && receiptDetail?.status !== 'Cancel' && receiptDetail?.syncStatus !== 'Synced'">
+                        <app-permission-button title="Save Draft" class="outline-primary" [icon]="'la la-sticky-note'"
+                            (onClick)="submitClick('update')">
+                        </app-permission-button>
+                    </ng-container>
+                    <ng-container
+                        *ngIf="receiptDetail?.status !== 'Done' && receiptDetail?.status !== 'Cancel' && receiptDetail?.syncStatus !== 'Synced'">
+                        <app-permission-button type="save" title="Done" class="success"
+                            (onClick)="confirmDoneReceipt()">
+                        </app-permission-button>
+                    </ng-container>
+                    <ng-container *ngIf="receiptDetail?.status === 'Done' && !!receiptDetail.isReceiptBankFee">
+                        <app-permission-button type="add" title="Bank Fee/Other" class="primary" icon="la la-bank"
+                            [dpToggle]="dropdownMenuBankFee" mode="dropdown">
+                        </app-permission-button>
+                    </ng-container>
+                    <ng-container
+                        *ngIf="receiptDetail?.status !== 'Draft' && receiptDetail?.status !== 'Cancel' && receiptDetail?.syncStatus !== 'Synced'">
+                        <app-permission-button title="Cancel Receipt" type="reject" class="danger" icon="la la-times"
+                            (onClick)="confirmCancelReceipt()">
+                        </app-permission-button>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #syncInfoTemplate>
+    <ng-container *ngIf="receiptDetail?.status === 'Done'">
+        <ul class="list-group">
+            <li class="border-0 pl-0 pr-0 list-group-item d-flex justify-content-between align-items-center">
+                <b>Sync Status:</b>
+                <span *ngIf="receiptDetail?.syncStatus !== null"
+                    class="m-badge m-badge--{{(!receiptDetail?.syncStatus || receiptDetail?.syncStatus !== 'Synced') ? 'danger' : 'success'}} m-badge--wide">
+                    {{receiptDetail?.syncStatus}}{{receiptDetail?.subRejectReceipt}}
+                </span>
+            </li>
+            <li class="border-0 pl-0 pr-0 list-group-item d-flex justify-content-between align-items-center"
+                *ngIf="!!receiptDetail.reasonReject">
+                <b>Reason reject:</b>
+                <span class="text-danger font-weight-bold">{{receiptDetail?.reasonReject}}</span>
+            </li>
+            <li class="border-0 pl-0 pr-0 list-group-item d-flex justify-content-between align-items-center">
+                <b>Last Sync:</b>
+                <span>{{receiptDetail?.lastSyncDate | date:'dd/MM/yyyy HH:ss:mm'}}</span>
+            </li>
+        </ul>
+    </ng-container>
+</ng-template>
+
+<ng-template inject></ng-template>
+
+<app-dropdown #dropdownMenuBankFee>
+    <ng-container *ngIf="receiptDetail?.paymentMethod !== 'Cash'">
+        <a class="dropdown-item pointer" (click)="confirmCreateReceiptBankFeeOther('bank')"
+            title="Create Receipt Bank Fee">
+            <i class="la la-bank"></i>
+            <span> Bank Fee </span>
+        </a>
+    </ng-container>
+
+    <a class="dropdown-item pointer" (click)="confirmCreateReceiptBankFeeOther('other')" title="Create Receipt Other">
+        <i class="la la-file"></i>
+        <span> Other </span>
+    </a>
+</app-dropdown>

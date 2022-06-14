@@ -1,0 +1,62 @@
+<div class="job-detail-button-list d-flex align-items-center">
+    <ng-container *ngIf="!!shipmentDetail && !shipmentDetail.isLocked;else lockTpl">
+        <div class="c-button-actions">
+            <app-default-button [buttonSetting]="lockButtonSetting" (onClick)="lockShipment()"
+                class="m--margin-right-10"
+                *ngIf="!!shipmentDetail && shipmentDetail.permission.allowLock && !isDuplicate">
+            </app-default-button>
+        </div>
+    </ng-container>
+
+    <div class="dropdown m-dropdown m-dropdown--inline">
+        <button class="btn btn-default dropdown-toggle m--margin-right-10" type="button" data-toggle="dropdown">
+            <i class="la la-print"></i>P/L Sheet<span class="caret"></span>
+        </button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item pointer" (click)="previewPLsheet('USD')">Preview with USD</a>
+            <a class="dropdown-item pointer" (click)="previewPLsheet('VND')">Preview with VND</a>
+        </div>
+    </div>
+
+    <ng-container *ngIf="!!shipmentDetail && shipmentDetail?.permission.allowUpdate && !isDuplicate">
+        <button type="button" class="btn btn-success  m-btn--icon m-btn--uppercase m--margin-right-10"
+            (click)="showDuplicateConfirm()">
+            <span>
+                <i class="la la-search-plus"></i>
+                <span>
+                    Duplicate
+                </span>
+            </span>
+        </button>
+    </ng-container>
+    <div class="c-button-actions">
+        <ng-container *ngIf="shipmentDetail?.isLocked === false || isDuplicate">
+            <button type="button" class="btn btn-danger  m-btn--icon m-btn--uppercase" (click)="prepareDeleteJob()"
+                *ngIf="!!shipmentDetail && shipmentDetail.permission.allowDelete && !isDuplicate">
+                <span>
+                    <i class="la la-trash"></i>
+                    <span>
+                        Delete
+                    </span>
+                </span>
+            </button>
+            <app-default-button [buttonSetting]="saveButtonSetting" (onClick)="onSaveJob()"
+                [disabled]="selectedTab !== 'SHIPMENT'" *ngIf="shipmentDetail?.permission?.allowUpdate && !isDuplicate">
+            </app-default-button>
+
+            <app-default-button [buttonSetting]="saveButtonSetting" (onClick)="onSaveJob()" *ngIf="isDuplicate"
+                [disabled]="selectedTab !== 'SHIPMENT'">
+            </app-default-button>
+
+        </ng-container>
+
+        <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="handleCancelForm()">
+        </app-default-button>
+    </div>
+</div>
+
+<ng-template #lockTpl>
+    <span *ngIf="!!shipmentDetail && !!shipmentDetail.isLocked" class="m--margin-right-10">
+        <i class="fa fa-lock text-danger fa-3x"></i>
+    </span>
+</ng-template>

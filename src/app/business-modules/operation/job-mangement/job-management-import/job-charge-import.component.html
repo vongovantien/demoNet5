@@ -1,0 +1,323 @@
+<div class="m-subheader">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <app-breadcrumb></app-breadcrumb>
+        </div>
+    </div>
+</div>
+
+<div class="m-content">
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <div class="m-form m-form--state">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <input type="file" #inputFile id="inputFile" class="form-control m-input m-input--square"
+                            placeholder="" (change)="chooseFile($event)" onclick="this.value=null;" accept=".xlsx">
+                        <span class="m-form__help">
+                            <a class="btn-link" href="javascript:void(0)" (click)="downloadSample()">Download sample</a>
+                        </span>
+                    </div>
+                    <div class="col-lg-7 offset-lg-1">
+                        <div class="row">
+                            <div class="col-sm-4 m--margin-top-10 text-right">
+                                <span class="m--font-brand m--font-bolder">
+                                    Total rows: {{totalRows}}
+                                </span>
+                            </div>
+                            <div class="col-sm-4 m--margin-top-10 text-right">
+                                <span class="m--font-success m--font-bolder">
+                                    Valid rows: {{totalValidRows}}
+                                </span>
+                            </div>
+                            <div class="col-sm-4 m--margin-top-10 text-right">
+                                <span class="m--font-danger  m--font-bolder">
+                                    Invalid rows: {{totalRows - totalValidRows}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions m--margin-top-5 m--align-right">
+                    <button type="button" class="btn btn-danger  m-btn--icon m-btn--uppercase" (click)="hideInvalid()">
+                        <span>
+                            <span *ngIf="isShowInvalid">
+                                Show invalid rows
+                            </span>
+                            <span *ngIf="isShowInvalid == false">
+                                Show All
+                            </span>
+                        </span>
+                    </button>
+                    <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase"
+                        (click)="import(inputFile)">
+                        <span>
+                            <i class="la la-save"></i>
+                            <span>
+                                save
+                            </span>
+                        </span>
+                    </button>
+                    <button type="button" class="btn  m-btn--icon m-btn--uppercase"
+                        routerLink="/home/operation/job-management">
+                        <span>
+                            <i class="la la-ban"></i>
+                            <span>
+                                close
+                            </span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="m-portlet" style="position: relative">
+        <div class="m-portlet__body">
+            <div class="table-wrapper" id="">
+                <table class="table table-striped table-brand dataTable">
+                    <thead>
+                        <tr>
+                            <th>
+                                <span>No.</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'hblno'), 'sorting_desc': (!isDesc && sortKey == 'hblno') }"
+                                (click)="sort('hblno')">
+                                <span>HBL*</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'mblno'), 'sorting_desc': (!isDesc && sortKey == 'mblno') }"
+                                (click)="sort('mblno')">
+                                <span>MBL*</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'clearanceNo'), 'sorting_desc': (!isDesc && sortKey == 'clearanceNo') }"
+                                (click)="sort('clearanceNo')">
+                                <span>Custom No</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'partnerCode'), 'sorting_desc': (!isDesc && sortKey == 'partnerCode') }"
+                                (click)="sort('partnerCode')">
+                                <span>Partner Code*</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'obhPartner'), 'sorting_desc': (!isDesc && sortKey == 'obhPartner') }"
+                                (click)="sort('obhPartner')">
+                                <span>OBH Partner</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'chargeCode'), 'sorting_desc': (!isDesc && sortKey == 'chargeCode') }"
+                                (click)="sort('chargeCode')">
+                                <span>Charge Code*</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'qty'), 'sorting_desc': (!isDesc && sortKey == 'qty') }"
+                                (click)="sort('qty')">
+                                <span>Qty*</span>
+                            </th>
+                            <th [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'unit'), 'sorting_desc': (!isDesc && sortKey == 'unit') }"
+                                (click)="sort('unit')">
+                                <span>Unit*</span>
+                            </th>
+                            <th [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'unitPrice'), 'sorting_desc': (!isDesc && sortKey == 'unitPrice') }"
+                                (click)="sort('unitPrice')">
+                                <span>Unit Price</span>
+                            </th>
+                            <th [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'currencyId'), 'sorting_desc': (!isDesc && sortKey == 'currencyId') }"
+                                (click)="sort('currencyId')">
+                                <span>Currency*</span>
+                            </th>
+                            <th [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'vatrate'), 'sorting_desc': (!isDesc && sortKey == 'vatrate') }"
+                                (click)="sort('vatrate')">
+                                <span>Vat*</span>
+                            </th>
+                            <!-- <th [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'totalAmount'), 'sorting_desc': (!isDesc && sortKey == 'totalAmount') }"
+                                (click)="sort('totalAmount')">
+                                <span>Total Amount*</span>
+                            </th> -->
+                            <th [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'exchangeDate'), 'sorting_desc': (!isDesc && sortKey == 'exchangeDate') }"
+                                (click)="sort('exchangeDate')">
+                                <span>Exchange Date*</span>
+                            </th>
+                            <th [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'finalExchangeRate'), 'sorting_desc': (!isDesc && sortKey == 'finalExchangeRate') }"
+                                (click)="sort('finalExchangeRate')">
+                                <span>Final Exchange*</span>
+                            </th>
+                            <th [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'invoiceNo'), 'sorting_desc': (!isDesc && sortKey == 'invoiceNo') }"
+                                (click)="sort('invoiceNo')">
+                                <span>Invoice No</span>
+                            </th>
+                            <th [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'invoiceDate'), 'sorting_desc': (!isDesc && sortKey == 'invoiceDate') }"
+                                (click)="sort('invoiceDate')">
+                                <span>Invoice Date</span>
+                            </th>
+                            <th [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'seriesNo'), 'sorting_desc': (!isDesc && sortKey == 'seriesNo') }"
+                                (click)="sort('seriesNo')">
+                                <span>Serie No</span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'type'), 'sorting_desc': (!isDesc && sortKey == 'type') }"
+                                (click)="sort('type')">
+                                <span>Type </span>
+                            </th>
+                            <th class="sorting"
+                                [ngClass]="{ 'sorting_asc ': (isDesc && sortKey == 'notes'), 'sorting_desc': (!isDesc && sortKey == 'notes') }"
+                                (click)="sort('notes')">
+                                <span>Notes </span>
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="data">
+                        <ng-container *ngFor="let item of pagedItems; let i = index">
+                            <tr [ngClass]="{ 'invalid-row': !item.isValid }">
+                                <td class="">
+                                    <span>{{ (i + this.pager.startIndex + 1) }}</span>
+                                </td>
+                                <td class="">
+                                    <span *ngIf="item.hblNoError === null">{{ item.hblno }}</span>
+                                    <span class="m--font-danger" *ngIf="item.hblNoError !== null">{{item.hblNoError
+                                        }}</span>
+                                </td>
+                                <td class="">
+                                    <span *ngIf="item.mblNoError === null">{{ item.mblno }}</span>
+                                    <span class="m--font-danger" *ngIf="item.mblNoError !== null">{{item.mblNoError
+                                        }}</span>
+                                </td>
+                                <td>
+                                    <span> {{item.clearanceNo}} </span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.partnerCodeError === null">{{ item.partnerCode }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.partnerCodeError !== null">{{item.partnerCodeError
+                                        }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.obhPartnerError === null">{{ item.obhPartner }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.obhPartnerError !== null">{{item.obhPartnerError
+                                        }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.chargeCodeError === null">{{ item.chargeCode }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.chargeCodeError !== null">{{item.chargeCodeError
+                                        }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.qtyError === null">{{ item.qty }}</span>
+                                    <span class="m--font-danger" *ngIf="item.qtyError !== null">{{item.qtyError
+                                        }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.unitError === null">{{ item.unit }}</span>
+                                    <span class="m--font-danger" *ngIf="item.unitError !== null">{{item.unitError
+                                        }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.unitPriceError === null">{{ item.unitPrice
+                                        }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.unitPriceError !== null">{{item.unitPriceError
+                                        }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.currencyError === null">{{ item.currencyId }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.currencyError !== null">{{item.currencyError
+                                        }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.vatError === null">{{ item.vatrate }}</span>
+                                    <span class="m--font-danger" *ngIf="item.vatError !== null">{{item.vatError
+                                        }}</span>
+                                </td>
+                                <!-- <td>
+                                    <span *ngIf="item.totalAmountError === null">{{ item.totalAmount }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.totalAmountError !== null">{{item.totalAmountError
+                                        }}</span>
+                                </td> -->
+                                <td>
+                                    <span *ngIf="item.exchangeDateError === null">{{ item.exchangeDate | date:
+                                        'dd/MM/yyyy' }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.exchangeDateError !== null">{{item.exchangeDateError
+                                        }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.finalExchangeRateError === null">{{ item.finalExchangeRate
+                                        }}</span>
+                                    <span class="m--font-danger"
+                                        *ngIf="item.finalExchangeRateError !== null">{{item.finalExchangeRateError
+                                        }}</span>
+                                </td>
+                                <td>
+                                    <!-- <span *ngIf="item.invoiceNoError === null">
+                                        {{item.invoiceNo}}
+                                    </span> -->
+                                    <!-- <span class="m--font-danger"
+                                    *ngIf="item.invoiceNoError !== null">{{item.invoiceNoError
+                                    }}</span> -->
+                                    <span>
+                                        {{item.invoiceNo}}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span>
+                                        {{item.invoiceDate | date: 'dd/MM/yyyy' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <!-- <span *ngIf="item.serieNoError === null">
+                                        {{item.seriesNo}}
+                                    </span>
+                                    <span class="m--font-danger"
+                                    *ngIf="item.serieNoError !== null">{{item.serieNoError
+                                    }}</span> -->
+                                    <span>
+                                        {{item.seriesNo}}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.typeError === null">{{ item.type }}</span>
+                                    <span class="m--font-danger" *ngIf="item.typeError !== null">{{item.typeError
+                                        }}</span>
+                                </td>
+                                <td>{{item.notes}}</td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination-nav">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="select-box" style="max-width: 190px">
+                            <select class="form-control" id="" aria-label="" [(ngModel)]="pager.pageSize"
+                                (change)="selectPageSize()" name="pagesize">
+                                <ng-container *ngFor="let item of pager.numberToShow; index as i; first as isFirst">
+                                    <option [ngValue]="item" [selected]="isFirst">{{item}} entries / page</option>
+                                </ng-container>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6" *ngIf="pager.totalItems > pager.pageSize">
+                        <div class="float-right">
+                            <pagination [boundaryLinks]="true" [totalItems]="pager.totalItems"
+                                [maxSize]="pager.numberPageDisplay" [itemsPerPage]="pager.pageSize"
+                                (pageChanged)="pageChanged($event)" [(ngModel)]="pager.currentPage">
+                            </pagination>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<info-popup [body]="'There are invalid data. Please check Import!'" [title]="'Notification'" [label]="'Ok'">
+</info-popup>

@@ -1,0 +1,97 @@
+<div class="m-portlet">
+    <div class="m-portlet__body">
+        <form class="m-form m-form--state" [formGroup]="formSearch">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Reference No</label>
+                        <textarea rows="5" class="form-control" formControlName="searchText"></textarea>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Partner</label>
+                                <app-combo-grid-virtual-scroll
+                                    [currentActiveItemId]="{ field: 'id', value: partner.value}"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'partner')"
+                                    [selectedDisplayFields]="['shortName']" [dataSources]="partners | async"
+                                    [displayFields]="displayFieldsPartner" [height]="150"
+                                    (remove)="resetFormControl(partner)" placeholder="Select Customer">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <label>Issue Date</label>
+                                <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                    <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                        [autoApply]="true" [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}"
+                                        [ranges]="ranges" [alwaysShowCalendars]="true" name="daterange"
+                                        formControlName="exportDate" placeholder="   /   /   " readonly calendar
+                                        [allowRemove]="!!exportDate.value && !!exportDate.value.startDate"
+                                        (remove)="resetFormControl(exportDate)" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <label>Accounting Date</label>
+                                <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                    <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                        [autoApply]="true" [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}"
+                                        [ranges]="ranges" [alwaysShowCalendars]="true" name="daterange"
+                                        formControlName="accountingDate" placeholder="   /   /   " readonly calendar
+                                        [allowRemove]="!!accountingDate.value && !!accountingDate.value.startDate"
+                                        (remove)="resetFormControl(accountingDate)" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Creator</label>
+                                <app-combo-grid-virtual-scroll
+                                    [currentActiveItemId]="{ field: 'id', value: creator.value}"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'creator')"
+                                    [selectedDisplayFields]="['username']" [dataSources]="creators | async"
+                                    [displayFields]="displayFieldsCreator" [height]="150"
+                                    (remove)="resetFormControl(creator)" [placeholder]="'Select Creator'">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Type</label>
+                                        <ng-select [items]="filterTypes" formControlName="filterType"
+                                            placeholder="Please select" class="custom"></ng-select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Status</label>
+                                        <ng-select [items]="status" formControlName="filterStatus"
+                                            placeholder="Please select" class="custom"></ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions">
+                <div class="row">
+                    <div class="col-lg-6"></div>
+                    <div class="col-lg-6 m--align-right c-button-actions">
+                        <app-default-button [buttonSetting]="searchlButtonSetting" (click)="searchInvoiceCDnote()">
+                        </app-default-button>
+                        <app-default-button [buttonSetting]="resetButtonSetting" (click)="resetSearch()">
+                        </app-default-button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

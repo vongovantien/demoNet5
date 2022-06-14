@@ -1,0 +1,238 @@
+<div class="modal m-animate-fade-in container-list-popup" role="dialog" bsModal #popup="bs-modal" aria-hidden="true">
+    <div class="modal-dialog c-modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    HBL List of Goods
+                </h5>
+                <button type="button" (click)="confirmCancel.show()" class="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <div class="m-input-icon m-input-icon--right">
+                                <input type="text" class="form-control m-input m-input--square" placeholder="Search"
+                                    [(ngModel)]="keyword" name=keyword>
+                                <span class="m-input-icon__icon m-input-icon__icon--right">
+                                    <span>
+                                        <i class="la la-search"></i>
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8 text-right">
+                        <button class="btn btn-primary  m-btn--icon m-btn--uppercase m--margin-right-10"
+                            *ngIf="hblid != null || mblid != null" title="Import" (click)="showImportPopup()">
+                            <span>
+                                <i class="la la-cloud-download"></i>
+                                <span>
+                                    Import
+                                </span>
+                            </span>
+                        </button>
+                        <button class="btn btn-success  m-btn--icon m-btn--uppercase" title="Save"
+                            (click)="addNewContainer()">
+                            <span>
+                                <i class="la la-plus-square"></i>
+                                <span>
+                                    Add Detail
+                                </span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+                <div class="table-wrapper table-scrollable table-editable m--margin-top-20 m-h-300">
+                    <table class="table table-bordered dataTable-edit">
+                        <thead app-table-header [headers]="headers"
+                            (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                            <th class="m--w-50 first table-actions-col fixed-side">
+                            </th>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngIf="!!initContainers.length">
+                                <tr class="text-center m-form m-form--state"
+                                    *ngFor="let container of initContainers | filter: keyword: ['containerTypeId','sealNo','markNo']; let i = index; trackBy: trackByFn">
+                                    <td class="table-actions-col fixed-side">
+                                        <div class="table-actions">
+                                            <button (click)="duplicate(i)"
+                                                class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only text-white"
+                                                title="Duplicate"><i class="la la-copy"></i>
+                                            </button>
+                                            <button type="button" (click)="deleteContainerItem(i,container)"
+                                                class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only"
+                                                title="Remove">
+                                                <i class="la la-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <!--1-->
+                                    <td>
+                                        <div class="form-group ">
+                                            <div class="list-unit-container">
+                                                <app-combo-grid-virtual-scroll
+                                                    [currentActiveItemId]="{field: 'id', value: container.containerTypeId}"
+                                                    (itemSelected)="onChangeDataFormTable();container.containerTypeId = $event.id"
+                                                    [selectedDisplayFields]="['unitNameEn']"
+                                                    [dataSources]="containerUnits"
+                                                    [displayFields]="[{'field':'unitNameEn','label':'Name En'},{'field':'descriptionEn','label':'Descriptiton'}]"
+                                                    placeholder="Please select">
+                                                </app-combo-grid-virtual-scroll>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <!--2-->
+                                    <td>
+                                        <div class="form-group" [ngClass]="{'m-form__group has-danger': 
+                                            isSubmitted && ((!!container.containerNo || !!container.sealNo || !!container.markNo ) && !container.quantity)
+                                            }">
+                                            <input type="number" class="form-control" [(ngModel)]="container.quantity"
+                                                (ngModelChange)="onChangeDataFormTable()" name="quantity" step="1"
+                                                integer min="0">
+                                        </div>
+                                    </td>
+                                    <!--7-->
+                                    <td>
+                                        <div class="form-group"
+                                            [ngClass]="{'m-form__group has-danger': isSubmitted && (!!container.duplicate && container.duplicate)}">
+                                            <input type="text" class="form-control" [(ngModel)]="container.containerNo"
+                                                (ngModelChange)="onChangeDataFormTable()" name="containerNo">
+                                        </div>
+                                    </td>
+                                    <!--8-->
+                                    <td>
+                                        <div class="form-group"
+                                            [ngClass]="{'m-form__group has-danger': isSubmitted && (!!container.duplicate && container.duplicate)}">
+                                            <input type="text" class="form-control" [(ngModel)]="container.sealNo"
+                                                name="sealNo">
+                                        </div>
+                                    </td>
+                                    <!--6-->
+                                    <td>
+                                        <div class="form-group" [ngClass]="{'m-form__group has-danger':
+                                                 isSubmitted && ( !container.packageQuantity )}">
+                                            <input type="number" class="form-control"
+                                                [(ngModel)]="container.packageQuantity" name="packageQuantity"
+                                                (ngModelChange)="onChangeDataFormTable()" integer min="0" step="1">
+                                        </div>
+                                    </td>
+                                    <!--5-->
+                                    <td>
+                                        <div class="form-group "
+                                            [ngClass]="{'m-form__group has-danger': isSubmitted && (!container.packageTypeId)}">
+                                            <div class="list-package-container">
+                                                <app-combo-grid-virtual-scroll
+                                                    [currentActiveItemId]="{field: 'id', value: container.packageTypeId}"
+                                                    (itemSelected)="onChangeDataFormTable();container.packageTypeId = $event.id"
+                                                    [selectedDisplayFields]="['unitNameEn']"
+                                                    [dataSources]="packageUnits"
+                                                    [displayFields]="[{'field':'unitNameEn','label':'Name'}, {'field':'code','label':'Code'}]"
+                                                    placeholder="Please select">
+                                                </app-combo-grid-virtual-scroll>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <!--
+                                    <td>
+                                        <div class="form-group"
+                                            [ngClass]="{'m-form__group has-danger': isSubmitted && (isDuplicateContPakage || !container.packageTypeId) }">
+                                            <select class="form-control" [(ngModel)]="container.packageTypeId"
+                                                (ngModelChange)="onChangeDataFormTable()" name="packageTypeId">
+                                                <option value="null" disabled>Please select</option>
+                                                <option *ngFor="let unit of packageUnits" [ngValue]="unit.id">
+                                                    {{unit.unitNameEn}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </td>-->
+                                    <!--3-->
+                                    <td>
+                                        <div class=" form-group"
+                                            [ngClass]="{'m-form__group has-danger': isSubmitted && !container.gw}">
+                                            <input type="number" class="form-control" [(ngModel)]="container.gw"
+                                                name="gw" min="0" step=".10" numeric [decimals]="digitDecimal"
+                                                autoFormatCurrency>
+                                        </div>
+                                    </td>
+                                    <!--4-->
+                                    <td>
+                                        <div class="form-group" [ngClass]="{'m-form__group has-danger': 
+                                            isSubmitted && !container.cbm}">
+                                            <input type="number" class="form-control" [(ngModel)]="container.cbm"
+                                                name="cbm" min="0" step=".10" (ngModelChange)="onChangeDataFormTable()"
+                                                numeric [decimals]="digitDecimal" autoFormatCurrency>
+                                        </div>
+                                    </td>
+
+
+
+                                    <!--9-->
+                                    <td>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" [(ngModel)]="container.markNo"
+                                                name="markNo">
+                                        </div>
+                                    </td>
+                                    <!--10-->
+                                    <td>
+                                        <div class="form-group">
+                                            <div class="list-unit-container">
+                                                <app-combo-grid-virtual-scroll
+                                                    [currentActiveItemId]="{field: 'id', value: container.commodityId}"
+                                                    (itemSelected)="container.commodityId = $event.id"
+                                                    [selectedDisplayFields]="['commodityNameEn']"
+                                                    [dataSources]="commodities"
+                                                    [displayFields]="[{'field':'commodityNameEn','label':'Name En'},{'field':'commodityNameVn','label':'Name VN'},{'field':'commodityGroupNameEn','label':'Group'}]"
+                                                    [height]="150" placeholder="Select commodity">
+                                                </app-combo-grid-virtual-scroll>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <!--11-->
+                                    <td>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" [(ngModel)]="container.description"
+                                                name="description">
+                                        </div>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                            <tr *ngIf="!initContainers.length" app-table-none-record [colspan]="headers.length  + 1">
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="modal-footer m--align-center m--margin-top-10">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="m--align-center m--margin-top-20">
+                            <div class="c-button-actions">
+                                <app-default-button [buttonSetting]="saveButtonSetting" (click)="onSaveContainerList()">
+                                </app-default-button>
+
+                                <app-default-button [buttonSetting]="cancelButtonSetting"
+                                    (click)="confirmCancel.show()">
+                                </app-default-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<goods-import-popup></goods-import-popup>
+
+<confirm-popup #confirmCancel body="All entered data will be discarded, <br>Are you sure you want to leave?"
+    [title]="'Alert'" [labelConfirm]="'Yes'" [labelCancel]="'No'" (onSubmit)="onSubmitCancel()" (onCancel)="onCancel()">
+</confirm-popup>
+
+<confirm-popup #confirmDeleteContainerPopup [body]="'Are you sure you want to delete ?'" [title]="'Alert'"
+    [labelConfirm]="'Yes'" (onSubmit)="onDeleteContainer()"></confirm-popup>

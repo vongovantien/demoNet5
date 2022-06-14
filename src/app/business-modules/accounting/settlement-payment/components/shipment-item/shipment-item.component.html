@@ -1,0 +1,123 @@
+<div class="row align-items-center pointer" *ngIf="!!data">
+    <div class="col-lg-2">
+        <div class="d-flex">
+            <a class="m--margin-right-10">
+                <i class="la la-angle-double-down"></i>
+            </a>
+            <ng-container *ngIf="!data.isLocked;else lockIconTpl">
+                <a ClickStopPropagation (click)="checkUncheckAllRequest($event)">
+                    <label class="m-checkbox m-checkbox--bold">
+                        <input type="checkbox" [(ngModel)]="isCheckAll">
+                        <span></span>
+                    </label>
+                </a>
+            </ng-container>
+            <ng-template #lockIconTpl>
+                <span>
+                    <button type="button" title="Shipment has been locked"
+                        class="btn btn-fault btn-sm  m-btn--icon m-btn--icon-only" style="height: 22px">
+                        <i class="fa fa-lock font-18" style="font-size:18px"></i>
+                    </button>
+                </span>
+            </ng-template>
+            <a class="dropdown m-dropdown m-dropdown--inline">
+                <i class="la la-file-text" [dpToggle]="dropdownMenuShipmentItem"></i>
+                <app-dropdown #dropdownMenuShipmentItem>
+                    <a class="dropdown-item pointer" ClickStopPropagation (click)="previewPLsheet($event,'USD')">Preview
+                        PL with USD</a>
+                    <a class="dropdown-item pointer" ClickStopPropagation (click)="previewPLsheet($event,'VND')">Preview
+                        PL with VND</a>
+                </app-dropdown>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-2">
+        <div class="d-flex">
+            <span class="font-weight-bold">Job:</span>
+            &nbsp;
+            <span> {{data.jobId}} </span>
+        </div>
+    </div>
+    <div class="col-lg-2">
+        <div class="d-flex">
+            <span class="font-weight-bold">HBL:</span>
+            &nbsp;
+            <span> {{data.hbl}} </span>
+        </div>
+    </div>
+    <div class="col-lg-2">
+        <div class="d-flex">
+            <span class="font-weight-bold">MBL:</span>
+            &nbsp;
+            <span> {{data.mbl}} </span>
+        </div>
+    </div>
+    <div class="col-lg-2">
+        <div class="d-flex">
+            <span class="font-weight-bold">Cus No:</span>
+            <span> {{data.customNo}} </span>
+        </div>
+    </div>
+
+    <div class="col-lg-2">
+        <a ClickStopPropagation (click)="showPaymentManagement($event, data)"
+            class="text-underline text-primary">Payment
+            Management</a>
+    </div>
+    <div class="col-lg-2">
+    </div>
+    <div class="col-lg-2">
+        <div class="d-flex align-items-center">
+            <span class="font-weight-bold">Total:</span>
+            &nbsp;
+            <span> {{data.totalAmount | number: '.0-3'}} </span>
+        </div>
+    </div>
+    <div class="col-lg-2">
+        <div class="d-flex align-items-center">
+            <span class="font-weight-bold">Adv No:</span>
+            &nbsp;
+            <span> {{data.advanceNo}}</span>
+        </div>
+    </div>
+    <div class="col-lg-2">
+        <div class="d-flex align-items-center">
+            <span class="font-weight-bold">Adv Amount:</span>
+            &nbsp;
+            <span> {{data.advanceAmount | number: '.0-3'}} </span>
+        </div>
+    </div>
+    <div class="col-lg-2">
+        <div class="d-flex align-items-center">
+            <span class="font-weight-bold">Balance:</span>
+            &nbsp;
+            <ng-container *ngIf="data.balance >= 0 ; else negativeBalance">
+                <span> {{data.balance | negativeNumber | number: '.0-3'}} </span>
+            </ng-container>
+            <ng-template #negativeBalance>
+                <span> ({{data.balance | abs | number: '.0-3'}}) </span>
+            </ng-template>
+        </div>
+    </div>
+    <div class="col-lg-2">
+        <a class="font-20" title="Attach files" (click)="showShipmentAttachFile($event)" ClickStopPropagation>
+            <i class="flaticon-folder-1"></i>
+            <ng-container *ngIf="data?.files?.length > 0">
+                <span
+                    class="m-badge m-badge--warning m-badge--rounded text-white font-weight-bold">{{data?.files?.length}}</span>
+            </ng-container>
+        </a>
+    </div>
+    <ng-container *ngIf="data.isLocked">
+        <div class="stamp" style="
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-top: 44px solid #fcb34c;
+    border-left: 53px solid transparent;
+    right: 0;
+    top: 0">
+        </div>
+        <i class="la la-lock text-white" style="position: absolute;top:3px; right:0;"></i>
+    </ng-container>
+</div>

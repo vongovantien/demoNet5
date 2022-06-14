@@ -1,0 +1,60 @@
+<div class="modal fade form-contract-commercial-popup" role="dialog" bsModal #popup="bs-modal" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="d-flex align-items-center justify-content-between p-1">
+                    <h5 class="modal-title" style="margin-right:10px;">
+                        Update Email
+                    </h5>
+
+                    <button type="button" class="close" aria-label="Close" (click)="close()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form class="m-form m-form--state" [formGroup]="formGroup">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSubmitted  && ( !officeId.valid || !officeId.value)}">
+                                <label required>Office</label>
+                                <div class="pos-rel">
+                                    <ng-select [items]="offices" [clearable]="true" class="custom"
+                                        formControlName="officeId" bindLabel="text" placeholder="Please select">
+                                    </ng-select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSubmitted  && type.invalid}">
+                                <label required>Type</label>
+                                <ng-select [items]="types" class="custom" formControlName="type"
+                                    placeholder="Please select">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger':( isSubmitted || email.dirty )  && email.invalid}">
+                                <label required>Email</label>
+                                <textarea class="form-control" cols="30" rows="10" formControlName="email"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer m--align-center">
+                <button class="btn btn-brand  m-btn--icon m-btn--uppercase m--margin-right-10" (click)="onSubmit()">
+                    <span>
+                        <i class="la la-save"></i>
+                        <span> Update </span>
+                    </span>
+                </button>
+                <app-default-button [buttonSetting]="cancelButtonSetting" (click)="close()"></app-default-button>
+            </div>
+        </div>
+    </div>
+</div>

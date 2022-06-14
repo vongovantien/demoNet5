@@ -1,0 +1,76 @@
+<div class="modal fade" role="dialog" bsModal #popup="bs-modal">
+    <div class="modal-dialog modal-xs" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{isUpdate ? 'Update' : 'Add'}} Unit</h5>
+                <button type="button" class="close" aria-label="Close" (click)=closePopup()>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="m-form m-form--state" [formGroup]="form">
+                    <div class="form-group row" [ngClass]="{ 'm-form__group has-danger': isSubmitted && !code.valid }">
+                        <label class="col-lg-4 col-form-label form-control-label" required> Unit Code </label>
+                        <div class="col-lg-8">
+                            <input type="text" class="form-control m-input m-input--square"
+                                placeholder="Please enter unit code" formControlName="code"
+                                [attr.disabled]="!isUpdate ? null : 'disabled'">
+                        </div>
+                    </div>
+                    <div class="form-group row"
+                        [ngClass]="{ 'm-form__group has-danger': isSubmitted && !unitNameEn.valid }">
+                        <label class="col-lg-4 col-form-label form-control-label" required> English Name </label>
+                        <div class="col-lg-8">
+                            <input type="text" class="form-control m-input m-input--square"
+                                placeholder="Please enter english name" formControlName="unitNameEn">
+                        </div>
+                    </div>
+                    <div class="form-group row"
+                        [ngClass]="{ 'm-form__group has-danger': isSubmitted && !unitNameVn.valid }">
+                        <label class="col-lg-4 col-form-label form-control-label" required> Local Name </label>
+                        <div class="col-lg-8">
+                            <input type="text" class="form-control m-input m-input--square"
+                                placeholder="Please enter local name" formControlName="unitNameVn">
+                        </div>
+                    </div>
+                    <div class="form-group row"
+                        [ngClass]="{ 'm-form__group has-danger': isSubmitted && !unitType.valid }">
+                        <label class="col-lg-4 col-form-label form-control-label" required> Unit Type </label>
+                        <div class="col-lg-8">
+                            <ng-select [items]="unitTypes" placeholder="Select unit type" formControlName="unitType"
+                                class="custom" bindLabel="text">
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-lg-4 col-form-label form-control-label"> English Description </label>
+                        <div class="col-lg-8">
+                            <input type="text" class="form-control m-input m-input--square"
+                                placeholder="Please enter english description" formControlName="descriptionEn">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-lg-4 col-form-label form-control-label"> Local Description </label>
+                        <div class="col-lg-8">
+                            <input type="text" class="form-control m-input m-input--square"
+                                placeholder="Please enter local description" formControlName="descriptionVn">
+                        </div>
+                    </div>
+                    <ng-container *ngIf="isUpdate">
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-form-label form-control-label"> Active </label>
+                            <div class="col-lg-8">
+                                <app-switch formControlName="active">
+                                </app-switch>
+                            </div>
+                        </div>
+                    </ng-container>
+                </form>
+            </div>
+            <div class="modal-footer m--align-center c-button-actions">
+                <app-default-button [buttonSetting]="saveButtonSetting" (click)="onSubmit()"></app-default-button>
+                <app-default-button [buttonSetting]="cancelButtonSetting" (click)="closePopup()"></app-default-button>
+            </div>
+        </div>
+    </div>
+</div>

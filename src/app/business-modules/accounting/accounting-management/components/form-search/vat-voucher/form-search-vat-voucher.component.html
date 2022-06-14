@@ -1,0 +1,90 @@
+<div class="m-portlet">
+    <div class="m-portlet__body">
+        <div class="m-form">
+            <form class="row" action="" [formGroup]="formSearch">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label class="form-control-label" for="">Reference No</label>
+                        <textarea rows="5" class="form-control" formControlName="referenceNo"></textarea>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label" for="">
+                                    Partner
+                                </label>
+                                <app-combo-grid-virtual-scroll
+                                    [currentActiveItemId]="{ field: 'id', value: partner.value}"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'partner')"
+                                    [selectedDisplayFields]="['shortName']" [dataSources]="partners | async"
+                                    [displayFields]="displayFieldsPartner" [height]="150"
+                                    (remove)="resetFormControl(partner)" placeholder="Select customer">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label" for="">Issue Date</label>
+                                <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                    <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                        [autoApply]="true" [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}"
+                                        [ranges]="ranges" [alwaysShowCalendars]="true" name="daterange"
+                                        formControlName="issueDate" placeholder="   /   /   " readonly calendar
+                                        [allowRemove]="!!issueDate.value && !!issueDate.value.startDate"
+                                        (remove)="resetFormControl(issueDate)" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label" for="">
+                                    Creator
+                                </label>
+                                <app-combo-grid-virtual-scroll
+                                    [currentActiveItemId]="{ field: 'id', value: creator.value}"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'creator')"
+                                    [selectedDisplayFields]="['username']" [dataSources]="creators | async"
+                                    [displayFields]="displayFieldsCreator" [height]="150"
+                                    (remove)="resetFormControl(creator)" placeholder="Select creator">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="row">
+                                <div class="col-lg-12" *ngIf="accountType === 'Voucher'">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="">Type</label>
+                                        <ng-select formControlName="voucherType" [items]="voucherTypeList"
+                                            placeholder="Select type" class="custom">
+                                        </ng-select>
+
+                                    </div>
+                                </div>
+                                <div class="col-lg-12" *ngIf="accountType === 'Invoice'">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="">Status</label>
+                                        <ng-select formControlName="invoiceStatus" [items]="invoiceStatusList"
+                                            placeholder="New/Updated Invoice" class="custom">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="form-actions">
+                <div class="row">
+                    <div class="col-lg-6"></div>
+                    <div class="col-lg-6 m--align-right c-button-actions">
+                        <app-default-button [buttonSetting]="searchlButtonSetting" (click)="search()">
+                        </app-default-button>
+                        <app-default-button [buttonSetting]="resetButtonSetting" (click)="reset()"></app-default-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

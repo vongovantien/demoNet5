@@ -1,0 +1,90 @@
+<div class="unlock-request-page">
+    <app-sub-header>
+        <div class="c-button-actions">
+            <!-- <button type="button" class="btn btn-success  m-btn--icon m-btn--uppercase"
+                [routerLink]="'/home/tool/unlock-request/new'">
+                <span>
+                    <i class="la la-plus"></i>
+                    <span>
+                        Create Request
+                    </span>
+                </span>
+            </button>
+            <button type="button" class="btn btn-danger  m-btn--icon m-btn--uppercase" (click)="exportUnlockRequest()">
+                <span>
+                    <i class="la la-download"></i>
+                    <span>
+                        Export
+                    </span>
+                </span>
+            </button> -->
+            <app-permission-button type="add" title="Create Request" [routerLink]="'/home/tool/unlock-request/new'">
+            </app-permission-button>
+            <app-permission-button type="export" title="Export" (onClick)="exportUnlockRequest()">
+            </app-permission-button>
+        </div>
+    </app-sub-header>
+    <div class="m-content">
+        <form-search-unlock-request (onSearch)="onSearchUnlockRequest($event)"></form-search-unlock-request>
+        <div class="m-portlet">
+            <div class="m-form">
+                <div class="m-portlet__body">
+                    <div class="table-wrapper table-scrollabler" id="department-list-table">
+                        <table class="table table-striped table-brand table-hover dataTable">
+                            <thead app-table-header [headers]="headers"
+                                (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                                <th class="m--w-50 first table-actions-col">
+                                    Action
+                                </th>
+                            </thead>
+                            <tbody class="tbody-group">
+                                <ng-container *ngIf="!!unlockRequests.length">
+                                    <tr *ngFor="let unlockRequest of unlockRequests; let i = index; trackBy: trackByFn">
+                                        <td class="table-actions-col">
+                                            <div class="table-actions">
+                                                <!-- <app-permission-button
+                                                    (onClick)="prepareDeleteAuthorization(authorization)" type="delete">
+                                                </app-permission-button> -->
+                                                <button type="button" title="Delete"
+                                                    *ngIf="userLogged.id === unlockRequest.requester && (unlockRequest.statusApproval === 'New' || unlockRequest.statusApproval === 'Denied')"
+                                                    class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only pointer"
+                                                    (click)="deleteUnlockRequest(unlockRequest.id)">
+                                                    <i class="la la-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td><a (click)="viewDetail(unlockRequest)"
+                                                class="text-underline pointer">{{unlockRequest.subject}}</a></td>
+                                        <td>{{unlockRequest.requestDate | date: 'dd/MM/yyyy HH:mm a'}}</td>
+                                        <td class="text-info">{{unlockRequest.requesterName}}</td>
+                                        <td>{{unlockRequest.unlockType}}</td>
+                                        <td [ngSwitch]="unlockRequest.statusApproval">
+                                            <div *ngSwitchCase="'New'" class="text-danger">
+                                                {{unlockRequest.statusApproval}}</div>
+                                            <div *ngSwitchCase="'Done'" class="text-success">
+                                                {{unlockRequest.statusApproval}}</div>
+                                            <div *ngSwitchCase="'Denied'" class="text-danger">
+                                                {{unlockRequest.statusApproval}}</div>
+                                            <div *ngSwitchDefault class="text-primary">
+                                                {{unlockRequest.statusApproval}}
+                                            </div>
+                                        </td>
+                                        <td>{{unlockRequest.datetimeCreated | date: 'dd/MM/yyyy hh:mm a'}}</td>
+                                    </tr>
+                                </ng-container>
+                                <tr *ngIf="!unlockRequests.length" app-table-none-record [colspan]="headers.length + 1">
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <app-pagination [total]="totalItems" [itemPerPage]="pageSize" (onChange)="updatePagingData($event)"
+                        [pageNum]="page"></app-pagination>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <confirm-popup [body]="'Are you sure you want to delete?'" [labelConfirm]="'Yes'" (onSubmit)="onDeleteAuthorization()">
+</confirm-popup>
+<permission-403-popup></permission-403-popup> -->

@@ -1,0 +1,106 @@
+<div class="adv-settle-wrapper">
+    <ng-container *ngIf="(adSetInfos | async)?.length;else norecord">
+        <div class="m-portlet m--margin-bottom-20" *ngFor="let data of (adSetInfos | async); let i = index">
+            <div class="m-portlet__body item-wrapper">
+                <div class="row" *ngIf="!!data.advanceNo">
+                    <div class="col-lg-8 ">
+                        <div class="adv-info ">
+                            <div class="title ">
+                                <span> {{data.advanceNo}} - {{data.advRequester}}</span>
+                            </div>
+                            <div class="description ">
+                                <span class="m--margin-right-30 ">
+                                    {{data.advanceDate | date: 'dd/MM/yyyy'}}
+                                </span>
+                                | <span
+                                    class="text-{{data.advanceStatusApproval | classStatusApproval}} m--margin-left-20 m--margin-right-30">
+                                    {{data.advanceStatusApproval}}
+                                </span>
+                                <ng-container *ngIf="!!data.advanceSyncStatus">
+                                    | <span class="m--margin-left-20 m--margin-right-30">
+                                        <div class="stamp-div {{data.advanceSyncStatus | classStatusSync}}">
+                                            {{data.advanceSyncStatus}}
+                                        </div>
+                                    </span>
+                                </ng-container>
+                                <ng-container *ngIf="!!data.advanceVoucherNo">
+                                    | <span class="m--margin-left-20 text-primary">
+                                        {{data.advanceVoucherNo}}
+                                    </span>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 text-center text-primary ">
+                        <div class="title text-primary ">
+                            <span>
+                                {{data.advanceAmount | number: '.0-3'}}
+                                <span class="font-13">{{data.advanceCurrency}}</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class=" row " *ngIf="!!data.settlementCode">
+                    <div class="col-lg-8 ">
+                        <div class="adv-info ">
+                            <div class="title ">
+                                <span> {{data.settlementCode}} - {{data.settleRequester}}</span>
+                            </div>
+                            <div class="description ">
+                                <span class="m--margin-right-30">
+                                    {{data.settlementDate | date: 'dd/MM/yyyy'}}</span> |
+                                <span
+                                    class="text-{{data.settleStatusApproval | classStatusApproval}} m--margin-left-20 m--margin-right-30">
+                                    {{data.settleStatusApproval}}
+                                </span>
+                                <ng-container *ngIf="!!data.settlementSyncStatus">
+                                    | <span class="m--margin-left-20 m--margin-right-30">
+                                        <div class="stamp-div {{data.settlementSyncStatus | classStatusSync}}">
+                                            {{data.settlementSyncStatus}}
+                                        </div>
+                                    </span>
+                                </ng-container>
+                                <ng-container *ngIf="!!data.settlementVoucherNo">
+                                    | <span class="m--margin-left-20 text-primary">
+                                        {{data.settlementVoucherNo}}
+                                    </span>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 text-center text-primary ">
+                        <div class="title text-primary ">
+                            <span>
+                                {{data.settlementAmount | number: '.0-3'}}
+                                <span class="font-13">{{data.settlementCurrency}}</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-8 "></div>
+                    <div class="col-lg-4 text-center text-dark title ">
+                        <div class="balance">
+                            <span class="font-weight-bold font-14">Balance:</span>
+                            &nbsp;
+                            <ng-container *ngIf="data.balance >= 0 ; else negativeBalance">
+                                <span class="text-white"> {{data.balance | negativeNumber | number: '.0-3'}} </span>
+                            </ng-container>
+                            <ng-template #negativeBalance>
+                                <span class="text-white"> ({{data.balance | abs | number: '.0-3'}}) </span>
+                            </ng-template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</div>
+
+<ng-template #norecord>
+    <div class="no-data bg-white">
+        <i class="flaticon-coins"></i>
+        <span class="no-data-text">No records found</span>
+    </div>
+</ng-template>

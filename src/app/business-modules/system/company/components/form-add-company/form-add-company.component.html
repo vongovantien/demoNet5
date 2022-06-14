@@ -1,0 +1,96 @@
+<div class="m-content form-add-company">
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <ng-content>
+            </ng-content>
+            <div class="row">
+                <div class="col-12">
+                    <div class="mx-auto text-center upload-image-wp">
+                        <div class="image-upload-content">
+                            <div class="image-upload-content">
+                                <img #image [src]="photoUrl" alt="" class="img-responsive img-inputImage"
+                                    id="imageUpload" onerror="this.src = 'assets/app/media/img/emptydata.png'">
+                            </div>
+                            <div class="text-primary pointer">
+                                {{!!photoUrl ? 'Click to change image' : 'Upload Image'}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row m-form m-form--state">
+                <div class="col-12">
+                    <form action="" class="row" [formGroup]="formGroup">
+                        <div class="col-4">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': (code.dirty && !code.valid) || (isSubmitted && !code.valid)}">
+                                <label for="">Company Code <span class="text-danger">(*)</span></label>
+                                <input type="text" class="form-control m-input m-input--square"
+                                    placeholder="Company Code" formControlName="code" [attr.disabled]="isDisabled">
+                                <div class="form-control-feedback" *ngIf="isSubmitted && !code.valid">
+                                    Company Code is required!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': (bunameAbbr.dirty && !bunameAbbr.valid) || (isSubmitted && !bunameAbbr.valid)}">
+                                <label for="">Name Abbr <span class="text-danger">(*)</span></label>
+                                <input type="text" class="form-control m-input m-input--square" placeholder="Name Abbr"
+                                    formControlName="bunameAbbr">
+                                <div class="form-control-feedback" *ngIf="isSubmitted && !bunameAbbr.valid">
+                                    Name Abbr is required!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': (bunameVn.dirty && !bunameVn.valid) || (isSubmitted && !bunameVn.valid)}">
+                                <label for="">Name Local <span class="text-danger">(*)</span></label>
+                                <input type="text" class="form-control m-input m-input--square" placeholder="Name Local"
+                                    formControlName="bunameVn">
+                                <div class="form-control-feedback" *ngIf="isSubmitted && !bunameVn.valid">
+                                    Name Local is required!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label for="">Website</label>
+                                <input type="text" class="form-control text-underline text-primary"
+                                    placeholder="Website" formControlName="website">
+
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': (bunameEn.dirty && !bunameEn.valid) || (isSubmitted && !bunameEn.valid)}">
+                                <label for="">Name English <span class="text-danger">(*)</span></label>
+                                <input type="text" class="form-control m-input m-input--square"
+                                    placeholder="Name English" formControlName="bunameEn">
+                                <div class="form-control-feedback" *ngIf="isSubmitted && !bunameEn.valid">
+                                    Name English is required!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label for="">Status<span class="text-danger">(*)</span></label>
+                                <select formControlName="active" class="form-control">
+                                    <option *ngFor="let type of types" [ngValue]="type">{{type.title}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label for="">Commission Exc<span class="text-danger">(*)</span></label>
+                                <input type="number" class="form-control" formControlName="kbExchangeRate">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <ng-content select="div.date-time">
+            </ng-content>
+        </div>
+    </div>
+</div>

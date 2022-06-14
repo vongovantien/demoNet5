@@ -1,0 +1,185 @@
+<div class="m-portlet m-portlet--full-height">
+    <div class="m-portlet__head">
+        <div class="m-portlet__head-caption">
+            <div class="m-portlet__head-title">
+                <h3 class="m-portlet__head-text">
+                    The lasted exchange rate
+                </h3>
+            </div>
+        </div>
+    </div>
+    <div class="m-portlet__body">
+        <form name="formUpdateRate" #formUpdateRate="ngForm" novalidate (ngSubmit)="formUpdateRate.form.valid">
+            <div class="h6 m--margin-bottom-10">
+                <span>Update date:</span>&nbsp;
+                <span class="m--font-primary"
+                    *ngIf="exchangeRateNewest">{{ exchangeRateNewest.datetimeModified | date: 'MMMM dd. yyyy' }}
+                    - {{ exchangeRateNewest.datetimeModified | date: 'HH:mm'}}</span>
+            </div>
+            <div class="table-wrapper" id="" *ngIf="exchangeRateNewest">
+                <table class="table table-striped table-secondary">
+                    <thead>
+                        <tr>
+                            <th style="width: 30%">
+                                <span>Currency</span>
+                            </th>
+                            <th style="width: 30%">
+                                <span>Local (VND)</span>
+                            </th>
+                            <th style="width: 40%">
+                                <span>New Rate</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="exchangeRateNewest.exchangeRates">
+                        <tr *ngFor="let item of exchangeRateNewest.exchangeRates; let i = index">
+                            <td style="width: 30%">
+                                <span>{{ item.currencyFromID }}</span>
+                            </td>
+                            <td style="width: 30%">
+                                <span>{{ item.rate | number : '1.3-3' }}</span>
+                            </td>
+                            <td style="width: 40%">
+                                <input type="number" min="0" class="form-control m-input m-input--square" placeholder=""
+                                    [(ngModel)]="item.newRate" [name]="'exchangeRate'+i" autoFormatCurrency numeric
+                                    [decimals]="digitDecimal" (ngModelChange)="valueChange($event)">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="form-actions">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <button type="button" class="btn btn-success  m-btn--icon m-btn--uppercase" data-toggle="modal"
+                            data-target="#setting-exchange-rate-modal" (click)="showSetting()">
+                            Setting
+                        </button>
+                    </div>
+                    <div class="col-lg-8 m--align-right">
+                        <button [disabled]="!isAllowUpdateRate" type="button"
+                            class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="confirmUpdatePopup.show()">
+                            <span>
+                                <i class="la la-save"></i>
+                                <span>
+                                    Update rate
+                                </span>
+                            </span>
+                        </button>
+                        <button type="button" class="btn btn-default  m-btn--icon m-btn--uppercase"
+                            (click)="resetForm(formUpdateRate)">
+                            <span>
+                                <i class="la la-refresh"></i>
+                                <span>
+                                    Clear value
+                                </span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<confirm-popup #confirmUpdatePopup body="Are you sure you want to update exchange rate? All currency without new value will use the
+lasted rate" title="Update New Exchange Rate" (onSubmit)="confirmUpdatePopup.hide(); updateRate()"></confirm-popup>
+
+
+<div class="modal fade" id="setting-exchange-rate-modal" data-backdrop="static" role="dialog" aria-labelledby=""
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form name="formSettingRate" #formSettingRate="ngForm" novalidate (ngSubmit)="formSettingRate.form.valid">
+                <div class="modal-header">
+                    <h5 class="modal-title">Setting</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                        (click)="cancelAddRate()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="m-form m-form--state m--margin-bottom-10">
+                        <div class="m--align-right">
+                            <button type="button" class="btn btn-success  m-btn--icon m-btn--uppercase"
+                                (click)="addNewRate()">
+                                <span>
+                                    <i class="icon-plus7"></i>
+                                    <span>
+                                        add new
+                                    </span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-wrapper m-form m-form--state" id="">
+                        <table class="table table-striped table-secondary table-editable">
+                            <thead>
+                                <tr>
+                                    <th style="width: 70px"></th>
+                                    <th>
+                                        <span>Currency list</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngIf="exchangeRateNewest">
+                                    <tr *ngFor="let item of exchangeRateNewest.exchangeRates; let j = index">
+                                        <td class="table-actions-col">
+                                            <div class="table-actions" style="width: 70px">
+                                                <button type="button"
+                                                    class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only" title=""
+                                                    (click)="confirmDeleteRate(item)">
+                                                    <i class="la la-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span>{{ item.currencyFromID }}</span>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                                <tr *ngFor="let item of exchangeRateToAdd.CatCurrencyExchangeRates; let j = index">
+                                    <td class="table-actions-col">
+                                        <div class="table-actions" style="width: 70px">
+                                            <button type="button"
+                                                class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only" title=""
+                                                data-toggle="modal" (click)="removeNewRate(j)">
+                                                <i class="la la-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span
+                                            [ngClass]="{ 'm-form__group has-danger': isSubmitted && item.currencyFromID == null }">
+                                            <ng-select class="custom" [items]="catCurrencies"
+                                                (change)="selectedCurrencyToAddRate($event)" bindLabel="text"
+                                                bindValue="id" (removed)="removedCurrency($event)"
+                                                placeholder="Select currency">
+                                            </ng-select>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer m--align-center c-button-actions">
+
+                    <app-default-button [buttonSetting]="saveButtonSetting" (click)="saveNewRate()">
+                    </app-default-button>
+
+                    <app-default-button [buttonSetting]="cancelButtonSetting" (click)="cancelAddRate()">
+                    </app-default-button>
+                    <confirm-popup #confirmDeletePopup body="You want to delete this currency?"
+                        (onSubmit)="onDelete(true)">
+                    </confirm-popup>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

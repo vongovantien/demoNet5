@@ -1,0 +1,101 @@
+<div class="office-detail-page">
+    <app-sub-header> </app-sub-header>
+    <form-add-office [isDetail]="true">
+        <div class="row m--padding-top-10">
+            <div class="col-6">
+                <h3 class="c-block-title m--margin-left-10">General Information</h3>
+            </div>
+            <div class="col-6">
+                <div class="m--align-right">
+                    <button (click)="updateOffice()" type="button"
+                        class="btn btn-brand  m-btn--icon m-btn--uppercase m--margin-right-10">
+                        <span>
+                            <i class="la la-save"></i>
+                            <span> Save </span>
+                        </span>
+                    </button>
+                    <button (click)="cancel()" type="button"
+                        class="btn btn-default  m-btn--icon m-btn--uppercase m--margin-right-10">
+                        <span>
+                            <i class="la la-ban"></i>
+                            <span> Cancel </span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <hr />
+    </form-add-office>
+
+    <div class="m-content">
+        <div class="m-portlet__body">
+            <tabset #staticTabs *ngIf="isDetail" class="custom-class-tab">
+                <tab>
+                    <ng-template tabHeading>
+                        <span class="m--margin-right-10">Department</span>
+                        <i class="la la-building-o text-primary"></i>
+                    </ng-template>
+                    <div class="m-portlet">
+                        <div class="m-form">
+                            <div class="m-portlet__body">
+                                <div class="table-wrapper table-scrollabler" id="group-list-table">
+                                    <table class="table table-striped table-brand table-hover dataTable">
+                                        <thead (onClick)="sortBy($event.sortField ? $event.sortField : '')"
+                                            app-table-header [headers]="headers">
+                                            <th class="m--w-50 first">
+                                            </th>
+                                        </thead>
+                                        <tbody class="tbody-group">
+                                            <ng-container *ngIf="!isLoading && !!departments.length">
+                                                <tr
+                                                    *ngFor="let department of departments; let i = index; trackBy: trackByFn">
+                                                    <td class="table-actions-col">
+                                                        <div class="table-actions" style="width: 100px">
+                                                            <button type="button" title="Detail"
+                                                                class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only pointer"
+                                                                (click)="gotoDetailDepartment(department.id)">
+                                                                <i class="la la-edit"></i>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                    <td>{{department.code}}</td>
+                                                    <td>{{department.deptNameEn}}</td>
+                                                    <td>{{department.deptName}}</td>
+                                                    <td>{{department.deptNameAbbr}}</td>
+                                                    <td>{{department.officeName}}</td>
+                                                    <td [ngClass]="department.active ? 'text-success' : 'text-danger'">
+                                                        {{department.active ? 'Active' : 'Inactive'}}</td>
+                                                </tr>
+                                            </ng-container>
+                                            <tr *ngIf="!isLoading && !departments.length" app-table-none-record
+                                                [colspan]="headers.length + 1">
+                                            </tr>
+                                            <tr *ngIf="isLoading" app-table-row-loading></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </tab>
+                <tab>
+                    <ng-template tabHeading>
+                        <span class="m--margin-right-10">Management Group</span>
+                        <i class="la la-group text-primary"></i>
+                    </ng-template>
+                    <ng-container>
+                        <form-user-level [object]="selectedOffice" [type]="'office'"></form-user-level>
+                    </ng-container>
+                </tab>
+                <tab>
+                    <ng-template tabHeading>
+                        <span class="m--margin-right-10">Approval Flow and Setting</span>
+                        <i class="la la-cogs text-primary"></i>
+                    </ng-template>
+
+                    <form-approve-setting-office></form-approve-setting-office>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+</div>

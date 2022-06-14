@@ -1,0 +1,39 @@
+<div class="sea-lcl-detail-hbl-page">
+    <app-sub-header>
+        <div class="c-button-actions">
+            <app-menu-preview-hbl-sea-export [hblDetail]="hblDetail"></app-menu-preview-hbl-sea-export>
+
+            <app-default-button (click)="showCreatepoup()" [buttonSetting]="saveButtonSetting"
+                *ngIf="(permissionHblDetail | async)?.allowUpdate"></app-default-button>
+
+            <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="gotoList()"></app-default-button>
+        </div>
+    </app-sub-header>
+    <div class="m-content">
+        <div class="m-portlet__body">
+            <tabset class="custom-class-tab">
+                <tab heading="HAWB Detail">
+                    <app-form-create-hbl-sea-export type="SLE" [isUpdate]="true"></app-form-create-hbl-sea-export>
+                    <hbl-goods-summary-lcl type="export" (onSelectQty)="selectedPackage($event)"> HBL Goods Summary
+                    </hbl-goods-summary-lcl>
+                </tab>
+                <tab heading="Attach List">
+                    <attach-list-house-bill action="UPDATE"></attach-list-house-bill>
+                </tab>
+                <tab heading="Proof Of Delivery">
+                    <hbl-proof-of-delivery></hbl-proof-of-delivery>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+</div>
+
+
+<ul class="m-nav-sticky fms-shipment-sidebar">
+    <li class="m-nav-sticky__item">
+        <a title="Send Pre Alert" [routerLink]="['./manifest']">Send P.A</a>
+    </li>
+</ul>
+
+
+<ng-template inject></ng-template>

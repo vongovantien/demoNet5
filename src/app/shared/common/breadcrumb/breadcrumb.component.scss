@@ -1,0 +1,16 @@
+:host /deep/ {
+    .breadcrumbs {
+        .m-nav__link-text {
+            color: #3966b6 !important;
+            &.active-route {
+                color: #898b96 !important;
+            }
+        }
+        // .m-nav__separator {
+        //     color: #3966b6 !important;
+        //     &.m-nav__separator_active {
+        //         color: #898b96 !important;
+        //     }
+        // }
+    }
+}

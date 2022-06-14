@@ -1,0 +1,67 @@
+<div class="create-booking-note-page">
+    <app-sub-header> </app-sub-header>
+    <div class="m-content">
+        <div class="m-portlet">
+            <div class="m-portlet__body"
+                [ngStyle]="{'font-style': (accountingManagement.status !== 'New'  ? 'italic' : '')}">
+                <div class="d-flex align-items-center justify-content-between p-1">
+                    <h3>{{accountingManagement.voucherId}}
+                        <span
+                            class="m-badge m-badge--{{accountingManagement.status === 'New' && (!accountingManagement.syncStatus || accountingManagement.syncStatus !== 'Synced') ? 'danger' : 'success'}} m-badge--wide">
+                            {{!accountingManagement.syncStatus ? accountingManagement.status :
+                            accountingManagement.syncStatus}}
+                            {{accountingManagement.syncStatus === 'Rejected' && accountingManagement.reasonReject
+                            ? ' - ' + accountingManagement.reasonReject : ''}}
+                        </span>
+                    </h3>
+                    <div>
+                        <div class="c-button-actions">
+                            <ng-container
+                                *ngIf="accountingManagement.status === 'New' && accountingManagement.syncStatus !== 'Synced'">
+                                <app-permission-button type="save" title="Save" (onClick)="onSubmitSaveVoucher()">
+                                </app-permission-button>
+                            </ng-container>
+
+                            <button class="btn btn-info m-btn--icon m-btn--uppercase" (click)="confirmSync()"
+                                title="Sync to accountant system"
+                                *ngIf="!accountingManagement.syncStatus || accountingManagement.syncStatus !== 'Synced'">
+                                <span>
+                                    <i class="la la-cloud-upload"></i>
+                                    <span>
+                                        Sync to Accountant
+                                    </span>
+                                </span>
+                            </button>
+
+                            <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="accountingManagement.status !== 'New' ||
+                                 accountingManagement.syncStatus === 'Synced' ? gotoList() : handleCancelForm()">
+                            </app-default-button>
+                        </div>
+                    </div>
+                </div>
+
+                <hr />
+
+                <form-create-voucher></form-create-voucher>
+
+                <date-time-modified col="6" [timeCreated]="accountingManagement.datetimeCreated"
+                    [userCreated]="accountingManagement.userNameCreated"
+                    [timeModified]="accountingManagement.datetimeModified"
+                    [userModified]="accountingManagement.userNameModified"></date-time-modified>
+
+                <list-charge-accounting-management type="voucher"></list-charge-accounting-management>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<info-popup [body]="invalidFormText"></info-popup>
+
+<confirm-popup #confirmCancelPopup body="Do you want to exit without saving?" (onSubmit)="confirmCancel()">
+</confirm-popup>
+
+<confirm-popup #confirmSyncVoucher (onSubmit)="onSyncBravo()" [labelConfirm]="'Yes'"
+    body="Are you sure you want to sync data to accountant system ?" iconConfirm="la la-cloud-upload"></confirm-popup>
+
+<info-popup #validateSyncedVoucherPopup [body]="messageValidate" [title]="'Alert'"></info-popup>

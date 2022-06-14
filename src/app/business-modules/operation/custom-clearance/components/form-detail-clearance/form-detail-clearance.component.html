@@ -1,0 +1,355 @@
+<div class="m-form m-form--state">
+    <form [formGroup]="formGroup">
+
+        <div class="m-portlet">
+            <div class="m-portlet__body">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group"
+                            [ngClass]="{'m-form__group has-danger': (clearanceNo.dirty && !clearanceNo.valid) || (isSubmitted && !clearanceNo.valid)}">
+                            <label class="form-control-label" for="">
+                                Clearance No <span class="m--font-danger">(*)</span>
+                            </label>
+                            <input type="text" class="form-control m-input m-input--square" placeholder="Enter text"
+                                autocomplete="nope" formControlName="clearanceNo">
+                            <div class="form-control-feedback" *ngIf="isSubmitted && !clearanceNo.valid">
+                                Clearance No is required
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group"
+                            [ngClass]="{'m-form__group has-danger':  isSubmitted && !partnerTaxCode.value}">
+                            <label class="form-control-label" for="">
+                                Customer <span class="m--font-danger">(*)</span>
+                            </label>
+                            <app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event, 'customer')"
+                                [currentActiveItemId]="{ field: 'accountNo', value: partnerTaxCode.value, hardValue: customerName}"
+                                [selectedDisplayFields]="['shortName']" [dataSources]="customers | async"
+                                [displayFields]="displayFieldsCustomer" placeholder="Please select"
+                                (remove)="resetFormControl(partnerTaxCode)" [clearable]="false">
+                            </app-combo-grid-virtual-scroll>
+                            <div class="form-control-feedback" *ngIf="isSubmitted && !partnerTaxCode.value">
+                                Customer is required!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group"
+                            [ngClass]="{'m-form__group has-danger': (clearanceDate.dirty && !clearanceDate.value) || (isSubmitted && !clearanceDate.value) || (isSubmitted && !clearanceDate.value.startDate)}">
+                            <label class="form-control-label" required>
+                                Clearance Date
+                            </label>
+                            <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                    [locale]="{format: 'DD/MM/YYYY'}" [autoApply]="true" [singleDatePicker]="true"
+                                    [alwaysShowCalendars]="true" name="daterange" readonly placeholder="DD/MM/YYYY"
+                                    formControlName="clearanceDate" />
+                                <span class="m-input-icon_clear" (click)="resetFormControl(clearanceDate)"
+                                    *ngIf="!!clearanceDate.value && !!clearanceDate.value.startDate">
+                                    <i class="la la-times"></i>
+                                </span>
+                                <span class="m-input-icon__icon m-input-icon__icon--right">
+                                    <span>
+                                        <i class="la la-calendar"></i>
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="form-control-feedback"
+                                *ngIf="(clearanceDate.dirty && !clearanceDate.value) || (isSubmitted && !clearanceDate.value) || (isSubmitted && !!clearanceDate.value && !clearanceDate.value.startDate)">
+                                Clearance Date is required!
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group"
+                            [ngClass]="{'m-form__group has-danger': isSubmitted && (hblid.value == null || hblid.value == '') && isConvertJob   || !hblid.valid}">
+                            <label class="form-control-label" for="">
+                                HBL/HAWB <span class="m--font-danger"
+                                    *ngIf="isSubmitted && (hblid.value == null || hblid.value == '') && isConvertJob">(*)</span>
+                            </label>
+                            <input type="text" class="form-control m-input m-input--square" placeholder="Enter text"
+                                autocomplete="nope" formControlName="hblid">
+                            <div class="form-control-feedback" *ngIf="(isSubmitted || hblid.dirty) && !hblid.valid">
+                                HBL/HAWB No must be not have special charater!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group"
+                            [ngClass]="{'m-form__group has-danger': isSubmitted && (mblid.value == null || mblid.value == '') && isConvertJob || !mblid.valid}">
+                            <label class="form-control-label" for="">
+                                MBL/MAWB <span class="m--font-danger"
+                                    *ngIf="isSubmitted && (mblid.value == null || mblid.value == '') && isConvertJob">(*)</span>
+                            </label>
+                            <input type="text" class="form-control m-input m-input--square" placeholder="Enter text"
+                                autocomplete="nope" formControlName="mblid">
+                            <div class="form-control-feedback" *ngIf="(isSubmitted || mblid.dirty) && !mblid.valid">
+                                MBL/MAWB No must be not have special charater!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-control-label">
+                                Service Type
+                            </label>
+                            <ng-select [items]="serviceTypes" placeholder="Please select" class="custom"
+                                formControlName="serviceType" (change)="selectedServiceType($event, 'service-type')">
+                            </ng-select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group" [ngClass]="{'m-form__group has-danger': isSubmitted && !gateway.value}">
+                            <label class="form-control-label" required>
+                                Clearance location
+                            </label>
+                            <app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event, 'gateway')"
+                                [currentActiveItemId]="{ field: 'code', value: gateway.value}"
+                                [selectedDisplayFields]="['nameEn']" [dataSources]="ports | async"
+                                [displayFields]="displayFieldPort" placeholder="Clearance Location"
+                                (remove)="resetFormControl(gateway)" [clearable]="false">
+                            </app-combo-grid-virtual-scroll>
+                            <div class="form-control-feedback" *ngIf="isSubmitted && !gateway.value">
+                                Clearance location is required
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group"
+                            [ngClass]="{'m-form__group has-danger': (type.dirty && !type.valid) || (isSubmitted && !type.valid)}">
+                            <label class="form-control-label">
+                                Type <span class="m--font-danger">(*)</span>
+                            </label>
+                            <ng-select [items]="typeClearances" placeholder="Please select" formControlName="type"
+                                class="custom">
+                            </ng-select>
+                            <div class="form-control-feedback"
+                                *ngIf="(type.dirty && !type.valid) || (isSubmitted && !type.valid)">
+                                Type is required!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-control-label" for="">
+                                Route
+                            </label>
+                            <ng-select [items]="routeClearances" placeholder="Please select" formControlName="route"
+                                class="custom">
+                            </ng-select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group"
+                            [ngClass]="{ 'm-form__group has-danger': isSubmitted && !cargoType.value  && isDisableCargo === false }">
+                            <label class="form-control-label" for="">
+                                Cargo Type <span class="m--font-danger" *ngIf="isDisableCargo === false">(*)</span>
+                            </label>
+                            <ng-select [items]="cargoTypes" placeholder="Please select" [disabled]="isDisableCargo"
+                                formControlName="cargoType" class="custom"
+                                (change)="selectedServiceType($event, 'cargo-type')">
+                            </ng-select>
+                            <div class="form-control-feedback"
+                                *ngIf="isSubmitted && !cargoType.value && isDisableCargo === false">
+                                Cargo Type is required
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-control-label" for="">
+                                Export Country
+                            </label>
+                            <app-combo-grid-virtual-scroll
+                                (itemSelected)="onSelectDataFormInfo($event, 'exportCountry')"
+                                [currentActiveItemId]="{ field: 'code', value: exportCountry.value}"
+                                [selectedDisplayFields]="['nameEn']" [dataSources]="countries | async"
+                                [displayFields]="displayFieldCountry" placeholder="Please select"
+                                (remove)="resetFormControl(exportCountry)">
+                            </app-combo-grid-virtual-scroll>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-control-label" for="">
+                                Import Country
+                            </label>
+                            <app-combo-grid-virtual-scroll
+                                (itemSelected)="onSelectDataFormInfo($event, 'importCountry')"
+                                [currentActiveItemId]="{ field: 'code', value: importCountry.value}"
+                                [selectedDisplayFields]="['nameEn']" [dataSources]="countries | async"
+                                [displayFields]="displayFieldCountry" placeholder="Please select"
+                                (remove)="resetFormControl(importCountry)">
+                            </app-combo-grid-virtual-scroll>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-control-label" for="">
+                                Commodity
+                            </label>
+                            <app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event, 'commodity')"
+                                [currentActiveItemId]="{ field: 'code', value: commodity.value}"
+                                [selectedDisplayFields]="['commodityNameEn']" [dataSources]="commodities | async"
+                                [displayFields]="displayFieldCommodity" placeholder="Please select"
+                                (remove)="resetFormControl(commodity)">
+                            </app-combo-grid-virtual-scroll>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-control-label" for="">
+                                Gross Weight
+                            </label>
+                            <input type="number" min="0" class="form-control m-input m-input--square"
+                                placeholder="Enter number"
+                                onkeypress="return event.charCode == 46 || (event.charCode > 47 && event.charCode < 58)"
+                                placeholder="Enter number" autocomplete="nope" formControlName="grossWeight">
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-control-label" for="">
+                                Net Weight
+                            </label>
+                            <input type="number" min="0" class="form-control m-input m-input--square"
+                                placeholder="Enter number"
+                                onkeypress="return event.charCode == 46 || (event.charCode > 47 && event.charCode < 58)"
+                                placeholder="Enter number" autocomplete="nope" formControlName="netWeight">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-control-label" for="">
+                                CBM
+                            </label>
+                            <input type="number" min="0" class="form-control m-input m-input--square"
+                                placeholder="Enter number"
+                                onkeypress="return event.charCode == 46 || (event.charCode > 47 && event.charCode < 58)"
+                                placeholder="Enter number" autocomplete="nope" formControlName="cbm">
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="">
+                                        Qty Cont
+                                    </label>
+                                    <input type="number" min="0" class="form-control m-input m-input--square"
+                                        placeholder="Enter number"
+                                        onkeypress="return event.charCode == 46 || (event.charCode > 47 && event.charCode < 58)"
+                                        placeholder="Enter number" autocomplete="nope" formControlName="qtyCont">
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="">
+                                        Package Qty
+                                    </label>
+                                    <input type="number" min="0" class="form-control m-input m-input--square"
+                                        placeholder="Enter number"
+                                        onkeypress="return event.charCode == 46 || (event.charCode > 47 && event.charCode < 58)"
+                                        placeholder="Enter number" autocomplete="nope" formControlName="pcs">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-control-label" for="">
+                                Package Unit
+                            </label>
+                            <app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event, 'unit')"
+                                [currentActiveItemId]="{ field: 'code', value: unit.value}"
+                                [selectedDisplayFields]="['unitNameEn']" [dataSources]="units | async"
+                                [displayFields]="displayFieldUnit" placeholder="Please select"
+                                (remove)="resetFormControl(unit)">
+                            </app-combo-grid-virtual-scroll>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-control-label" for="">
+                                Shipper
+                            </label>
+                            <input type="text" class="form-control m-input m-input--square" autocomplete="nope" min="0"
+                                placeholder="Enter text" formControlName="shipper">
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-control-label" for="">
+                                Consignee
+                            </label>
+                            <input type="text" class="form-control m-input m-input--square" autocomplete="nope" min="0"
+                                placeholder="Enter text" formControlName="consignee">
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-control-label" for="">
+                                Note
+                            </label>
+                            <input type="text" class="form-control m-input m-input--square" autocomplete="nope" min="0"
+                                placeholder="Enter text" formControlName="note">
+                        </div>
+                    </div>
+                </div>
+                <div class="row" *ngIf="!!customDeclaration.datetimeCreated">
+                    <div class="col-md-4 m--margin-top-10 m--margin-bottom-5">
+                        <span class="m--font-bolder">Create:</span>
+                        <span class="m--font-brand m--margin-left-5">{{customDeclaration.datetimeCreated | date:
+                            'dd/MM/yyyy HH:mm:ss'}}</span>
+                        <span class="m--font-bolder m--margin-left-5">by</span>
+                        <span class="m--font-brand m--margin-left-5">{{customDeclaration.userCreatedName}}</span>
+                    </div>
+                    <div class="col-md-4 m--margin-top-10 m--margin-bottom-5"
+                        *ngIf="customDeclaration.userModified; else nousermodified">
+                        <span class="m--font-bolder">Modified:</span>
+                        <span class="m--font-brand m--margin-left-5">{{customDeclaration.datetimeModified | date:
+                            'dd/MM/yyyy HH:mm:ss'}}</span>
+                        <span class="m--font-bolder m--margin-left-5">by</span>
+                        <span class="m--font-brand m--margin-left-5">{{customDeclaration.userModifieddName}}</span>
+                    </div>
+                    <ng-template #nousermodified>
+                        <div class="col-md-4 m--margin-top-10 m--margin-bottom-5">&nbsp;</div>
+                    </ng-template>
+                    <div class="col-md-4 m--margin-top-10 m--margin-bottom-5">
+                        <span class="m--font-bolder">Source:</span>
+                        <span class="m--font-brand m--margin-left-5">{{customDeclaration.source}}</span>
+                    </div>
+                </div>
+                <div class="row" *ngIf="!!customDeclaration.datetimeCreated">
+                    <div class="col-md-4 m--margin-top-10 m--margin-bottom-5">
+                        <span class="m--font-bolder">First Customer No:</span>
+                        <span class="m--font-brand m--margin-left-5">{{customDeclaration.firstClearanceNo}}</span>
+                    </div>
+                    <div class="col-md-4 m--margin-top-10 m--margin-bottom-5">
+                        <span class="m--font-bolder">Reference JobID:</span>
+                        <span class="m--font-brand m--margin-left-5">{{customDeclaration.jobNo}}</span>
+                    </div>
+                    <div class="col-md-4 m--margin-top-10 m--margin-bottom-5">
+                        <span class="m--font-bolder">Convert time:</span>
+                        <span class="m--font-brand m--margin-left-5">{{ customDeclaration.convertTime | date:
+                            'dd/MM/yyyy HH:mm:ss'}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

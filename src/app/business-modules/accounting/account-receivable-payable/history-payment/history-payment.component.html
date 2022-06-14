@@ -1,0 +1,35 @@
+<div class="acc-receive-payable-wrapper  m-animate-fade-in">
+    <app-sub-header> </app-sub-header>
+    <div class="m-content">
+        <div class="m-portlet__body">
+            <tabset class="custom-class-tab">
+                <tab (selectTab)="onSelectTab('PAYMENT')">
+                    <ng-template tabHeading>
+                        <a routerLink="/home/accounting/account-receivable-payable" style="color:#6f727d">
+                            Customer/Agency Payment
+                        </a>
+                    </ng-template>
+                </tab>
+                <tab (selectTab)="onSelectTab('AR')">
+                    <ng-template tabHeading>
+                        <a routerLink="/home/accounting/account-receivable-payable/summary" style="color:#6f727d">
+                            AR Summary
+                        </a>
+                    </ng-template>
+                </tab>
+                <tab heading="Payment History" [active]="true">
+                    <form-search-history-payment (onSearch)="onSearchPayment($event)">
+                    </form-search-history-payment>
+
+                    <tabset class="custom-class-tab">
+                        <tab heading="Invoice Payment">
+                            <list-invoice-history-payment
+                                (onUpdateExtendDateOfInvoice)="handleUpdateExtendDateOfInvoice()">
+                            </list-invoice-history-payment>
+                        </tab>
+                    </tabset>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+</div>

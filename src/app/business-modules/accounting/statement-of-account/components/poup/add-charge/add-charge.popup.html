@@ -1,0 +1,279 @@
+<div class="modal fade add-charge-popup" role="dialog" bsModal #popup="bs-modal" aria-hidden="true">
+    <div class="modal-dialog c-modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add charge</h5>
+                <button type="button" (click)="hide()" class="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+            </div>
+            <div class="modal-body">
+                <div class="m-form m-form--state bg-secondary m--padding-15 m--margin-bottom-15">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Shipment
+                                </label>
+                                <app-combo-grid-virtual-scroll [currentActiveItemId]="selectedShipment"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'shipment')"
+                                    [dataSources]="configShipment.dataSource"
+                                    [displayFields]="configShipment.displayFields"
+                                    [selectedDisplayFields]="configShipment.selectedDisplayFields"
+                                    (remove)="selectedShipmentData = null">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Debit/Credit Note
+                                </label>
+                                <select class="form-control" [(ngModel)]="selectedCDNote" name="selectedCDNote"
+                                    placeholder="Select">
+                                    <option [value]="null" disabled>Choose Debit/Credit Note</option>
+                                    <option *ngFor="let cdNote of cdNotes; let i = index" [ngValue]="cdNote">
+                                        {{cdNote.creditDebitNo}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Type
+                                </label>
+                                <select [(ngModel)]="selectedType" name="selectedType" class="form-control" disabled>
+                                    <option *ngFor="let item of types" [ngValue]="item">{{item.text}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label">
+                                            OBH
+                                        </label>
+                                        <select [(ngModel)]="selectedOBH" name="selectedOBH" class="form-control">
+                                            <option *ngFor="let item of obhs" [ngValue]="item">{{item.text}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label">
+                                            In SOA
+                                        </label>
+                                        <select [(ngModel)]="selectedInSOA" name="selectedInSOA" class="form-control">
+                                            <option *ngFor="let item of inSOAs" [ngValue]="item">{{item.text}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="form-group form-charge">
+                                <label class="form-control-label">
+                                    Charge
+                                </label>
+                                <div class="charge-list-selected" *ngIf="!!selectedCharges.length">
+                                    <ul class="list-unstyled list">
+                                        <li class="charge-list-item d-flex justify-content-between align-items-center"
+                                            *ngFor="let chargeItem of selectedCharges; let i = index; trackBy: trackByFn">
+
+                                            <div *ngIf="chargeItem.id !== 'All' else all">{{chargeItem.code}} -
+                                                {{chargeItem.chargeNameEn}}
+                                            </div>
+                                            <ng-template #all>All</ng-template>
+                                            <a title="Delete" (click)="onRemoveCharge(i)">
+                                                <i class="la la-close"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <app-combo-grid-virtual-scroll [currentActiveItemId]="selectedCharge"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'charge')"
+                                    [dataSources]="configCharge.dataSource"
+                                    [displayFields]="configCharge.displayFields ">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <!-- <label class="form-control-label" for="">
+                                Commodity Group
+                            </label>
+                            <select [(ngModel)]="commodity" class="form-control">
+                                <option [ngValue]="null">Select Commodity</option>
+                                <option *ngFor="let comodity of commodityGroup" [ngValue]="comodity">
+                                    {{comodity.groupNameEn}}
+                                </option>
+                            </select> -->
+                        </div>
+                        <div class="col-8">
+                            <div class="form-actions m--align-right m--margin-top-10">
+                                <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase"
+                                    (click)="onApplySearchCharge()">
+                                    <span>
+                                        <i class="la la-download"></i>
+                                        <span>
+                                            Apply
+                                        </span>
+                                    </span>
+                                </button>
+                                <button type="reset" class="btn btn-default  m-btn--icon m-btn--uppercase"
+                                    (click)="onResetData()">
+                                    <span>
+                                        <i class="la la-refresh"></i>
+                                        <span>
+                                            Reset
+                                        </span>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="m-form m-form--state">
+                    <div class="m-form m-form--label-align-right">
+                        <div class="row align-items-center">
+                            <div class="col-lg-4 order-2 order-lg-1">
+                                <div class="form-group">
+                                    <div class="m-input-icon m-input-icon--left">
+                                        <input type="text" class="form-control m-input m-input--square"
+                                            placeholder="Search..." [(ngModel)]="keyword">
+                                        <span class="m-input-icon__icon m-input-icon__icon--left">
+                                            <span>
+                                                <i class="la la-search"></i>
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-wrapper" [ngClass]="listCharges.length > 20 ? 'table-30-row' : ''">
+                        <table class="table table-striped table-brand dataTable" row>
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <label class="m-checkbox">
+                                            <input type="checkbox" [(ngModel)]="isCheckAllCharge"
+                                                (change)="checkUncheckAllCharge()">
+                                            <span></span>
+                                        </label>
+                                    </th>
+                                    <th *ngFor="let header of headers; let i = index; trackBy: trackByFn"
+                                        [class]="sortClass(header.sortable ? header.field : '')"
+                                        (click)="sortBy(header.sortable ? header.field : '')">
+                                        <span>{{header.title}}</span>
+                                        <span class="sort-indicator"></span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="tbody-group">
+                                <tr *ngIf="!isLoading && !listCharges.length">
+                                    <td colspan="100">
+                                        <div class="no-data">
+                                            <i class="flaticon-coins"></i>
+                                            <span class="no-data-text">No records found</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr
+                                    *ngFor="let charge of listCharges | filter: keyword:[ 'jobId', 'chargeCode', 'hbl', 'chargeName', 'hbl',  'mbl', 'currency'] ; let i = index; trackBy: trackByFn">
+                                    <td class="table-actions-col">
+                                        <div class="table-actions">
+                                            <label class="m-checkbox" *ngIf="!charge.soaNo">
+                                                <input type="checkbox" (change)="onChangeCheckBoxCharge($event)"
+                                                    value="{{charge}}" [(ngModel)]="charge.isSelected"
+                                                    name="{{charge.code}}">
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">{{i + 1}}</td>
+                                    <td>
+                                        <span>{{charge.chargeCode}}</span>
+                                    </td>
+                                    <td>
+                                        <span>{{charge.chargeName}}</span>
+                                    </td>
+                                    <td>
+                                        <span>{{charge.jobId}}</span>
+                                    </td>
+                                    <td>
+                                        <span>{{charge.hbl}}</span>
+                                    </td>
+                                    <td>
+                                        <span>{{charge.mbl}}</span>
+                                    </td>
+                                    <td>
+                                        <span>{{charge.customNo}}</span>
+                                    </td>
+                                    <td class="text-right">
+                                        <span>{{charge.debit | number: '.0-3'}}</span>
+                                    </td>
+                                    <td class="text-right">
+                                        <span>{{charge.credit | number: '.0-3'}}</span>
+                                    </td>
+                                    <td>
+                                        <span>{{charge.currency}}</span>
+                                    </td>
+                                    <td>
+                                        <span>{{charge.invoiceNo}}</span>
+                                    </td>
+                                    <td [ngClass]="charge.cdNote ? '' : 'bg-red'">
+                                        <span>{{charge.cdNote}}</span>
+                                    </td>
+                                    <td>
+                                        <span>{{!!charge.serviceDate ? (charge.serviceDate | date: 'dd/MM/yyyy') :
+                                            ''}}</span>
+                                    </td>
+                                    <td>
+                                        <span>{{charge.note}}</span>
+                                    </td>
+                                    <td>
+                                        <span>{{charge.soaNo}}</span>
+                                    </td>
+                                </tr>
+                                <tr class="loading-wrapper" *ngIf="isLoading">
+                                    <td colspan="100">
+                                        <div class="on-loading">
+                                            <div class="m-loader m-loader--brand">
+                                            </div><span>Loading</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer m--align-center">
+                <button class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="addMoreCharge()">
+                    <span>
+                        <i class="la la-save"></i>
+                        <span>
+                            add charge
+                        </span>
+                    </span>
+                </button>
+                <button type="button" class="btn btn-cancel  m-btn--icon m-btn--uppercase" (click)="hide()">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span>
+                            cancel
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

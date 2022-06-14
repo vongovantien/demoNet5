@@ -1,0 +1,46 @@
+<!--begin:: subheader-->
+<div class="modal fade salesman-credit-limit-popup" role="dialog" bsModal #popup="bs-modal" aria-hidden="true">
+    <div class="modal-dialog modal-xs" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="d-flex align-items-center justify-content-between p-1">
+                    <h5 class="modal-title">
+                        Salesman's Credit limit
+                    </h5>
+                    <button type="button" class="close" aria-label="Close" (click)="close()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form class="m-form m-form--state" [formGroup]="formGroup">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label>Credit Limit</label>
+                                <input min="0" autoFormatCurrency type="number" class="form-control"
+                                    formControlName="creditLimit">
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label>Credit Limit Rate</label>
+                                <input min="0" type="number" class="form-control" formControlName="creditRate">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer m--align-center">
+                <button (click)="onSubmit()" class="btn btn-brand  m-btn--icon m-btn--uppercase m--margin-right-10">
+                    <span>
+                        <i class="la la-save"></i>
+                        <span> Save </span>
+                    </span>
+                </button>
+                <app-default-button [buttonSetting]="cancelButtonSetting" (click)="close()"></app-default-button>
+
+            </div>
+        </div>
+    </div>
+</div>

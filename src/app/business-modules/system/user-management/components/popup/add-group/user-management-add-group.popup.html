@@ -1,0 +1,61 @@
+<div class="modal fade" role="dialog" bsModal #popup="bs-modal">
+    <div class="modal-dialog modal-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add group</h5>
+                <button type="button" class="close" aria-label="Close" (click)=hide()>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="m-form m-form--state">
+                    <div class="form">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group"
+                                    [ngClass]="{'m-form__group has-danger': isSubmitted  && !selectedGroup}">
+                                    <label required>Group Name</label>
+                                    <app-combo-grid-virtual-scroll #combogridGroup
+                                        (itemSelected)="onSelectGroup($event)" [selectedDisplayFields]="['shortName']"
+                                        [dataSources]="groups | async"
+                                        [displayFields]="[{field: 'shortName', label: 'shortName'}]"
+                                        placeholder="Please select group" size="15" (remove)="selectedGroup = null">
+                                    </app-combo-grid-virtual-scroll>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group "
+                                    [ngClass]="{'m-form__group has-danger': isSubmitted  && !selectedPosition}">
+                                    <label required>Position</label>
+                                    <select class="form-control" [(ngModel)]="selectedPosition">
+                                        <option value="null" disabled>Please select</option>
+                                        <option *ngFor="let item of positions" [ngValue]="item.id">{{item.text}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer m--align-center c-button-actions">
+                <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="onSaveGroup()">
+                    <span>
+                        <i class="la la-save"></i>
+                        <span>
+                            Save
+                        </span>
+                    </span>
+                </button>
+                <button type="button" class="btn btn-cancel  m-btn--icon m-btn--uppercase" (click)="hide()">
+                    <span>
+                        <i class="la la-cancel"></i>
+                        <span>
+                            Cancel
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

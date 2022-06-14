@@ -1,0 +1,90 @@
+.select-multiple-container {
+    position: relative;
+
+    .select-multiple-content {
+        &::-webkit-scrollbar {
+            width: 9px;
+            height: 6px;
+        }
+        position: absolute;
+        width: 100%;
+        top: 100%;
+        left: 0;
+        right: 0;
+        z-index: 2;
+        overflow-x: hidden;
+        overflow-y: scroll;
+        max-height: 300px;
+        box-shadow: 0 1px #ffffff inset, 0 1px 3px rgba(34, 25, 25, 0.4);
+
+        li {
+            transition: all 0.12s;
+            -webkit-transition: all 0.12s;
+            -moz-transition: all 0.12s;
+            -ms-transition: all 0.12s;
+            -o-transition: all 0.12s;
+
+            &:hover {
+                cursor: pointer;
+                background: #fbfbfb;
+            }
+            label {
+                margin-bottom: 0px;
+            }
+        }
+    }
+
+    .select-multiple-item-selected {
+        background: #fbfbfb;
+        border-color: #ebedf2;
+        color: #575962;
+        display: block;
+        width: 100%;
+        // height: calc(1.25em + 1.1rem + 10px);
+        min-height: 32px;
+        padding: 0.55rem 0.85rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.25;
+        color: #495057;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        -webkit-transition: border-color 0.15s ease-in-out,
+            box-shadow 0.15s ease-in-out;
+        -moz-transition: border-color 0.15s ease-in-out,
+            box-shadow 0.15s ease-in-out;
+        -ms-transition: border-color 0.15s ease-in-out,
+            box-shadow 0.15s ease-in-out;
+        -o-transition: border-color 0.15s ease-in-out,
+            box-shadow 0.15s ease-in-out;
+
+        ul {
+            display: flex;
+            flex-wrap: wrap;
+            overflow-y: scroll;
+            max-height: 200px;
+
+            li {
+                background: #3966b6;
+                color: #fff;
+                padding: 5px 10px;
+                font-size: 13px;
+                margin-bottom: 5px;
+            }
+        }
+
+        .placeholder {
+            color: #575962;
+            opacity: 0.7;
+        }
+
+        .icon-dropdown {
+            i {
+                font-weight: bold;
+                font-size: 11px;
+            }
+        }
+    }
+}

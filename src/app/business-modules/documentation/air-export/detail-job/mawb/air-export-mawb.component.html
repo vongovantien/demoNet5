@@ -1,0 +1,632 @@
+<div class="m-subheader">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <app-breadcrumb></app-breadcrumb>
+        </div>
+        <div class="c-button-actions">
+            <ng-container *ngIf="isShowUpdate">
+                <div class="dropdown m-dropdown m-dropdown--inline">
+                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                        <i class="la la-print"></i>Preview<span class="caret"></span>
+                    </button>
+
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item pointer" (click)="preview('Single')">Preview MAWB Frame Single</a>
+                        <a class="dropdown-item pointer" (click)="preview('Full')">Preview MAWB Frame Full</a>
+                        <a class="dropdown-item pointer" (click)="preview('SingleNoFrame')">Preview MAWB No Frame</a>
+                    </div>
+                </div>
+
+                <div class="dropdown m-dropdown m-dropdown--inline">
+                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                        <i class="la la-print"></i>Print<span class="caret"></span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item pointer" (click)="exportMawb()">Print MAWB</a>
+                        <a class="dropdown-item pointer" (click)="exportSCSC()">Print SCSC</a>
+                        <a class="dropdown-item pointer" (click)="exportTCS()">Print TCS</a>
+                        <a class="dropdown-item pointer" (click)="exportACS()">Print ACS</a>
+                        <a class="dropdown-item pointer" (click)="exportNCTSALS()">Print NCTS & ALS</a>
+                    </div>
+                </div>
+            </ng-container>
+
+            <span *ngIf="(isLocked | async) === true" class="m--margin-right-10 align-middle">
+                <i class="fa fa-lock text-danger fa-3x"></i>
+            </span>
+
+
+            <ng-container *ngIf="(permissionShipments | async)?.allowUpdate">
+                <app-default-button (click)="onSaveMAWB()" [buttonSetting]="saveButtonSetting">
+                </app-default-button>
+            </ng-container>
+
+
+
+            <app-default-button (click)="cf.show()" [buttonSetting]="cancelButtonSetting"></app-default-button>
+        </div>
+    </div>
+</div>
+
+<div class="m-content">
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <form class="m-form m-form--state" [formGroup]="formMAWB">
+                <div class="row  div-inside bg-secondary">
+                    <div class="form-group"
+                        [ngClass]="{'m-form__group has-danger':isSubmitted && (!mblno1.value || !mblno2.value || !mblno3.value)}">
+                        <label required>Master Airway Bill</label>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" formControlName="mblno1">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" formControlName="mblno2">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" formControlName="mblno3">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Shipper</label>
+                                <app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event, 'shipper')"
+                                    [currentActiveItemId]="{ field: 'id', value: shipperId.value}"
+                                    [selectedDisplayFields]="['shortName']" [dataSources]="shipppers | async"
+                                    [displayFields]="displayFieldsCustomer" (remove)="resetFormControl(shipperId)"
+                                    placeholder="Select shipper">
+                                </app-combo-grid-virtual-scroll>
+                                <textarea rows="7" class="form-control m-input m-input--square"
+                                    formControlName="shipperDescription"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Consignee</label>
+                                <app-combo-grid-virtual-scroll
+                                    (itemSelected)="onSelectDataFormInfo($event, 'consignee')"
+                                    [currentActiveItemId]="{ field: 'id', value: consigneeId.value}"
+                                    [selectedDisplayFields]="['shortName']" [dataSources]="consignees | async"
+                                    [displayFields]="displayFieldsCustomer" (remove)="resetFormControl(consigneeId)"
+                                    placeholder="Select consignee">
+                                </app-combo-grid-virtual-scroll>
+                                <textarea rows="7" class="form-control m-input m-input--square"
+                                    formControlName="consigneeDescription"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Agent Handling</label>
+                                <app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event, 'agent')"
+                                    [currentActiveItemId]="{ field: 'id', value: forwardingAgentId.value}"
+                                    [selectedDisplayFields]="['shortName']" [dataSources]="agents | async"
+                                    [displayFields]="displayFieldsCustomer"
+                                    (remove)="resetFormControl(forwardingAgentId)" placeholder="Select agent">
+                                </app-combo-grid-virtual-scroll>
+                                <textarea rows="7" class="form-control m-input m-input--square"
+                                    formControlName="forwardingAgentDescription"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger':(isSubmitted && !etd.value) || (isSubmitted && !etd.value.startDate)}">
+                                <label required>ETD</label>
+                                <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                    <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                        [locale]="{format: 'DD/MM/YYYY'}" [autoApply]="true" [singleDatePicker]="true"
+                                        [alwaysShowCalendars]="true" name="daterange" placeholder="Select ETD" readonly
+                                        formControlName="etd" (remove)="resetFormControl(etd)" calendar
+                                        [allowRemove]="!!etd.value && !!etd.value.startDate" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>ETA</label>
+                                <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                    <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                        [locale]="{format: 'DD/MM/YYYY'}" [autoApply]="true" [singleDatePicker]="true"
+                                        [alwaysShowCalendars]="true" name="daterange" placeholder="Select ETA" readonly
+                                        formControlName="eta" (remove)="resetFormControl(eta)" calendar
+                                        [allowRemove]="!!eta.value && !!eta.value.startDate" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Place of Receipt</label>
+                                <input type="text" class="form-control" formControlName="pickupPlace"
+                                    placeholder="Place of receipt">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Departure Airport</label>
+                                <app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event, 'pol')"
+                                    [currentActiveItemId]="{ field: 'id', value: pol.value}"
+                                    [selectedDisplayFields]="['nameEn']" [dataSources]="ports | async"
+                                    [displayFields]="displayFieldPort" [loading]="isLoadingPort | async"
+                                    (remove)="resetFormControl(pol)" placeholder="Select departure airport">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>First Carrier</label>
+                                        <input type="text" class="form-control" formControlName="firstCarrierBy">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label> To </label>
+                                        <input type="text" class="form-control" formControlName="firstCarrierTo">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>
+                                            To
+                                        </label>
+                                        <input type="text" class="form-control" formControlName="transitPlaceTo1">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 pl-0">
+                                    <div class="form-group">
+                                        <div>
+                                            <label>By</label>
+                                            <div class="float-right">
+                                                <i class="fa fa-plane fa-lg text-primary"></i>
+                                            </div>
+                                        </div>
+                                        <input type="text" class="form-control" formControlName="transitPlaceBy1">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>To</label>
+                                        <input type="text" class="form-control" formControlName="transitPlaceTo2">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 pl-0">
+                                    <div class="form-group">
+                                        <div>
+                                            <label>By</label>
+                                            <div class="float-right">
+                                                <i class="fa fa-plane fa-lg text-primary"></i>
+                                            </div>
+                                        </div>
+                                        <input type="text" class="form-control" formControlName="transitPlaceBy2">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Destination Airport</label>
+                                <app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event, 'pod')"
+                                    [currentActiveItemId]="{ field: 'id', value: pod.value}"
+                                    [selectedDisplayFields]="['nameEn']" [dataSources]="ports | async"
+                                    [displayFields]="displayFieldPort" [loading]="isLoadingPort | async"
+                                    (remove)="resetFormControl(pod)" placeholder="Select destination airport">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Flight No</label>
+                                        <input type="text" class="form-control" formControlName="flightNo">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Flight Date</label>
+                                        <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                            <input type="text" class="form-control m-input m-input--square"
+                                                ngxDaterangepickerMd [locale]="{format: 'DD/MM/YYYY'}"
+                                                [autoApply]="true" [singleDatePicker]="true"
+                                                [alwaysShowCalendars]="true" name="daterange" readonly
+                                                formControlName="flightDate" placeholder="Select flight date"
+                                                (remove)="resetFormControl(flightDate)" calendar
+                                                [allowRemove]="!!flightDate.value && !!flightDate.value.startDate" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Air Freight</label>
+                                        <ng-select class="custom" [items]="termTypes" formControlName="freightPayment"
+                                            placeholder="Air freight"></ng-select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Issurance Amount</label>
+                                        <input type="text" class="form-control" formControlName="issuranceAmount">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Currency</label>
+                                        <ng-select class="custom" [items]="currencies | async"
+                                            formControlName="currencyId" placeholder="VND/USD" bindLabel="id"
+                                            bindValue="id"></ng-select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>CHGS</label>
+                                        <input type="text" class="form-control" formControlName="chgs">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>WT/VAL</label>
+                                        <ng-select class="custom" [items]="wts" formControlName="wtorValpayment"
+                                            placeholder="PP/CLL"></ng-select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Other</label>
+                                        <ng-select class="custom" [items]="wts" formControlName="otherPayment"
+                                            placeholder="PP/CLL"></ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>DCLR-CA</label>
+                                        <input type="text" class="form-control" formControlName="dclrca">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>DCLR-CUS</label>
+                                        <input type="text" class="form-control" formControlName="dclrcus">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 ">
+                            <div class="form-group">
+                                <label>Route</label>
+                                <input type="text" class="form-control" formControlName="route">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Warehouse</label>
+                                <app-combo-grid-virtual-scroll
+                                    (itemSelected)="onSelectDataFormInfo($event, 'warehouse')"
+                                    [currentActiveItemId]="{ field: 'id', value: warehouseId.value}"
+                                    [selectedDisplayFields]="['nameEn']" [dataSources]="warehouses | async"
+                                    [displayFields]="displayFieldWarehouse" placeholder="Select warehouse"
+                                    (remove)="resetFormControl(warehouseId)" #CombogridWh>
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Number of Origin B/L</label>
+                                <ng-select class="custom" [items]="numberOBLs" formControlName="originBlnumber"
+                                    placeholder="B/L" bindLabel="text" bindValue="id"></ng-select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Handling Information</label>
+                                <textarea cols="30" rows="5" class="form-control"
+                                    formControlName="handingInformation"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Notify</label>
+                                <textarea cols="30" rows="5" class="form-control" formControlName="notify"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-12 ">
+                                    <div class="form-group">
+                                        <label>Issued On</label>
+                                        <input type="text" class="form-control" formControlName="issuedPlace">
+                                    </div>
+                                </div>
+                                <div class="col-md-12 eta-date-picker">
+                                    <div class="form-group">
+                                        <label>Issued Date</label>
+                                        <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                            <input type="text" class="form-control m-input m-input--square"
+                                                ngxDaterangepickerMd [locale]="{format: 'DD/MM/YYYY'}"
+                                                [autoApply]="true" [singleDatePicker]="true"
+                                                [alwaysShowCalendars]="true" name="daterange" readonly
+                                                formControlName="issuedDate" placeholder="Select Issued Date"
+                                                (remove)="resetFormControl(issuedDate)" calendar
+                                                [allowRemove]="!!issuedDate.value && !!issuedDate.value.startDate" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Pieces</label>
+                                    <input type="number" class="form-control" formControlName="packageQty" integer
+                                        autoFormatCurrency>
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>G.W</label>
+                                    <input type="text" class="form-control" formControlName="grossWeight"
+                                        autoFormatCurrency numeric [decimals]="digitDecimal" digits=2>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Kg Ib</label>
+                                    <input type="text" class="form-control" formControlName="kgIb">
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>R.Class</label>
+                                    <ng-select class="custom" [items]="rClasses" formControlName="rclass"
+                                        placeholder="M/N/Q"></ng-select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>C.W</label>
+                                    <input type="text" class="form-control" formControlName="chargeWeight"
+                                        autoFormatCurrency numeric [decimals]="digitDecimal" digits=2>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>Rate Charge</label>
+                                    <input type="number" class="form-control" formControlName="rateCharge"
+                                        [decimals]="digitDecimal" numeric autoFormatCurrency digits=2>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="row m--margin-top-20">
+                                    <!-- <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label>Sea-Air</label>
+                                            <input type="number" class="form-control" formControlName="seaAir"
+                                                [decimals]="digitDecimal" numeric autoFormatCurrency digits=2>
+                                        </div>
+                                    </div> -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="m-checkbox m-checkbox--bold">
+                                                <input type="checkbox" (change)="onChangeAsArranged($event)">
+                                                As Arranged
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>Total</label>
+                                    <input currencyMask type="text" class="form-control" formControlName="total">
+                                </div>
+                            </div>
+                            <div class="col-lg-6 d-flex align-items-end">
+                                <div class="form-group">
+                                    <label class="m-checkbox m-checkbox--bold">
+                                        <input type="checkbox" (change)="onChangeMin($event)" formControlName="min">
+                                        Min
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 m--margin-top-10">
+                        <div class="border p-3">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label>Nature and Quality of Goods</label>
+                                        <textarea cols="30" rows="12" class="form-control"
+                                            formControlName="desOfGoods"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group" [class.opacity-5]="!formMAWB.controls['showDim'].value">
+                                        <label>Volume</label>
+                                        <div class="row align-items-center">
+                                            <div class="col-md-4">
+                                                VW: <span class="text-primary text-underline">{{totalHW | number: '.0-2'
+                                                    }}</span>
+                                            </div>
+                                            <div class="col-md-4">
+                                                CBM: <span class="text-primary text-underline">{{totalCbm | number:
+                                                    '.0-2'}}</span>
+                                            </div>
+                                            <div class="col-md-4 text-right">
+                                                <app-switch size="sm" formControlName="showDim">
+                                                </app-switch>
+                                                <a title="Other Charge" (click)="showVolumePopup()"
+                                                    class="m--margin-left-10 float-right pointer m--margin-top-10">
+                                                    <i class="fa fa-pencil fa-lg"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <textarea cols="30" rows="9" class="form-control"
+                                            formControlName="volumeField"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label>
+                                            Other Charge
+                                            <a title="Other Charge" (click)="showOtherChargePopup()">
+                                                <i class="fa fa-pencil fa-lg"></i>
+                                            </a>
+                                        </label>
+                                        <textarea cols="30" rows="12" class="form-control"
+                                            formControlName="otherCharge"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mt-3 mb-3">
+                                    <table class="table table-bordered bg-white table-prepaid-collect">
+                                        <thead class="table-borderless text-center">
+                                            <tr>
+                                                <th></th>
+                                                <th>WT</th>
+                                                <th>VAL</th>
+                                                <th>TAX</th>
+                                                <th>Due Agent</th>
+                                                <th>Due Carrier</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr (click)="selectedPrepaid = true" [class.selected-row]="selectedPrepaid"
+                                                (clickOutside)="selectedPrepaid = false;">
+                                                <td class="font-weight-normal">Prepaid</td>
+                                                <td>
+                                                    <input type="text" class="form-control" formControlName="wtpp">
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" formControlName="valpp">
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" formControlName="taxpp">
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control"
+                                                        formControlName="dueAgentPp">
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control"
+                                                        formControlName="dueCarrierPp">
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" formControlName="totalPp">
+                                                </td>
+                                            </tr>
+                                            <tr (click)="selectedCollect = true" [class.selected-row]="selectedCollect"
+                                                (clickOutside)="selectedCollect = false;">
+                                                <td>Collect</td>
+                                                <td>
+                                                    <input type="text" class="form-control" formControlName="wtcll">
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" formControlName="valcll">
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" formControlName="taxcll">
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control"
+                                                        formControlName="dueAgentCll">
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control"
+                                                        formControlName="dueCarrierCll">
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" formControlName="totalCll">
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!--* /Prepaid-Collecy -->
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Shipping Mark</label>
+                                        <textarea cols="30" rows="9" class="form-control"
+                                            formControlName="shippingMark"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Issue By</label>
+                                                <input type="text" class="form-control" formControlName="issuedBy">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<app-dim-volume-popup (onUpdate)="onUpdateDIM($event)"></app-dim-volume-popup>
+
+<air-export-other-charge-popup (onUpdate)="updateOtherCharge($event)"></air-export-other-charge-popup>
+
+<confirm-popup #cf body="All entered data will be discarded.
+Are you sure you want to leave?" (onSubmit)="cf.hide(); back()"></confirm-popup>
+
+<info-popup body="Opps, It looks like you missed something, Please recheck the highlighted field below.'"
+    [title]="'Cannot Update HB'"></info-popup>
+
+<ng-container *ngIf="dataReport">
+    <app-report-preview [data]="dataReport"></app-report-preview>
+</ng-container>

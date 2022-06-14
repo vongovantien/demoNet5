@@ -1,0 +1,149 @@
+<div class="modal fade" id="confirm-delete-modal" role="dialog" bsModal #popup="bs-modal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" *ngIf="!isDetail">Add Salesman</h5>
+                <h5 class="modal-title" *ngIf="isDetail">Detail</h5>
+
+                <button type="button" class="close" aria-label="Close" (click)=closePoup()>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="m-form m-form--state" [formGroup]="form">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger':  isSave &&  !saleman.value }">
+                                <label>Salesman <span class="m--font-danger">(*)</span></label>
+                                <app-combo-grid-virtual-scroll [disabled]="isDetail ? true : false"
+                                    [selectedDisplayFields]="['username']"
+                                    [currentActiveItemId]="{ field: 'id', value: saleman.value}"
+                                    (itemSelected)="onSelectSaleMan($event)" [dataSources]="users"
+                                    [displayFields]="[{'field':'username','label':'Username'},{'field':'employeeNameEn','label':'Name EN'}]">
+                                </app-combo-grid-virtual-scroll>
+                                <div class="form-control-feedback" *ngIf="isSave && !saleman.value">
+                                    Salesman is required
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger':  isSave &&  !service.value }">
+                                <label>Service <span class="m--font-danger">(*)</span></label>
+
+
+                                <ng-select [disabled]="isDetail ? true : false" [items]="services"
+                                    formControlName="service" [clearable]="false">
+                                </ng-select>
+                                <div class="form-control-feedback" *ngIf="isSave && !service.value">
+                                    Service is required
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group" [ngClass]="{ 'm-form__group has-danger': isSave && !office.value}">
+                                <label>Office <span class="m--font-danger">(*)</span></label>
+                                <app-combo-grid-virtual-scroll [disabled]="isDetail ? true : false"
+                                    [selectedDisplayFields]="['shortName']"
+                                    [currentActiveItemId]="{ field: 'id', value: office.value}"
+                                    (itemSelected)="onSelectOffice($event)" [dataSources]="offices"
+                                    [displayFields]="[{'field':'shortName','label':'Office Name Abbr'},{'field':'abbrCompany','label':'Company Name Abbr'}]">
+                                </app-combo-grid-virtual-scroll>
+                                <div class="form-control-feedback" *ngIf="isSave && !office.value">
+                                    Office is required
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Payment Term</label>
+
+                                <ng-select [disabled]="isDetail ? true : false" [items]="termTypes"
+                                    formControlName="freightPayment" [clearable]="false">
+                                </ng-select>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label" for="">
+                                    Effective Date
+                                </label>
+                                <div class="m-input-icon m-input-icon--right down">
+                                    <input [attr.disabled]="isDetail ? '' : null" type="text"
+                                        class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                        [autoApply]="true" [(ngModel)]="saleManToAdd.effectDate"
+                                        formControlName="effectiveDate"
+                                        [locale]="{applyLabel: 'ok', format: 'DD/MM/YYYY'}" [singleDatePicker]="true"
+                                        name="singledater" readonly />
+                                    <span class="m-input-icon__icon m-input-icon__icon--right">
+                                        <span>
+                                            <i class="la la-calendar"></i>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-control-label"> Status </label>
+                                <div class="">
+                                    <app-switch formControlName="status">
+                                    </app-switch>
+                                </div>
+                            </div>
+
+                            <div class="form-group" [ngClass]="{ 'm-form__group has-danger': isDup}">
+                                <div class="form-control-feedback" *ngIf="isDup">
+                                    Salemans with service is duplicate
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label"> Description </label>
+                                <textarea rows="5" [attr.disabled]="isDetail ? '' : null" name="description"
+                                    formControlName="description" class="form-control"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer m--align-center c-button-actions">
+                <button type="" *ngIf="!isDetail" (click)="applyToList()"
+                    class="btn btn-brand  m-btn--icon m-btn--uppercase">
+                    <span>
+                        <i class="la la-save"></i>
+                        <span>
+                            save
+                        </span>
+                    </span>
+                </button>
+                <button type="" (click)="onDeleteSaleman()" *ngIf="isDetail && allowDelete == true"
+                    class="btn btn-brand  m-btn--icon m-btn--uppercase">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span>
+                            delete
+                        </span>
+                    </span>
+                </button>
+                <button type="" class="btn  m-btn--icon m-btn--uppercase" (click)="closePoup()"
+                    style="margin-left: 10px;">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span>
+                            cancel
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,87 @@
+:host /deep/ {
+    .list-charge-popup {
+        .table-wrapper {
+            height: 400px;
+            max-height: 550px;
+            &.h {
+                max-height: 510px;
+                min-height: 300px;
+                // padding-bottom: 175px;
+            }
+            .form-group {
+                .form-control {
+                    font-size: 12px;
+                    color: #000;
+                }
+            }
+        }
+        .cdk-virtual-scroll-viewport {
+            overflow-y: auto;
+            overflow-x: hidden;
+            height: 150px !important;
+        }
+        .dropdown-partner {
+            .dropdown-partner__content {
+                width: 450px;
+
+                .dropdown-partner__header {
+                    padding: 10px 0px;
+                    border-bottom: 1px solid #dfdfdf;
+                }
+                // * Combo grid
+                .e--combogrid-content {
+                    .table-header {
+                        th:first-child {
+                            min-width: 121px;
+                        }
+                    }
+                }
+            }
+        }
+        .table-editable {
+            .list-master-charge {
+                .e--combogrid-content {
+                    width: 520px;
+                }
+            }
+            .table-date {
+                .table-condensed {
+                    tr {
+                        th:not(:first-child) {
+                            min-width: 30px;
+                        }
+                        td:not(:first-child) {
+                            min-width: auto;
+                        }
+                    }
+                }
+            }
+            .e--combogrid {
+                .e--combogrid_icon {
+                    right: 7px;
+                }
+                table {
+                    white-space: pre-wrap;
+                }
+                .form-control {
+                    background: inherit;
+                    padding: 4px 8px;
+                }
+                tr {
+                    th:not(:first-child) {
+                        min-width: 130px;
+                    }
+                    td:not(:first-child) {
+                        min-width: 130px;
+                    }
+                    th:first-child {
+                        min-width: 130px;
+                    }
+                    td:first-child {
+                        min-width: 130px;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,175 @@
+<app-sub-header>
+    <ng-container *ngIf="!!opsTransaction && !opsTransaction?.isLocked; else lockTpl">
+        <div class="c-button-actions">
+            <app-default-button [buttonSetting]="lockButtonSetting" (onClick)="lockShipment()"
+                class="m--margin-right-10"
+                *ngIf="!!opsTransaction && opsTransaction.permission.allowLock && !isDuplicate">
+            </app-default-button>
+        </div>
+    </ng-container>
+
+    <button type="button" class="btn btn-default  m-btn--icon m-btn--uppercase m--margin-right-10"
+        (click)="onOpePLPrint()">
+        <span>
+            <i class="la la-print"></i>
+            <span>
+                P/L Sheet
+            </span>
+        </span>
+    </button>
+    <ng-container
+        *ngIf="!!opsTransaction && opsTransaction.permission.allowUpdate && !isDuplicate && opsTransaction.linkSource !== 'Replicate'">
+        <button class="btn btn-success dropdown-toggle m--margin-right-10" [dpToggle]="dropdownMenuDuplicate"
+            position="bottomCenter">
+            <i class="la la-copy"></i>
+            Duplicate
+            <span class="caret"></span>
+        </button>
+    </ng-container>
+
+    <ng-container *ngIf="(opsTransaction?.isLocked === false) || isDuplicate">
+        <button type="button" class="btn btn-danger  m-btn--icon m-btn--uppercase m--margin-right-10"
+            (click)="checkDelete()"
+            *ngIf="opsTransaction.permission.allowDelete && !isDuplicate && !opsTransaction.replicatedId  && !opsTransaction.isLinkFee"
+            title="Shipment was deleted">
+            <span>
+                <i class="la la-trash"></i>
+                <span>
+                    delete
+                </span>
+            </span>
+        </button>
+        <button class="btn btn-brand  m-btn--icon m-btn--uppercase m--margin-right-10"
+            *ngIf="!!opsTransaction && opsTransaction.permission.allowUpdate && !isDuplicate" (click)="saveShipment()"
+            [disabled]="tab !== 'job-edit'">
+            <span>
+                <i class="la la la-save"></i>
+                <span>
+                    save
+                </span>
+            </span>
+        </button>
+
+        <button class="btn btn-brand  m-btn--icon m-btn--uppercase m--margin-right-10" *ngIf="isDuplicate"
+            (click)="saveShipment()" [disabled]="tab !== 'job-edit'">
+            <span>
+                <i class="la la la-save"></i>
+                <span>
+                    save
+                </span>
+            </span>
+        </button>
+
+    </ng-container>
+
+    <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)=handleCancelForm()></app-default-button>
+
+</app-sub-header>
+
+<div class="m-content">
+    <div class="m-portlet__body">
+        <div class="row">
+            <div class="col-12">
+                <tabset type="tabs" class="custom-class-tab">
+                    <tab heading="Job detail" (selectTab)="selectTab('job-edit')" [active]="tab === 'job-edit'">
+                        <!-- <div *ngIf="tab === 'job-edit'"> -->
+                        <div class="m-form m-form--state">
+                            <div class="m-portlet">
+                                <div class="alert-block__heading">
+                                    <h3 class="alert-block__title">Job Information</h3>
+                                </div>
+                                <div class="m-portlet__body" id="edit-ops-job-form">
+                                    <job-mangement-form-edit></job-mangement-form-edit>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="m-portlet" style="position: relative;">
+                            <div class="m-portlet__body">
+                                <tabset class="custom-class-tab">
+                                    <tab heading="Buying" (selectTab)="getSurCharges('BUY')"
+                                        [active]="selectedTabSurcharge === 'BUY'">
+                                        <ng-container
+                                            *ngIf="!!opsTransaction && opsTransaction.hblid; else placeholder">
+                                            <buying-charge [showGetChargeStandart]="false" service="logistic"
+                                                [allowSaving]="!isDuplicate" *ngIf="selectedTabSurcharge === 'BUY'">
+                                            </buying-charge>
+                                        </ng-container>
+                                    </tab>
+                                    <tab heading="Selling" (selectTab)="getSurCharges('SELL')"
+                                        [active]="selectedTabSurcharge === 'SELL'">
+                                        <ng-container
+                                            *ngIf="!!opsTransaction && opsTransaction.hblid; else placeholder">
+                                            <selling-charge service="logistic" [showSyncFreight]="false"
+                                                [showGetCharge]="true" [showSyncStandard]="false"
+                                                [allowLinkFee]="allowLinkFeeSell"
+                                                [isDuplicateJob]="isDuplicate"
+                                                *ngIf="selectedTabSurcharge === 'SELL'" [allowSaving]="!isDuplicate">
+                                            </selling-charge>
+                                        </ng-container>
+                                    </tab>
+                                    <tab heading="OBH" (selectTab)="getSurCharges('OBH')">
+                                        <ng-container
+                                            *ngIf="!!opsTransaction && opsTransaction.hblid; else placeholder">
+                                            <obh-charge service="logistic" *ngIf="selectedTabSurcharge === 'OBH'"
+                                                [allowSaving]="!isDuplicate">
+                                            </obh-charge>
+                                        </ng-container>
+                                    </tab>
+                                </tabset>
+                            </div>
+                        </div>
+
+                        <hbl-profit-summary></hbl-profit-summary>
+                    </tab>
+                    <tab heading="Custom declaration" (selectTab)="selectTab('custom-declaration')"
+                        [disabled]="isDuplicate">
+                        <ng-container *ngIf="tab === 'custom-declaration'" loadModule="cd">
+                        </ng-container>
+                    </tab>
+                    <tab heading="Credit Note & Debit Note" (selectTab)="selectTab('CDNOTE')" [disabled]="isDuplicate"
+                        [active]="tab === 'CDNOTE'">
+                        <ng-container *ngIf="tab === 'CDNOTE'" loadModule="cdNote">
+                        </ng-container>
+                    </tab>
+                    <tab heading="Stage management" [active]="tab === 'stage'" (selectTab)="selectTab('stage')"
+                        [disabled]="isDuplicate">
+                        <ng-container *ngIf="tab === 'stage'" loadModule="stageManagement"></ng-container>
+                        <!-- * old version lazy load component-->
+                    </tab>
+                    <tab heading="Advance/Settlement" [active]="tab === 'advance-settle'"
+                        (selectTab)="selectTab('advance-settle')" [disabled]="isDuplicate">
+                        <ng-container *ngIf="tab === 'advance-settle'" loadModule="Share_advanceSettle"></ng-container>
+                        <!-- * old version lazy load component-->
+                    </tab>
+                </tabset>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<container-list-popup></container-list-popup>
+
+<pl-sheet-popup [jobId]="jobId"></pl-sheet-popup>
+
+<ng-template #placeholder>
+    <div class="no-data">
+        <i class="flaticon-coins"></i>
+        <span class="no-data-text">No records found</span>
+    </div>
+</ng-template>
+
+<ng-template inject></ng-template>
+
+<ng-template #lockTpl>
+    <span *ngIf="!!opsTransaction && !!opsTransaction.isLocked" class="m--margin-right-10">
+        <i class="fa fa-lock text-danger fa-3x"></i>
+    </span>
+</ng-template>
+
+<app-dropdown #dropdownMenuDuplicate>
+    <a class="dropdown-item pointer" (click)="confirmDuplicate()" title="Duplicate with current job">Current Job</a>
+    <a class="dropdown-item pointer" (click)="confirmDuplicate(true)" title="Duplicate with job replicate">With Job
+        Replicate</a>
+</app-dropdown>

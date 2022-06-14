@@ -1,0 +1,93 @@
+<div class="table-wrapper table-scrollable">
+    <table class="table table-brand table-hover dataTable">
+        <thead app-table-header [headers]="headers" (onClick)="sortSurcharge($event)">
+            <th class="first"> </th>
+        </thead>
+        <tbody class="tbody-group">
+            <ng-container *ngFor="let surcharge of data.chargeSettlements; let i = index; trackBy: trackByFn">
+                <tr [class.bg-warning]="surcharge.isFromShipment"
+                    [class.bg-locked]="!surcharge.isFromShipment && surcharge.isLocked">
+                    <td class="table-actions-col">
+                        <div class="m-checkbox-list d-flex justify-content-center">
+                            <!--* Phí chứng từ -->
+                            <ng-container *ngIf="surcharge.isFromShipment;else chargeFromShipmentTpl">
+                                <ng-container *ngIf="!surcharge.isLocked;else lockIconTpl">
+                                </ng-container>
+                                <label class="m-checkbox">
+                                    <input type="checkbox" (change)="onChangeCheckBoxCharge()" value="{{surcharge}}"
+                                        [(ngModel)]="surcharge.isSelected">
+                                    <span></span>
+                                </label>
+                            </ng-container>
+                            <!-- *Phí hiện trường -->
+                            <ng-template #chargeFromShipmentTpl>
+                                <ng-container *ngIf="!surcharge.isLocked;else lockIconTpl">
+                                    <ng-container *ngIf="!surcharge.syncedFromBy && surcharge.hasNotSynce;else locktpl">
+                                        <label class="m-checkbox">
+                                            <input type="checkbox" (change)="onChangeCheckBoxCharge()"
+                                                value="{{surcharge}}" [(ngModel)]="surcharge.isSelected">
+                                            <span></span>
+                                        </label>
+                                    </ng-container>
+                                </ng-container>
+                            </ng-template>
+                            <ng-template #locktpl>
+                                <span class="d-block" style="width:25px"></span>
+                            </ng-template>
+                            <ng-template #lockIconTpl>
+                                <span>
+                                    <button type="button" title="Shipment has been locked"
+                                        class="btn btn-fault btn-sm  m-btn--icon m-btn--icon-only">
+                                        <i class="fa fa-lock font-18" style="font-size:18px"></i>
+                                    </button>
+                                </span>
+                            </ng-template>
+                            <ng-container *ngIf="!surcharge.isLocked">
+                                <ng-container *ngIf="!surcharge.isFromShipment">
+                                    <span>
+                                        <a (click)="copySurcharge(surcharge)" title="Copy {{surcharge.chargeName}}"
+                                            class="pointer">
+                                            <i class="la la-copy"></i>
+                                        </a>
+                                    </span>
+                                </ng-container>
+                            </ng-container>
+                        </div>
+                    </td>
+                    <td [class.text-underline]="!surcharge.isLocked" class="text-primary pointer"
+                        (click)="openSurchargeDetail(surcharge, i)">
+                        {{surcharge.chargeCode}}
+                    </td>
+                    <td [class.text-underline]="!surcharge.isLocked" class="text-primary pointer"
+                        (click)="openSurchargeDetail(surcharge, i)">
+                        {{surcharge.chargeName}}
+                    </td>
+                    <td>{{surcharge.quantity}}</td>
+                    <td>{{surcharge.unitName}}</td>
+                    <td>{{surcharge.unitPrice | number: '.0-3'}}</td>
+                    <td>{{surcharge.currencyId}}</td>
+                    <td>{{surcharge.vatrate}}</td>
+                    <td>{{surcharge.total | number: '.0-3'}}</td>
+                    <td>{{surcharge.amountVnd + surcharge.vatAmountVnd| number: '.0-3'}}</td>
+                    <td>{{surcharge.payer }}</td>
+                    <td>{{surcharge.obhPartnerName}}</td>
+                    <td>{{surcharge.invoiceNo}}</td>
+                    <td>{{surcharge.seriesNo}}</td>
+                    <td>{{surcharge.invoiceDate | date: 'dd/MM/yyyy'}}</td>
+                    <td>{{surcharge.vatPartnerShortName}}</td>
+                    <td>{{surcharge.clearanceNo}}</td>
+                    <td>{{surcharge.contNo}}</td>
+                    <td>{{surcharge.notes}}</td>
+                    <td class="text-danger">
+                        <ng-container
+                            *ngIf="!surcharge.isFromShipment && surcharge.type === 'OBH' && !!surcharge.syncedFrom">
+                            {{surcharge.syncedFromBy}}
+                        </ng-container>
+                    </td>
+                </tr>
+            </ng-container>
+            <tr *ngIf="!data || !data.chargeSettlements.length" app-table-none-record [colspan]="headers.length + 2">
+            </tr>
+        </tbody>
+    </table>
+</div>

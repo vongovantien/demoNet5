@@ -1,0 +1,195 @@
+<app-sub-header></app-sub-header>
+<div class="m-content">
+    <div class="m-portlet">
+        <div class="m-form">
+            <div class="m-portlet__body">
+                <tabset class="custom-class-tab">
+                    <tab heading="Advance Info" [active]="true">
+                        <adv-payment-form-create (onChangeCurrency)="onChangeCurrency($event)" mode="approve">
+                            <span *ngIf="!!advancePayment && !!advancePayment.syncStatus"
+                                class="m-badge m-badge--{{advancePayment.syncStatus === 'Synced' ?'success' : 'danger'}} m-badge--wide">
+                                {{advancePayment.syncStatus}}{{advancePayment.syncStatus === 'Rejected' &&
+                                advancePayment.reasonReject ? ' - ' + advancePayment.reasonReject : ''}}
+                            </span>
+        
+                            <!-- ? Cho phép người có quyền approve chỉnh sửa -->
+                            <div class="update-payment-term pos-rel">
+                                <ng-container *ngIf="(!!advancePayment 
+                                && advancePayment.statusApproval !== 'New' 
+                                && advancePayment.statusApproval !== 'Denied' 
+                                && advancePayment.statusApproval !== 'Done' 
+                                && advancePayment.isManager 
+                                && !advancePayment.isApproved);else paymentTermReadonly">
+        
+                                    <input type="number" integer class="form-control m-input m-input--square "
+                                        placeholder="days" [(ngModel)]="paymentTerm">
+        
+                                    <button title="Update payment term" style="position:absolute; top: 0; right: 0;"
+                                        (click)="updatePaymentTerm(paymentTerm)"
+                                        class="btn btn-primary btn-sm m-btn--pill m-btn--icon m-btn--icon-only  m--margin-left-10 btn-update-payment">
+                                        <i class="la la-refresh"></i>
+                                    </button>
+        
+                                </ng-container>
+        
+                                <ng-template #paymentTermReadonly>
+                                    <input type="number" integer class="form-control m-input m-input--square "
+                                        placeholder="days" [(ngModel)]="paymentTerm" disabled>
+                                </ng-template>
+                            </div>
+        
+                        </adv-payment-form-create>
+                        <div class="row" *ngIf="!!advancePayment">
+                            <div class="col-lg-6">
+                                <div class="m--align-left">
+                                    Created: {{advancePayment.datetimeCreated | date: 'dd/MM/yyyy HH:mm'}}
+                                    &nbsp;
+                                    By <span class="text-success">{{advancePayment.userNameCreated}}</span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="m--align-left">
+                                    Modified: {{advancePayment.datetimeModified | date: 'dd/MM/yyyy HH:mm'}}
+                                    &nbsp;
+                                    By <span class="text-success">{{advancePayment.userNameModified}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </tab>
+                    <tab>
+                        <ng-template tabHeading>
+                            <span class="m--margin-right-10">Attach files</span>
+                            <span class="badge badge-success" *ngIf="attachFiles.length > 0">{{attachFiles.length}}</span>
+                        </ng-template>
+                        <accounting-attach-file-list *ngIf="advancePayment" (onChange)="attachFiles = $event"  [fileNo]="advancePayment.advanceNo" [folderModuleName]='folderModuleName' readOnly>
+                        </accounting-attach-file-list> 
+                    </tab>
+                </tabset>
+            </div>
+        </div>
+    </div>
+    <div class="m-portlet">
+        <div class="m-form">
+            <div class="m-portlet__body">
+                <div>
+                    <adv-payment-list-request *ngIf="!isAdvCarrier" [state]="'read'"> </adv-payment-list-request>
+                    <list-advance-payment-carrier *ngIf="isAdvCarrier" [state]="'read'"></list-advance-payment-carrier>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="m-portlet">
+        <div class="m-form">
+            <div class="m-portlet__body">
+                <div class="row">
+                    <div class="col-12 m--align-right m--margin-bottom-10">
+                        <a *ngIf="!!approveInfo" class="text-underline pointer" (click)="showInfoDenied()">Denied
+                            Comments:
+                            {{approveInfo.numOfDeny}}</a>
+                    </div>
+                </div>
+                <ng-container *ngIf="!!approveInfo">
+                    <process-approve [approveInfo]="approveInfo"></process-approve>
+                </ng-container>
+                <div class="row height-row-12">
+                    <div class="col-12">
+                        <div class="text-center m--margin-top-20" *ngIf="!!advancePayment">
+                            <div class="c-button-actions">
+                                <button class="btn btn-primary  m-btn--icon m-btn--uppercase m--margin-right-10"
+                                    title="Approve" (click)="showModalApprove()"
+                                    *ngIf="advancePayment.statusApproval !== 'New' && advancePayment.statusApproval !== 'Denied' && advancePayment.statusApproval !== 'Done' && advancePayment.isManager && !advancePayment.isApproved">
+                                    <span>
+                                        <i class="la la-save"></i>
+                                        <span>
+                                            Approve
+                                        </span>
+                                    </span>
+                                </button>
+                                <button class="btn btn-danger  m-btn--icon m-btn--uppercase m--margin-right-10"
+                                    title="Deny" *ngIf="advancePayment.isShowBtnDeny" (click)="showDenyPopup()">
+                                    <span>
+                                        <i class="la la-times"></i>
+                                        <span>
+                                            Deny
+                                        </span>
+                                    </span>
+                                </button>
+                                <button
+                                    *ngIf="advancePayment.statusApproval === 'Request Approval' && advancePayment.isRequester"
+                                    class="btn btn-danger  m-btn--icon m-btn--uppercase m--margin-right-10"
+                                    title="Recall" (click)="recall()">
+                                    <span>
+                                        <i class="la la-undo"></i>
+                                        <span>
+                                            Recall
+                                        </span>
+                                    </span>
+                                </button>
+                                <div class="dropdown m-dropdown m-dropdown--inline no-arrow">
+                                    <app-default-button [dpToggle]="dropdownMenu"
+                                        [buttonSetting]="previewButtonSetting">
+                                    </app-default-button>
+
+                                    <app-dropdown #dropdownMenu>
+                                        <a class="dropdown-item pointer" (click)="previewAdvPayment()">Preview
+                                            single</a>
+                                        <a class="dropdown-item pointer" (click)="exportAdvPayment('VN', 'preview')">Preview multiple (VN)</a>
+                                        <a class="dropdown-item pointer" (click)="exportAdvPayment('ENG', 'preview')">Preview multiple (ENG)</a>
+                                        <a class="dropdown-item pointer" (click)="exportAdvPayment('VN', 'download')">Print multiple (VN)</a>
+                                        <a class="dropdown-item pointer" (click)="exportAdvPayment('ENG', 'download')">Print multiple (ENG)</a>
+                                    </app-dropdown>
+                                </div>
+                                <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="back()">
+                                </app-default-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #modal_deny>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Comment</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <textarea class="form-control" name="comment" id="" cols="30" rows="10" [(ngModel)]="comment"></textarea>
+        </div>
+    </div>
+    <div class="modal-footer m--align-center c-button-actions">
+        <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="onSaveComment()">
+            <span>
+                <i class="la la-save"></i>
+                <span>
+                    Continue
+                </span>
+            </span>
+        </button>
+        <button type="button" class="btn btn-cancel  m-btn--icon m-btn--uppercase" (click)="modalRef.hide()">
+            <span>
+                <i class="la la-ban"></i>
+                <span>
+                    Cancel
+                </span>
+            </span>
+        </button>
+    </div>
+</ng-template>
+
+<ng-container *ngIf="dataReport">
+    <app-report-preview [data]="dataReport"></app-report-preview>
+</ng-container>
+
+<confirm-popup #confirmDenyPopup (onSubmit)="openModalDeny(modal_deny)"
+    [body]="'Do you want to deny this advance payment ?'" [labelConfirm]="'Yes'"></confirm-popup>
+
+<confirm-popup #confirmApprovePopup (onSubmit)="onApprove()" [body]="'Do you want to approve this advance payment?'"
+    [labelConfirm]="'Yes'"></confirm-popup>
+
+<history-denied-popup></history-denied-popup>

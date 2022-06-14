@@ -1,0 +1,66 @@
+<div class="modal fade" role="dialog" bsModal #popup="bs-modal">
+
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{isUpdate ? 'Update' : 'Add'}} Account</h5>
+                <button type="button" class="close" aria-label="Close" (click)=hide()>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="m-form m-form--state" [formGroup]="formChart">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger': isSubmitted && !formChart.controls['accountCode'].valid }">
+                                <label class="form-control-label">
+                                    Account Code <span class="m--font-danger">(*)</span>
+                                </label>
+                                <input type="text" class="form-control m-input" placeholder="Please enter code"
+                                    name="accountCode" formControlName="accountCode">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger': isSubmitted && !formChart.controls['accountNameLocal'].valid }">
+                                <label class="form-control-label">
+                                    Account Name Local <span class="m--font-danger">(*)</span>
+                                </label>
+                                <input type="text" class="form-control m-input" placeholder="Please enter name local"
+                                    name="accountNameLocal" formControlName="accountNameLocal">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{ 'm-form__group has-danger': isSubmitted && !formChart.controls['accountNameEn'].valid }">
+                                <label class="form-control-label">
+                                    Account Name EN <span class="m--font-danger">(*)</span>
+                                </label>
+                                <input type="text" class="form-control m-input" placeholder="Please enter name local"
+                                    name="accountNameEn" formControlName="accountNameEn">
+                            </div>
+                        </div>
+                        <ng-container *ngIf="isUpdate">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-control-label"> Active </label>
+                                    <div class="m-checkbox-inline">
+                                        <app-switch formControlName="active">
+                                        </app-switch>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer m--align-center c-button-actions">
+                <app-default-button [buttonSetting]="saveButtonSetting" (click)="onSubmit()"></app-default-button>
+                <app-default-button [buttonSetting]="cancelButtonSetting" (click)="hide()"></app-default-button>
+            </div>
+        </div>
+    </div>
+</div>

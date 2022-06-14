@@ -1,0 +1,31 @@
+<div class="create-booking-note-page">
+    <app-sub-header> </app-sub-header>
+    <div class="m-content">
+        <div class="m-portlet">
+            <div class="m-portlet__body">
+                <div class="d-flex align-items-center justify-content-between p-1">
+                    <h3>Booking Note</h3>
+                    <div>
+                        <div class="c-button-actions">
+
+                            <app-default-button [buttonSetting]="saveButtonSetting" (onClick)="onSaveBookingNote()">
+                            </app-default-button>
+
+                            <app-default-button [buttonSetting]="cancelButtonSetting"
+                                (onClick)="confirmCancelPopup.show()">
+                            </app-default-button>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <form-booking-note-lcl-export></form-booking-note-lcl-export>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<info-popup [body]="invalidFormText"></info-popup>
+
+<confirm-popup #confirmCancelPopup body="Do you want to exit without saving?"
+    (onSubmit)="confirmCancelPopup.hide(); gotoList()"></confirm-popup>

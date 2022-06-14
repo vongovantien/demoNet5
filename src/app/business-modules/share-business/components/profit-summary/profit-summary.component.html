@@ -1,0 +1,61 @@
+<div class="m-portlet">
+    <div class="m-portlet__head alert-block__heading pointer">
+        <div class="m-portlet__head-caption">
+            <div class="m-portlet__head-title">
+                <h3 class="m-portlet__head-text collapse-toggle" data-toggle="collapse" data-target="#data-summary">
+                    <i class="la la-angle-up m--margin-right-5"></i>Profit Summary
+                </h3>
+            </div>
+        </div>
+    </div>
+    <div class="m-portlet__body">
+        <div class="collapse show" id="data-summary">
+            <div class="table-wrapper" id="">
+                <table class="table table-striped table-brand">
+                    <thead app-table-header [headers]="headers" [align]="right">
+                        <th class="first"></th>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngIf="!!(hblProfit$ | async)">
+                            <tr>
+                                <td>1. Buying Rate</td>
+                                <td class="text-danger font-weight-bold text-right">
+                                    {{(hblProfit$ | async)?.houseBillTotalCharge.totalBuyingUSD | number :'.0-3'}}
+                                </td>
+                                <td class="text-danger font-weight-bold text-right">
+                                    {{(hblProfit$ | async)?.houseBillTotalCharge.totalBuyingLocal | number :'.0-3'}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2. Selling Rate</td>
+                                <td class="text-right">
+                                    {{(hblProfit$ | async)?.houseBillTotalCharge.totalSellingUSD | number :'.0-3'}}
+                                </td>
+                                <td class="text-right">
+                                    {{(hblProfit$ | async)?.houseBillTotalCharge.totalSellingLocal | number :'.0-3'}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3. OBH</td>
+                                <td class="text-right">
+                                    {{(hblProfit$ | async)?.houseBillTotalCharge.totalOBHUSD | number :'.0-3'}}
+                                </td>
+                                <td class="text-right">
+                                    {{(hblProfit$ | async)?.houseBillTotalCharge.totalOBHLocal | number :'.0-3'}}
+                                </td>
+                            </tr>
+                        </ng-container>
+                        <tr app-table-none-record *ngIf="!(hblProfit$ | async)"></tr>
+                    </tbody>
+                    <tfoot *ngIf="!!(hblProfit$ | async)">
+                        <tr class="font-weight-bold">
+                            <td>Total</td>
+                            <td class="text-right">{{(hblProfit$ | async)?.profitUSD | number: '.0-3'}} USD</td>
+                            <td class="text-right">{{(hblProfit$ | async)?.profitLocal | number: '.0-3'}} VND</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

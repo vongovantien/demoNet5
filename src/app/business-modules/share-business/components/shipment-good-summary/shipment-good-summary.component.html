@@ -1,0 +1,89 @@
+<div class="m-portlet">
+    <div class="alert-block__heading">
+        <div class="d-flex justify-content-between align-items-center">
+            <h3 class="alert-block__title">
+                <ng-content></ng-content>
+            </h3>
+            <div *ngIf="!(isLocked | async)">
+                <button type="button" class="btn btn-default  m-btn--icon m-btn--uppercase" (click)="refresh()"
+                    title="Refresh">
+                    <span><i class="la la-refresh"></i>
+                        <span> Refresh </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="m-portlet__body">
+        <div class="shipment-good-summary-wrapper">
+            <div class="form">
+                <div class="row m--margin-bottom-10">
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="">Commodities</label>
+                                <textarea name="" id="" cols="30" rows="8" class="form-control"
+                                    [(ngModel)]="commodities" name="commodities"></textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="">Detail Container</label>
+                                <textarea name="" id="" cols="30" rows="8" class="form-control"
+                                    [(ngModel)]="containerDetail" name="containerDetail"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <ul class="list-group">
+                            <li
+                                class="list-group-item font-weight-bold list-group-item d-flex justify-content-between align-items-center">
+                                Total Gross Weight (GW):
+                                <span class="m-badge m-badge--primary m-badge--wide">{{grossWeight}} Kgs</span>
+                            </li>
+                            <li
+                                class="list-group-item font-weight-bold list-group-item d-flex justify-content-between align-items-center">
+                                Total Net Weight:
+                                <span class="m-badge m-badge--primary m-badge--wide">{{netWeight}} Kgs</span>
+                            </li>
+                            <li
+                                class="list-group-item font-weight-bold list-group-item d-flex justify-content-between align-items-center">
+                                Total Chargeable Weight:
+                                <span class="m-badge m-badge--primary m-badge--wide">{{totalChargeWeight}} Kgs</span>
+                            </li>
+                            <li
+                                class="list-group-item font-weight-bold list-group-item d-flex justify-content-between align-items-center">
+                                Total CBM:
+                                <span class="m-badge m-badge--primary m-badge--wide">{{totalCBM}} CBM</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <label for="">Description</label>
+                        <textarea name="" id="" cols="30" rows="8" class="form-control" [(ngModel)]="description"
+                            name="description"></textarea>
+                    </div>
+                    <div class="col-md-4">
+                        <ng-container *ngIf="(isLocked | async) === false">
+                            <button type="button" class="btn btn-success  m-btn--icon m-btn--uppercase"
+                                (click)="openContainerListPopup()" *ngIf="shipment.permission.allowUpdate">
+                                <span>
+                                    <i class="la la-list"></i>
+                                    <span>
+                                        Container List
+                                    </span>
+                                </span>
+                            </button>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<container-list-popup [type]="type"></container-list-popup>
+
+<confirm-popup [body]="'All manually entered data will be refresh, are you sure you want to perform this action ?'"
+    [labelConfirm]="'Yes'" [labelConfirm]="'No'" (onSubmit)="onRefresh()" [title]="'Alert'"
+    [iconConfirm]="'la la-refresh'"></confirm-popup>

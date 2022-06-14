@@ -1,0 +1,7 @@
+<span class="m-switch m-switch--{{class}} m-switch--{{size}} d-block">
+    <label>
+        <input type="checkbox" [(ngModel)]="toggleValue" [disabled]="disabled"
+            (ngModelChange)="toggleChange.emit($event)">
+        <span></span>
+    </label>
+</span>

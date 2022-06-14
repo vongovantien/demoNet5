@@ -1,0 +1,321 @@
+<div class="advance-payment-page m-animate-fade-in">
+    <app-sub-header>
+        <div class="c-button-actions">
+            <app-permission-button title="Add New" [routerLink]="'/home/accounting/settlement-payment/new'">
+            </app-permission-button>
+            <app-permission-button type="export" title="Export" [dpToggle]="dropdownMenu" position="bottomCenter"
+                mode="dropdown">
+            </app-permission-button>
+            <app-dropdown #dropdownMenu>
+                <a class="dropdown-item pointer" (click)="export()">
+                    <span>General Template</span>
+                </a>
+                <a class="dropdown-item pointer" (click)="accountingeExport()">
+                    <span>Accounting Template</span>
+                </a>
+            </app-dropdown>
+        </div>
+    </app-sub-header>
+    <div class="m-content">
+
+        <settle-payment-form-search></settle-payment-form-search>
+
+        <div class="m-portlet">
+            <div class="m-form">
+                <div class="m-portlet__body">
+                    <div class="m-form m--margin-bottom-10">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <div class="c-button-actions">
+                                        <button type="button" class="btn btn-success" (click)="issueVoucher()"
+                                            *ngIf="menuSpecialPermission | async | specialPermission:'IssueVoucher'">
+                                            <i class="la la-download"></i>Issue Voucher<span class="caret"></span>
+                                        </button>
+                                        <button class="btn btn-cancel  m-btn--icon m-btn--uppercase"
+                                            (click)="showPopupList()">
+                                            <span>
+                                                <i class="la la-print"></i>
+                                                <span>
+                                                    Print-Multiple
+                                                </span>
+                                            </span>
+                                        </button>
+                                        <button class="btn btn-info m-btn--icon m-btn--uppercase float-right"
+                                            (click)="syncBravo()" title="Sync to accountant system"
+                                            *ngIf="menuSpecialPermission | async | specialPermission:'SyncAcctSystem'">
+                                            <span>
+                                                <i class="la la-cloud-upload"></i>
+                                                <span>
+                                                    Sync to Accountant
+                                                </span>
+                                            </span>
+                                        </button>
+
+                                        <button class="btn btn-danger  m-btn--icon m-btn--uppercase" title="Deny"
+                                            *ngIf="menuSpecialPermission | async | specialPermission:'DenySettlement'"
+                                            (click)="denySettle()">
+                                            <span>
+                                                <i class="la la-times"></i>
+                                                <span>
+                                                    Deny
+                                                </span>
+                                            </span>
+                                        </button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <perfect-scrollbar style="max-height: 900px">
+                        <div class="table-wrapper table-scrollabler" id="adv-payment-list-table">
+                            <table class="table table-brand table-hover dataTable">
+                                <thead app-table-header [headers]="headers"
+                                    (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                                    <th class="m--w-50 first">
+                                        <label class="m-checkbox">
+                                            <input type="checkbox" name="" [checked]="isCheckAll"
+                                                (change)="isCheckAll=!isCheckAll; checkAllSettlement()">
+                                            <span></span>
+                                        </label>
+                                    </th>
+                                </thead>
+                                <tbody class="tbody-group">
+                                    <ng-container *ngIf="!!settlements.length">
+                                        <ng-container
+                                            *ngFor="let settlePayment of settlements; let i = index; trackBy: trackByFn">
+                                            <tr [class.invalid-row]="settlePayment.syncStatus === 'Rejected'"
+                                                [contextMenu]="SmContextMenu" (onTouch)="onSelectSM(settlePayment)"
+                                                [class.touch-row]="selectedSettlement?.id === settlePayment.id">
+                                                <td>
+                                                    <div class="m-checkbox-list d-flex align-items-center">
+                                                        <ng-template #dblock>
+                                                            <span class="d-block" style="width:30px"></span>
+                                                        </ng-template>
+                                                        <label class="m-checkbox" *ngIf="settlePayment.statusApproval === 'Done' 
+                                                        && !settlePayment.voucherNo 
+                                                        && settlePayment.syncStatus !== 'Synced';else dblock">
+                                                            <input type="checkbox"
+                                                                [(ngModel)]="settlePayment.isSelected"
+                                                                (change)="onChangeSelectedSettlement(settlePayment);">
+                                                            <span></span>
+                                                        </label>
+                                                        <button
+                                                            class="btn btn-sm  m-btn--icon m-btn--icon-only collapsed"
+                                                            data-toggle="collapse"
+                                                            [attr.data-target]="'#ops-shipment-00' + (settlePayment.id+1)"
+                                                            title="Collapse"
+                                                            (click)="showSurcharge(settlePayment.settlementNo, i)">
+                                                            <i class="la la-angle-up"></i>
+                                                        </button>
+                                                        <ng-container
+                                                            *ngIf="(settlePayment.statusApproval === 'New' || settlePayment.statusApproval === 'Denied');else dblock">
+                                                            <!-- <button class="btn btn-sm  m-btn--icon m-btn--icon-only"
+                                                                title="Delete"
+                                                                (click)="prepareDeleteAdvance(settlePayment)">
+                                                                <i class="la la-trash text-danger"></i>
+                                                            </button> -->
+                                                            <app-permission-button type="delete"
+                                                                (onClick)="prepareDeleteSettle(settlePayment)"
+                                                                [user]="settlePayment.userCreated" class="icon"
+                                                                icon="la la-trash text-danger">
+                                                            </app-permission-button>
+                                                        </ng-container>
+                                                        <span>
+                                                            <a title="Preview" class="pointer"
+                                                                (click)="printSettlement(settlePayment.settlementNo)">
+                                                                <i class="la la-file-text-o"></i>
+                                                            </a>
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td class="text-underline text-primary pointer">
+                                                    <a (click)="viewDetail(settlePayment)">{{settlePayment.settlementNo}}
+                                                    </a>
+                                                    <ng-container *ngIf="settlePayment.statusApproval === 'Done'">
+                                                        <ng-container [ngSwitch]="settlePayment.syncStatus">
+                                                            <span *ngSwitchCase="'Synced'"
+                                                                class="badge badge-success m--margin-left-10">
+                                                                {{settlePayment.syncStatus}}
+                                                            </span>
+                                                            <span *ngSwitchCase="'Rejected'"
+                                                                class="badge badge-danger m--margin-left-10">
+                                                                {{settlePayment.syncStatus}}
+                                                            </span>
+                                                        </ng-container>
+                                                    </ng-container>
+                                                </td>
+                                                <td class="text-right">{{settlePayment.amount | number: '.0-3'}}</td>
+                                                <td>{{settlePayment.settlementCurrency}}</td>
+                                                <td class="text-info">{{settlePayment.requesterName}}</td>
+                                                <td class="text-primary">{{settlePayment.departmentName}}</td>
+                                                <td class="text-info" style="min-width: 200px; white-space:initial">
+                                                    {{settlePayment.payeeName}}</td>
+                                                <td>{{settlePayment.requestDate | date: 'dd/MM/yyyy'}}</td>
+                                                <td [ngSwitch]="settlePayment.statusApprovalName">
+                                                    <div *ngSwitchCase="'New'" class="text-danger">
+                                                        {{settlePayment.statusApprovalName}}</div>
+                                                    <div *ngSwitchCase="'Done'" class="text-success">
+                                                        {{settlePayment.statusApprovalName}}</div>
+                                                    <div *ngSwitchCase="'Denied'" class="text-danger">
+                                                        {{settlePayment.statusApprovalName}}</div>
+                                                    <marquee *ngSwitchDefault class="text-primary" scrolldelay="120">
+                                                        {{settlePayment.statusApprovalName}}
+                                                    </marquee>
+                                                </td>
+                                                <td>{{settlePayment.paymentMethodName}}</td>
+                                                <td class="text-primary">
+                                                    {{settlePayment.voucherNo}}
+                                                </td>
+                                                <td>{{settlePayment.voucherDate | date: 'dd/MM/yyyy'}}</td>
+                                                <td style="min-width: 300px; white-space:initial">
+                                                    {{settlePayment.note}}</td>
+                                                <td class="text-info">
+                                                    {{settlePayment.lastSyncDate | date: 'dd/MM/yyyy'}}
+                                                </td>
+                                                <td [ngSwitch]="settlePayment.syncStatus">
+                                                    <div *ngSwitchCase="'Synced'" class="text-success">
+                                                        {{settlePayment.syncStatus}}
+                                                    </div>
+                                                    <div *ngSwitchDefault class="text-danger">
+                                                        {{settlePayment.syncStatus}}{{settlePayment.reasonReject ? ' - '
+                                                        +settlePayment.reasonReject : ''}}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr class="collapse-panel-row" app-table-collapse-row
+                                                [id]="'ops-shipment-00' + settlePayment.id + 1"
+                                                [parentId]="'#adv-payment-list-table'">
+                                                <div class="table-horizontal" style="max-height:500px">
+                                                    <table class="table table-secondary dataTable">
+                                                        <thead app-table-header [headers]="headerCustomClearance"
+                                                            (onClick)="sortByCustomClearance($event)">
+                                                        </thead>
+                                                        <tbody>
+                                                            <ng-container *ngIf="!!shipments.length">
+                                                                <tr *ngFor="let item of shipments; let j = index; trackBy: trackByFn"
+                                                                    class="">
+                                                                    <td>
+                                                                        <span>
+                                                                            {{item.jobId}}
+                                                                            <span>
+                                                                                <button type="button"
+                                                                                    *ngIf="item.isLocked"
+                                                                                    title="Shipment has been locked"
+                                                                                    class="btn btn-fault btn-sm  m-btn--icon m-btn--icon-only">
+                                                                                    <i class="fa fa-lock font-18"
+                                                                                        style="font-size:18px"></i>
+                                                                                </button>
+                                                                            </span>
+                                                                        </span>
+                                                                    </td>
+                                                                    <td>
+                                                                        <span>{{item.mbl}}</span>
+                                                                    </td>
+                                                                    <td>
+                                                                        <span>{{item.hbl}}</span>
+                                                                    </td>
+                                                                    <td>
+                                                                        <span>{{item.amount | number: '.0-3'}}</span>
+                                                                    </td>
+                                                                    <td>
+                                                                        <span>{{item.settlementCurrency}}</span>
+                                                                    </td>
+                                                                </tr>
+                                                            </ng-container>
+                                                            <tr *ngIf="!shipments.length" app-table-none-record
+                                                                [colspan]="headerCustomClearance.length">
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </tr>
+                                        </ng-container>
+                                    </ng-container>
+
+                                    <tr *ngIf="!(isLoading | async) && !settlements.length" app-table-none-record
+                                        [colspan]="headers.length + 1"></tr>
+                                    <tr *ngIf="(isLoading | async)" app-table-row-loading></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </perfect-scrollbar>
+
+                    <app-pagination [total]="totalItems" [pageNum]="page" [itemPerPage]="pageSize"
+                        (onChange)="updatePagingData($event)"></app-pagination>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<permission-403-popup></permission-403-popup>
+
+<select-requester-popup (onSelect)="hidePopupRequester()"></select-requester-popup>
+
+<settlement-payments-popup></settlement-payments-popup>
+
+<ng-template inject></ng-template>
+
+<app-context-menu #SmContextMenu (clickOutside)="selectedSettlement = null">
+    <div class="menu-context__item" (click)="viewDetail(selectedSettlement)">
+        <span><i class="la la-edit text-primary"></i><span> Edit</span></span>
+    </div>
+    <ng-container *ngIf="menuSpecialPermission | async | specialPermission:'SyncAcctSystem'">
+        <ng-container
+            *ngIf="selectedSettlement?.statusApproval === 'Done' && selectedSettlement?.syncStatus !== 'Synced'">
+            <div class="menu-context__item" (click)="syncSM()">
+                <span><i class="la la-cloud-upload text-primary"></i><span> Sync this item </span></span>
+            </div>
+        </ng-container>
+        <div class="menu-context__item" (click)="syncBravo()">
+            <span><i class="la la-list-alt text-primary"></i><span>Sync selected items</span></span>
+        </div>
+    </ng-container>
+    <div class="menu-context__item" [dpToggle]="exportTpl" position="rightTop" trigger="hover" ClickStopPropagation>
+        <div class="d-flex justify-content-between">
+            <div>
+                <i class="la la-print text-primary"></i>
+                <span> Preview</span>
+            </div>
+            <div class="d-flex align-items-center">
+                <i class="la la-caret-right font-13"></i>
+            </div>
+        </div>
+
+    </div>
+    <ng-container title="Deny" *ngIf="menuSpecialPermission | async | specialPermission:'DenySettlement'">
+        <ng-container
+            *ngIf="!selectedSettlement?.voucherNo && selectedSettlement?.statusApproval === 'Done' && selectedSettlement?.syncStatus !== 'Synced' ">
+            <hr />
+            <div class="menu-context__item text-danger" (click)="denySettleItem()">
+                <span><i class="la la-times "></i><span> Deny</span></span>
+            </div>
+        </ng-container>
+    </ng-container>
+
+</app-context-menu>
+
+<app-dropdown #exportTpl>
+    <span class="dropdown-item pointer" (click)="printSettlement(selectedSettlement.settlementNo)">
+        Single
+    </span>
+    <span class="dropdown-item pointer" (click)="previewSM(selectedSettlement,'VN','multiple')">
+        Multiple (VN)
+    </span>
+
+    <span class="dropdown-item pointer" (click)="previewSM(selectedSettlement,'EN', 'multiple')">
+        Multiple (EN)
+    </span>
+    <span class="dropdown-item pointer" (click)="previewSM(selectedSettlement,'EN', 'general')">
+        General
+    </span>
+    <span class="dropdown-item pointer" (click)="previewSM(selectedSettlement,'VN', 'payment')">
+        Payment SOA
+    </span>
+</app-dropdown>
+
+<select-attach-file-popup type="SM"></select-attach-file-popup>

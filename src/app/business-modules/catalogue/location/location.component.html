@@ -1,0 +1,38 @@
+<app-sub-header>
+    <div class="c-button-actions">
+        <app-permission-button (onClick)="import()" type="import" title="Import">
+        </app-permission-button>
+        <app-permission-button (onClick)="export()" type="export" title="Export"></app-permission-button>
+    </div>
+</app-sub-header>
+<div class="m-content">
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <tabset>
+                <tab heading="Country" [active]="selectedTab === 'country'"
+                    (selectTab)="onSelectTabLocation('country')">
+                    <ng-container *ngIf="selectedTab === 'country'">
+                        <app-country></app-country>
+                    </ng-container>
+                </tab>
+                <tab heading="City - Province" [active]="selectedTab === 'city'"
+                    (selectTab)="onSelectTabLocation('city')">
+                    <ng-container *ngIf="selectedTab === 'city'">
+                        <app-province></app-province>
+                    </ng-container>
+                </tab>
+                <tab heading="District" [active]="selectedTab === 'district'"
+                    (selectTab)="onSelectTabLocation('district')">
+                    <ng-container *ngIf="selectedTab === 'district'">
+                        <app-district></app-district>
+                    </ng-container>
+                </tab>
+                <tab heading="Town - Ward" [active]="selectedTab === 'town'" (selectTab)="onSelectTabLocation('town')">
+                    <ng-container *ngIf="selectedTab === 'town'">
+                        <app-ward></app-ward>
+                    </ng-container>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,68 @@
+<div class="row">
+    <div class="col">
+        <ng-container *ngIf="configSearch.typeSearch == 'outtab'">
+            <form (ngSubmit)="searchClick()" #outTab="ngForm">
+                <div class="input-group m-input-group m-input-group--square">
+                    <div class="input-group-prepend">
+                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            {{searchObject.displayName}}
+                        </button>
+                        <div class="dropdown-menu">
+                            <ng-container *ngFor="let item of settingFields">
+                                <a class="dropdown-item"
+                                    [ngClass]="{ 'active': item.displayName == searchObject.displayName}"
+                                    href="javascript:void(0)" (click)="searchTypeChange(item)"
+                                    attr.id="{{item.fieldName}}Field">
+                                    {{ item.displayName }}
+                                </a>
+                            </ng-container>
+                        </div>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Text input with dropdown button"
+                        [(ngModel)]="searchObject.searchString" name="searchString"
+                        (change)="searchObject.searchString = searchObject.searchString.trim()">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" title="Search" type="submit">
+                            <i class="la la-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </ng-container>
+        <ng-container *ngIf="configSearch.typeSearch == 'intab'">
+            <form (ngSubmit)="searchClick()" #intab="ngForm">
+                <div class="input-group m-input m-input--square-group m-input m-input--square-group--square">
+                    <div class="input-group-prepend">
+                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            {{searchObject.displayName}}
+                        </button>
+                        <div class="dropdown-menu">
+                            <ng-container *ngFor="let item of settingFields">
+                                <a class="dropdown-item" href="javascript:void(0)"
+                                    (click)="searchTypeChange(item,$event)" attr.id="{{item.fieldName}}Field">
+                                    {{ item.displayName }}
+                                </a>
+                            </ng-container>
+                        </div>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Text input with dropdown button"
+                        (change)="searchObject.searchString = searchObject.searchString.trim()"
+                        [(ngModel)]="searchObject.searchString" name="searchString">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit" title="Search">
+                            <i class="la la-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+        </ng-container>
+    </div>
+    <div class="col-md-auto">
+        <app-default-button [buttonSetting]="resetButtonSetting" (click)="resetSearch()"></app-default-button>
+    </div>
+    <ng-content select="div.col-md-auto">
+    </ng-content>
+</div>

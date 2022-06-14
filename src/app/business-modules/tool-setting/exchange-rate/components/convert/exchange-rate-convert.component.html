@@ -1,0 +1,95 @@
+<div class="m-portlet m-portlet--full-height">
+    <div class="m-portlet__head">
+        <div class="m-portlet__head-caption">
+            <div class="m-portlet__head-title">
+                <h3 class="m-portlet__head-text">
+                    Exchange rate converter
+                </h3>
+            </div>
+        </div>
+    </div>
+    <div class="m-portlet__body">
+        <div class="m-form">
+            <form name="formConvertRate" #formConvertRate="ngForm" novalidate (ngSubmit)="formConvertRate.form.valid">
+                <div class="m-form m-form--state">
+                    <div class="form-group"
+                        [ngClass]="{ 'm-form__group has-danger': formConvertRate.submitted && !convert.selectedRangeDate.startDate }">
+                        <label class="form-control-label" for="">
+                            Select range date
+                        </label>
+                        <div class="m-input-icon m-input-icon--right daterange-rtl">
+                            <input type="text" #convertDate="ngModel" class="form-control m-input" ngxDaterangepickerMd
+                                [(ngModel)]="convert.selectedRangeDate" [singleDatePicker]="true" name="convertDate"
+                                [autoApply]="true" [locale]="{applyLabel: 'ok', format: 'DD/MM/YYYY'}" required readonly
+                                [maxDate]="maxDate"
+                                [ngClass]="{ 'm-input--square': formConvertRate.submitted && convertDate.invalid }" />
+                            <span class="m-input-icon__icon m-input-icon__icon--right">
+                                <span>
+                                    <i class="la la-calendar"></i>
+                                </span>
+                            </span>
+                            <div class="form-control-feedback"
+                                *ngIf="formConvertRate.submitted && !convert.selectedRangeDate.startDate">
+                                Please select range date
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group"
+                        [ngClass]="{ 'm-form__group has-danger': formConvertRate.submitted && this.convert.fromCurrency == null }">
+                        <label class="form-control-label" for="">
+                            Convert from
+                        </label>
+                        <ng-select bindValue="id" bindLabel="id" class="custom" [items]="fromCurrencies"
+                            (change)="convert.fromCurrency = $event"
+                            (removed)="convert.fromCurrency = null; rate = null" placeholder="Select currency">
+                        </ng-select>
+                        <div class="form-control-feedback"
+                            *ngIf="formConvertRate.submitted && this.convert.fromCurrency == null">
+                            Please selected currency
+                        </div>
+                    </div>
+                    <div class="form-group"
+                        [ngClass]="{ 'm-form__group has-danger': formConvertRate.submitted && this.convert.toCurrency == null }">
+                        <label class="form-control-label" for="">
+                            Convert to
+                        </label>
+                        <ng-select class="custom" bindValue="id" bindLabel="id" [items]="toCurrencies"
+                            (change)="convert.toCurrency = $event" (removed)="convert.toCurrency = null; rate = null"
+                            placeholder="Select currency">
+                        </ng-select>
+                        <div class="form-control-feedback"
+                            *ngIf="formConvertRate.submitted && this.convert.toCurrency == null">
+                            Please selected currency
+                        </div>
+                    </div>
+                    <div class="form-group form-actions m--align-right">
+                        <button type="submit" class="btn btn-brand  m-btn--uppercase"
+                            (click)="convertRate(formConvertRate)">
+                            Convert
+                        </button>
+                    </div>
+                </div>
+
+                <hr>
+                <div class="form-group" *ngIf="rate">
+                    <label class="form-control-label" for="">
+                        Date: <span class="m--font-primary">{{ date | date: 'MMMM dd. yyyy'}}</span>
+                    </label>
+                    <div class="border m--padding-10 bg-secondary" *ngIf="convert.fromCurrency && convert.toCurrency">
+                        <ng-container>
+                            <span>({{ convert.fromCurrency }})</span>&nbsp;
+                            <span>=</span>&nbsp;
+                            <span *ngIf="rate">{{ rate.rate  | currency : "" : '' }}</span>&nbsp;
+                            <span>({{ convert.toCurrency }})</span>
+                        </ng-container>
+                    </div>
+                </div>
+                <div class="form-group" *ngIf="rate == null && formConvertRate.submitted ">
+                    <label class="form-control-label" for="">
+                        <span class="m--font-primary">No rates found</span>
+                    </label>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

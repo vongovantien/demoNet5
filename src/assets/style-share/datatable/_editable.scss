@@ -1,0 +1,259 @@
+//fixid actions-side
+.fixed-side {
+    background-color: #cee5ff;
+    position: sticky;
+    left: 0;
+    z-index: 9;
+}
+
+//editable
+.control-editable {
+    display: none;
+
+    .form-control-feedback {
+        font-size: 10px;
+    }
+}
+
+.row-editing {
+    .control-editable {
+        display: block;
+    }
+
+    .content-editable {
+        display: none;
+    }
+
+    .dropdown-menu {
+        z-index: 9;
+    }
+
+    .row-control-feedback {
+        height: 15px;
+        position: relative;
+
+        .form-control-feedback {
+            position: absolute;
+            left: 0;
+            white-space: pre;
+        }
+    }
+}
+
+.table {
+    thead,
+    tbody {
+        tr {
+            &.row-editing {
+                th,
+                td {
+                    vertical-align: top;
+                }
+            }
+        }
+    }
+}
+
+//collapse-table by group
+.table {
+    thead,
+    tbody {
+        tr {
+            &.tgroup {
+                background-color: #f2dedf;
+            }
+        }
+    }
+}
+
+.tgroup-title {
+    vertical-align: middle;
+}
+
+.btn-toggle-collapse {
+    height: 20px;
+    vertical-align: middle;
+    margin: 0 5px 0 0;
+
+    &.collapsed {
+        i {
+            &:before {
+                content: "\f2c4";
+            }
+        }
+    }
+}
+
+.table-wrapper {
+    .table-collapse-group {
+        thead,
+        tbody {
+            tr {
+                th,
+                td {
+                    width: 130px;
+                }
+            }
+        }
+    }
+    &.table-editable {
+        .fixed-side {
+            left: -1px;
+            background: #fff;
+        }
+        .form-group {
+            padding: 0;
+            .form-control {
+                background: #fff;
+                border: 0;
+                padding: 4px;
+                &:focus {
+                    outline: auto;
+                }
+                &:disabled {
+                    // background: #f4f5f8;
+                    // font-style: italic;
+                    cursor: not-allowed;
+                }
+            }
+
+            &.has-danger {
+                .form-control {
+                    border: 1px solid #f4516b !important;
+                    // padding: initial;
+                }
+            }
+        }
+        .table-date {
+            .table-condensed {
+                tr {
+                    th:not(:first-child) {
+                        min-width: 30px;
+                    }
+                    td:not(:first-child) {
+                        min-width: auto;
+                    }
+                }
+            }
+        }
+        .list-master-unit {
+            .e--combogrid-content {
+                min-width: 265px;
+            }
+        }
+    }
+}
+
+.table {
+    &.dataTable {
+        thead {
+            tr {
+                th {
+                    position: relative;
+
+                    &.sortable {
+                        cursor: pointer;
+                        padding-right: 18px;
+                        .sort-indicator {
+                            &:after,
+                            &:before {
+                                content: "";
+                                border-width: 0 4px 4px;
+                                border-style: solid;
+                                border-color: #fff transparent;
+                                visibility: visible;
+                                right: 5px;
+                                top: 50%;
+                                position: absolute;
+                                opacity: 0.9;
+                                margin-top: -4px;
+                            }
+
+                            &:before {
+                                margin-top: 2px;
+                                border-bottom: none;
+                                border-left: 4px solid transparent;
+                                border-right: 4px solid transparent;
+                                border-top: 4px solid #fff;
+                            }
+                        }
+
+                        &.sort-asc .sort-indicator:before,
+                        &.sort-desc .sort-indicator:after {
+                            visibility: hidden;
+                        }
+
+                        &.sort-asc .sort-indicator:after,
+                        &.sort-desc .sort-indicator:before {
+                            border-color: #000 transparent;
+                        }
+
+                        &.sort-desc .sort-indicator:after {
+                            border-bottom: none;
+                            border-left: 4px solid transparent;
+                            border-right: 4px solid transparent;
+                            border-top: 4px solid #fff;
+                            box-shadow: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    &.dataTable-edit {
+        thead {
+            tr {
+                th {
+                    position: relative;
+
+                    &.sortable {
+                        cursor: pointer;
+                        padding-right: 18px;
+                        .sort-indicator {
+                            &:after,
+                            &:before {
+                                content: "";
+                                border-width: 0 4px 4px;
+                                border-style: solid;
+                                border-color: #000 transparent;
+                                visibility: visible;
+                                right: 5px;
+                                top: 50%;
+                                position: absolute;
+                                opacity: 0.9;
+                                margin-top: -4px;
+                            }
+
+                            &:before {
+                                margin-top: 2px;
+                                border-bottom: none;
+                                border-left: 4px solid transparent;
+                                border-right: 4px solid transparent;
+                                border-top: 4px solid #000;
+                            }
+                        }
+
+                        &.sort-asc .sort-indicator:before,
+                        &.sort-desc .sort-indicator:after {
+                            visibility: hidden;
+                        }
+
+                        &.sort-asc .sort-indicator:after,
+                        &.sort-desc .sort-indicator:before {
+                            border-color: #000 transparent;
+                        }
+
+                        &.sort-desc .sort-indicator:after {
+                            border-bottom: none;
+                            border-left: 4px solid transparent;
+                            border-right: 4px solid transparent;
+                            border-top: 4px solid #000;
+                            box-shadow: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

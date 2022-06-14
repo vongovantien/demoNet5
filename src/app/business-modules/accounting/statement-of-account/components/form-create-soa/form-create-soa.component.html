@@ -1,0 +1,266 @@
+<div class="m-portlet">
+    <div class="m-form m-form--state">
+        <div class="m-portlet__body">
+            <div class="row">
+                <div class="col-lg-4" *ngIf="!!configPartner">
+                    <div class="form-group"
+                        [ngClass]="{'m-form__group has-danger': isApplied && !selectedPartner.value}">
+                        <label class="form-control-label">
+                            Partner
+                            <span class="text-danger">*</span>
+                        </label>
+                        <app-combo-grid-virtual-scroll [currentActiveItemId]="selectedPartner"
+                            (itemSelected)="onSelectDataFormInfo($event, 'partner')"
+                            [selectedDisplayFields]="configPartner.selectedDisplayFields"
+                            [dataSources]="configPartner.dataSource" [displayFields]="configPartner.displayFields"
+                            (remove)="selectedPartner = {field: 'id', value: null}">
+                        </app-combo-grid-virtual-scroll>
+                        <div class="form-control-feedback" *ngIf="isApplied && !selectedPartner.value">
+                            Partner is required!
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group"
+                        [ngClass]="{'m-form__group has-danger': isApplied && !selectedRangeDate.startDate}">
+                        <label class="form-control-label">
+                            Date
+                            <span class="text-danger">*</span>
+                        </label>
+                        <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                            <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                [(ngModel)]="selectedRangeDate" [showCustomRangeLabel]="true"
+                                [keepCalendarOpeningWithRange]="true" [alwaysShowCalendars]="true" [ranges]="ranges"
+                                placeholder="From date - to date" [showClearButton]="false"
+                                [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" [showCancel]="true" readonly
+                                (datesUpdated)="onChangeRangeDate($event)" />
+                            <span class=" m-input-icon__icon m-input-icon__icon--right">
+                                <span>
+                                    <i class="la la-calendar"></i>
+                                </span>
+                            </span>
+                        </div>
+                        <div class="form-control-feedback" *ngIf="isApplied && !selectedRangeDate.startDate">
+                            Date is required!
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label class="form-control-label">
+                            Date Mode
+                        </label>
+                        <select [(ngModel)]="selectedDateMode" class="form-control"
+                            (ngModelChange)="onSelectDataFormInfo($event , 'date-mode')">
+                            <option *ngFor="let dateMode of dateModes" [ngValue]="dateMode">{{dateMode.title}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label class="form-control-label">
+                            Type
+                        </label>
+                        <select [(ngModel)]="selectedType" class="form-control"
+                            (ngModelChange)="onSelectDataFormInfo($event , 'type')">
+                            <option *ngFor="let type of types" [ngValue]="type">{{type.title}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label class="form-control-label">
+                            OBH
+                        </label>
+                        <select [(ngModel)]="selectedObh" class="form-control"
+                            (ngModelChange)="onSelectDataFormInfo($event , 'obh')">
+                            <option *ngFor="let item of obhs" [ngValue]="item">{{item.title}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label class="form-control-label">
+                            Currency
+                        </label>
+                        <select [(ngModel)]="selectedCurrency" class="form-control" [disabled]="selectedType.value === this.types[0].value"
+                            (ngModelChange)="onSelectDataFormInfo($event , 'currency')">
+                            <option *ngFor="let currency of currencyList" [ngValue]="currency">{{currency.id}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label class="form-control-label" for="">
+                            Services
+                        </label>
+                        <ng-select class="custom" [multiple]="true" (remove)="onRemoveService($event)"
+                            [(ngModel)]="selectedService" [items]="services"
+                            (add)="onSelectDataFormInfo($event, 'service')" bindLabel="text" bindValue="id">
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label class="form-control-label">
+                            Staff (Creator/Salesman)
+                        </label>
+                        <app-multiple-select [source]="users" [active]="selectedUser"
+                            (onChange)="onSelectDataFormInfo($event,'user')" [placeHolder]="'Select user'">
+                        </app-multiple-select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label class="form-control-label" for="">
+                            Staff Type
+                        </label>
+                        <select [(ngModel)]="selectedStaffType" class="form-control"
+                            (ngModelChange)="onSelectDataFormInfo($event , 'staff-type')">
+                            <option *ngFor="let staffType of staffTypes" [ngValue]="staffType">{{staffType.title}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label class="form-control-label" for="">
+                                    Charge
+                                </label>
+                                <app-combo-grid-virtual-scroll [currentActiveItemId]="selectedCharge"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'charge')"
+                                    [dataSources]="configCharge.dataSource" [displayFields]="configCharge.displayFields "
+                                    [height]="150">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label class="form-control-label">Customer</label>
+                                <app-combo-grid-virtual-scroll [currentActiveItemId]="selectedCustomerShipment"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'customerShipment')"
+                                    [selectedDisplayFields]="configPartner.selectedDisplayFields"
+                                    [dataSources]="configPartner.dataSource" [displayFields]="configPartner.displayFields"
+                                    (remove)="selectedCustomerShipment = {field: 'id', value: null}">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <!-- <label class="form-control-label" for="">
+                        Commodity Group
+                    </label>
+                    <select [(ngModel)]="commodity" class="form-control">
+                        <option [ngValue]="null">Select Commodity</option>
+                        <option *ngFor="let comodity of commodityGroup" [ngValue]="comodity">{{comodity.groupNameEn}}
+                        </option>
+                    </select> -->
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label">AirLine Code</label>
+                                        <input type="text" class="form-control" [(ngModel)]="airlineCode">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label"></label>
+                                        <div><a class="pointer" style="text-decoration: underline;"
+                                                (click)="openInputShipment()">Shipment List</a>&nbsp;&nbsp;<span
+                                                class="text-warning">{{numberOfShipment}} item</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isApplied && (selectedType.value === this.types[0].value) && !salemanDisplay}">
+                                <label class="form-control-label">Saleman</label>
+                                <label required *ngIf="selectedType.value === this.types[0].value"></label>
+                                <ng-select class="custom" [(ngModel)]="salemanDisplay" [items]="saleMans" bindLabel="value" bindValue="value"
+                                [clearable]="false" (change)="onSelectDataFormInfo($event, 'saleman')" 
+                                [disabled]="selectedType.value !== this.types[0].value" placeholder="">
+                                </ng-select>
+                                <div class="form-control-feedback" *ngIf="isApplied && (selectedType.value === this.types[0].value) && !salemanDisplay">
+                                    Saleman is required!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label class="form-control-label">
+                            Note
+                        </label>
+                        <textarea class="form-control m-input m-input--square" rows="6" [(ngModel)]="note" name="note"
+                            (ngModelChange)="onChangeNote($event)"></textarea>
+                        <!-- </div> -->
+                    </div>
+                
+                </div>
+            </div>
+            <div class="row form-charge">
+                <div class="col-12">
+                    <div class="charge-list-selected" *ngIf="!!selectedCharges.length">
+                        <ul class="list-unstyled list">
+                            <li class="charge-list-item d-flex justify-content-between align-items-center"
+                                *ngFor="let chargeItem of selectedCharges; let i = index; trackBy: trackByFn">
+                                <div *ngIf="chargeItem.id !== 'All' else all">{{chargeItem.code}} -
+                                    {{chargeItem.chargeNameEn}}
+                                </div>
+                                <ng-template #all>All</ng-template>
+                                <a title="Delete" (click)="onRemoveCharge(i)">
+                                    <i class="la la-close"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label class="form-control-label">
+                            Note
+                        </label>
+                        <textarea class="form-control m-input m-input--square" rows="4" [(ngModel)]="note" name="note"
+                            (ngModelChange)="onChangeNote($event)"></textarea>
+                    </div>
+                </div>
+            </div> -->
+
+            <div class="form-actions">
+                <div class="row">
+                    <div class="col-lg-6"></div>
+                    <div class="col-lg-6 m--align-right">
+                        <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase"
+                            (click)="onApplySearchCharge()">
+                            <span>
+                                <i class="la la-download"></i>
+                                <span>
+                                    Apply
+                                </span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input-shipment-popup (onInputShipment)="onShipmentList($event)"></input-shipment-popup>

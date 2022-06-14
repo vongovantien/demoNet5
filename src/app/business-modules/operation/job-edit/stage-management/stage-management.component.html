@@ -1,0 +1,141 @@
+<div class="m-portlet">
+    <div class="m-portlet__body">
+        <div class="row" *ngIf="!!data">
+            <div class="col-md-4 m--margin-bottom-10">
+                <span class="m--font-bolder">Estimated Begin Date:</span>
+                <span class="m--font-brand m--margin-left-5">{{data.serviceDate | date:'dd/MM/yyyy'}}</span>
+            </div>
+            <div class="col-md-4 m--margin-bottom-10">
+                <span class="m--font-bolder">Estimated Finish Date:</span>
+                <span
+                    class="m--font-brand m--margin-left-5">{{!!data.finishDate ? (data.finishDate | date: 'dd/MM/yyyy') : '-'}}</span>
+            </div>
+            <div class="col-md-4 m--margin-bottom-10">
+                <span class="m--font-bolder">Job Status:</span>
+                <span class="m--font-brand m--margin-left-5">{{!!data.currentStatus ? data.currentStatus : '-'}}</span>
+            </div>
+        </div>
+        <div class="m-form m-form--label-align-right m--margin-bottom-5">
+            <div class="row align-items-center">
+                <div class="col-lg-4 order-2 order-lg-1">
+                    <div class="form-group">
+                        <div class="m-input-icon m-input-icon--left">
+                            <input type="text" class="form-control m-input m-input--square" placeholder="Search..."
+                                [(ngModel)]="keyword" name="keyword" (ngModelChange)="onSearching($event)">
+                            <span class="m-input-icon__icon m-input-icon__icon--left">
+                                <span>
+                                    <i class="la la-search"></i>
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8 order-1 order-lg-2 c-button-actions m--align-right">
+                    <div class="row">
+                        <ng-container *ngIf="!!data && !data.isLocked">
+                            <ng-container *ngIf="!!data && data.permission.allowAssignStage">
+                                <div class="col">
+                                    <button type="button" class="btn btn-primary  m-btn--icon m-btn--uppercase"
+                                        (click)="openPopUpAssignStage()">
+                                        <span>
+                                            <i class="la la-plus"></i>
+                                            <span>
+                                                Assign
+                                            </span>
+                                        </span>
+                                    </button>
+                                    <button type="button" class="btn btn-success  m-btn--icon m-btn--uppercase"
+                                        (click)="openPopUpCreateStage()">
+                                        <span>
+                                            <i class="la la-plus"></i>
+                                            <span>
+                                                add stage
+                                            </span>
+                                        </span>
+                                    </button>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="table-wrapper table-scrollable">
+            <table class="table table-striped table-brand dataTable">
+                <thead app-table-header [headers]="headers"
+                    (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                </thead>
+                <tbody class="tbody-group">
+                    <tr *ngFor="let stage of stages; let i = index">
+                        <td class="table-actions-col no-sorting">
+                            <button (click)="getDetail(stage.id)" type="button" appLoadingButton
+                                [state]="!!data && data.isLocked"
+                                class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only" title="Edit">
+                                <i class="la la-edit"></i>
+                            </button>
+                            <button type="button" *ngIf="!!data && !data.isLocked"
+                                class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only" title="Remove"
+                                (click)="showDeletePopup(stage)">
+                                <i class="la la-trash"></i>
+                            </button>
+                        </td>
+                        <td class="sorting" style="min-width: 10px">
+                            <span>{{((stage.orderNumberProcessed + 1) < 10) ? ('0' + (stage.orderNumberProcessed )) : (stage.orderNumberProcessed)}}</span>
+                        </td>
+                        <td class="sorting">
+                            <div [ngSwitch]="stage.status">
+                                <span class="text-muted" *ngSwitchCase="'InSchedule'">{{stage.status}}</span>
+                                <span class="text-primary" *ngSwitchCase="'Processing'">{{stage.status}}</span>
+                                <span class="text-danger" *ngSwitchCase="'Overdued'">{{stage.status}}</span>
+                                <span class="text-success" *ngSwitchCase="'Done'">{{stage.status}}</span>
+                                <span class="text-black-50" *ngSwitchCase="'Deleted'">{{stage.status}}</span>
+                                <span class="text-warning" *ngSwitchCase="'Pending'">{{stage.status}}</span>
+                            </div>
+                        </td>
+                        <td class="sorting">
+                            <span>{{stage.stageCode}}</span>
+                        </td>
+                        <td class="sorting">
+                            <span>{{stage.stageNameEN}}</span>
+                        </td>
+                        <td class="sorting">
+                            <span>{{stage.description}}</span>
+                        </td>
+                        <td class="sorting">
+                            <span>{{stage.departmentName}}</span>
+                        </td>
+                        <td class="sorting">
+                            <span class="text-primary font-un">{{stage.mainPersonInCharge}}</span>
+                        </td>
+                        <td class="sorting">
+                            <span>{{stage.processTime}}</span>
+                        </td>
+                        <td class="sorting">
+                            <span>{{stage.deadline | date: 'HH:mm dd/MM/yyyy'}}</span>
+                        </td>
+                        <td class="sorting">
+                            <span>{{stage.doneDate | date: 'dd/mm/yyyy'}}</span>
+                        </td>
+                    </tr>
+                    <tr app-table-none-record *ngIf="!stages.length"></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- modal add stage -->
+<add-stage-popup [stages]="stageAvailable" [stageSelected]="stages" [id]="jobId" (onSuccess)="onAddSuccess()">
+</add-stage-popup>
+
+<!-- modal stage detail -->
+<detail-stage-popup [data]="selectedStage" (onSuccess)="onAddSuccess()"></detail-stage-popup>
+
+<!-- modal assign stage -->
+<asign-stage-popup (onAssign)="getListStageJob(jobId)"></asign-stage-popup>
+
+
+<confirm-popup [body]="'Do you want to delete this stage ?'" [labelCancel]="'No'" (onSubmit)="onDeleteStage()">
+</confirm-popup>

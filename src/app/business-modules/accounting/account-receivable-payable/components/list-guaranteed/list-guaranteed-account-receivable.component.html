@@ -1,0 +1,138 @@
+<div class="m-portlet">
+    <div class="m-portlet__body">
+        <div class="m-form">
+
+            <div class="row">
+                <div class="col-lg-12 m--margin-top-20">
+                    <div class="table-wrapper table-scrollable" id="guaranteed-table">
+                        <table class="table table-hover table-brand dataTable table-hover">
+                            <thead app-table-header [headers]="headers" (onClick)="sortBy($event.sortField)">
+                                <th class="m--w-50 first table-actions-col">
+                                    Action
+                                </th>
+                            </thead>
+                            <tbody>
+                                <ng-container>
+                                    <ng-container
+                                        *ngFor="let item of guaranteedList; let i = index; trackBy: trackByFn">
+                                        <tr class="collapse-toggle-row">
+                                            <td class="table-actions-col">
+                                                <div class="table-actions" style="width: 100px">
+                                                    <button type="button"
+                                                        class="btn btn-sm  m-btn--icon m-btn--icon-only collapsed"
+                                                        data-toggle="collapse" [attr.data-target]="'#id-00' + (i+1)"
+                                                        title="Collapse">
+                                                        <i class="la la-angle-up"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td>{{ item.salesmanNameEn }} </td>
+                                            <td>{{ item.salesmanFullName }} </td>
+                                            <td class="text-right">{{ item.totalCreditLimited | number: '.0-3'}}</td>
+                                            <td class="text-right">{{ item.totalDebitAmount| number: '.0-3' }}</td>
+                                            <td class="text-right">
+                                                <span
+                                                    [ngClass]="item.totalDebitRate < 70 ? 'text-success' : item.totalDebitRate < 100 ? 'text-warning':'text-danger'">
+                                                    {{ item.totalDebitRate | number: '.0-3'}}
+                                                </span>
+
+                                            </td>
+                                            <td class="text-right">{{ item.totalBillingAmount | number: '.0-3'}}
+                                            </td>
+                                            <td class="text-right">{{ item.totalPaidAmount | number: '.0-3'}}</td>
+                                            <td class="text-right">{{ item.totalBillingUnpaid | number: '.0-3'}}</td>
+                                            <!-- <td class="text-right">{{ item.totalObhAmount | number: '.0-3'}}</td> -->
+                                            <td class="text-right">
+                                                <span [ngClass]="'text-danger'">
+                                                    {{ item.totalOver1To15Day | number: '.0-3' }}
+                                                </span>
+                                            </td>
+                                            <td class="text-right">
+                                                <span [ngClass]="'text-danger'">
+                                                    {{ item.totalOver16To30Day | number: '.0-3' }}
+                                                </span>
+                                            </td>
+                                            <td class="text-right">
+                                                <span [ngClass]="'text-danger'">
+                                                    {{ item.totalOver30Day | number: '.0-3' }}
+                                                </span>
+                                            </td>
+
+                                        </tr>
+                                        <tr class="collapse-panel-row" app-table-collapse-row [id]="'id-00' + (i + 1)"
+                                            [parentId]="'#guaranteed-table'">
+                                            <table class="table table-secondary dataTable">
+                                                <thead app-table-header [headers]="subHeaders"
+                                                    (onClick)="sortDetailGuaranteed(item, $event.sortField, $event.order)">
+                                                    <th class="m--w-50 first table-actions-col">
+                                                        Action
+                                                    </th>
+                                                </thead>
+                                                <tbody>
+                                                    <ng-container>
+                                                        <tr
+                                                            *ngFor="let element of item.arPartners; let j = index; trackBy: trackByFn">
+                                                            <td class="table-actions-col">
+                                                                <div class="table-actions" style="width: 70px">
+                                                                    <app-permission-button type="detail"
+                                                                        (click)="viewDetail(element.agreementId)">
+                                                                    </app-permission-button>
+                                                                </div>
+                                                            </td>
+                                                            <td><a class="pointer"
+                                                                    (click)="viewDetail(element.agreementId)">{{ element.partnerCode }}</a>
+                                                            </td>
+                                                            <td>{{ element.partnerNameAbbr  }}
+                                                            </td>
+                                                            <td>{{ element.debitAmount | number: '.0-3'}}
+                                                            </td>
+
+                                                            <td>{{ element.billingAmount | number: '.0-3'}}
+                                                            </td>
+                                                            <td>{{ element.billingUnpaid | number: '.0-3'}}</td>
+                                                            <td>{{ element.paidAmount | number: '.0-3' }}</td>
+                                                            <td>{{ element.obhAmount | number: '.0-3' }}</td>
+                                                            <td>
+                                                                <span [ngClass]="'text-danger'">
+                                                                    {{ element.over1To15Day | number: '.0-3' }}
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <span [ngClass]="'text-danger'">
+                                                                    {{ element.over16To30Day | number: '.0-3' }}
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <span [ngClass]="'text-danger'">
+                                                                    {{ element.over30Day | number: '.0-3' }}
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <span
+                                                                    [ngClass]="element.agreementStatus === 'Active' ? 'text-success' : 'text-danger'">
+                                                                    {{ element.agreementStatus}}
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    </ng-container>
+                                                    <tr app-table-none-record *ngIf="!item.arPartners.length">
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </tr>
+                                    </ng-container>
+                                </ng-container>
+                                <tr app-table-none-record *ngIf="!guaranteedList.length">
+                                </tr>
+                                <tr app-table-row-loading *ngIf="isLoading"></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <app-pagination [total]="totalItems" [pageNum]="page" [itemPerPage]="pageSize"
+                        (onChange)="updatePagingData($event)"></app-pagination>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

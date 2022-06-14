@@ -1,0 +1,12 @@
+<div class="combogrid_icon pointer">
+    <ng-container *ngIf="isShowDelete">
+        <span class="combogrid_icon__clear" (click)="onClickClearIcon()">
+            <i class="la la-times" aria-hidden="true"></i>
+        </span>
+    </ng-container>
+    <ng-container *ngIf="isShowDropdown">
+        <span class="combogrid_icon__dropdown" (click)="onClickDopdownIcon()">
+            <i class=" fa fa-angle-down" aria-hidden="true"></i>
+        </span>
+    </ng-container>
+</div>

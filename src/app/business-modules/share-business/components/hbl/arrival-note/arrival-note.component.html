@@ -1,0 +1,169 @@
+<div class="arrival-note-wrapper m-animate-fade-in">
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <div class="row form-arrival-note m-form m-form--state m--margin-bottom-20">
+                <div class="col-md-4">
+                    <div class="form-group"
+                        [ngClass]="{'m-form__group has-danger': isSubmitted && !hblArrivalNote.arrivalNo}">
+                        <label required>Arrival No</label>
+                        <input type="text" class="form-control" [(ngModel)]="hblArrivalNote.arrivalNo">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>First Notice</label>
+                        <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                            <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" name="daterange"
+                                placeholder="Please Select" readonly [autoApply]="true" [singleDatePicker]="true"
+                                [alwaysShowCalendars]="true" [(ngModel)]="hblArrivalNote.arrivalFirstNotice" calendar
+                                [allowRemove]="!!hblArrivalNote.arrivalFirstNotice"
+                                (remove)="hblArrivalNote.arrivalFirstNotice = null" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Second Notice</label>
+                        <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                            <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" name="daterange"
+                                placeholder="Please Select" readonly [autoApply]="true" [singleDatePicker]="true"
+                                [alwaysShowCalendars]="true" [(ngModel)]="hblArrivalNote.arrivalSecondNotice" calendar
+                                [allowRemove]="!!hblArrivalNote.arrivalSecondNotice"
+                                (remove)="hblArrivalNote.arrivalSecondNotice = null" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="m-portlet">
+                <div class="alert-block__heading">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="alert-block__title">
+                            Freight Charge
+                        </h3>
+                        <div *ngIf="!(isLocked | async)" class="c-button-actions">
+                            <button type="button" class="btn btn-default m-btn--pill m-btn--icon m-btn--uppercase"
+                                (click)="syncSellingCharge()">
+                                <span><i class="la la-save"></i>
+                                    <span> Sync Selling </span>
+                                </span>
+                            </button>
+                            <button type="button" class="btn btn-info m-btn--pill m-btn--icon m-btn--uppercase"
+                                (click)="setDefaultFreightCharge()">
+                                <span><i class="la la-save"></i>
+                                    <span> Set Default </span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="m-portlet__body">
+                    <div class="row">
+                        <div class="table-wrapper table-editable m--margin-top-20">
+                            <table class="table table-bordered dataTable-edit">
+                                <thead app-table-header [headers]="headers"
+                                    (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                                </thead>
+                                <tbody>
+                                    <ng-container *ngIf="!!hblArrivalNote.csArrivalFrieghtCharges.length">
+                                        <tr class="m-form m-form--state"
+                                            *ngFor="let charge of hblArrivalNote.csArrivalFrieghtCharges; let i = index; trackBy: trackByFn">
+                                            <td>
+                                                {{charge.chargeName}}
+                                            </td>
+                                            <td>
+                                                {{charge.quantity | number: '.0-3'}}
+                                            </td>
+                                            <td>
+                                                {{charge.unitName}}
+                                            </td>
+                                            <td>
+                                                {{charge.unitPrice | currency: '':''}}
+                                            </td>
+                                            <td>
+                                                {{charge.currencyId}}
+                                            </td>
+                                            <td>
+                                                {{charge.vatrate | number: '.0-3'}}
+                                            </td>
+                                            <td>
+                                                {{charge.total | currency: '':''}}
+                                            </td>
+                                            <td>
+                                                {{charge.exchangeRate | currency: '':''}}
+                                            </td>
+                                            <td>
+                                                {{charge.notes}}
+                                            </td>
+                                            <td class="text-center">
+                                                <app-switch [(ngModel)]="charge.isShow"></app-switch>
+                                            </td>
+                                            <td class="text-center">
+                                                <app-switch [(ngModel)]="charge.isFull"></app-switch>
+                                            </td>
+                                            <td class="text-center">
+                                                <app-switch [(ngModel)]="charge.isTick"></app-switch>
+                                            </td>
+                                        </tr>
+                                    </ng-container>
+                                    <tr app-table-none-record [colspan]="headers.length  + 1"
+                                        *ngIf="!hblArrivalNote.csArrivalFrieghtCharges.length">
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="m-portlet">
+                <div class="alert-block__heading">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="alert-block__title">
+                            Header
+                        </h3>
+                        <div *ngIf="!(isLocked | async)">
+                            <button type="button" class="btn btn-info m-btn--pill m-btn--icon m-btn--uppercase"
+                                (click)="setDefaultHeadeFooter()">
+                                <span><i class="la la-save"></i>
+                                    <span> Set Default </span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="m-portlet__body">
+                    <div class="row">
+                        <div [froalaEditor]="optionEditor" [(froalaModel)]="hblArrivalNote.arrivalHeader">
+                            {{ hblArrivalNote.arrivalHeader }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="m-portlet">
+                <div class="alert-block__heading">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="alert-block__title">
+                            Footer
+                        </h3>
+                        <div *ngIf="!(isLocked | async)">
+                            <button type="button" class="btn btn-info m-btn--pill m-btn--icon m-btn--uppercase"
+                                (click)="setDefaultHeadeFooter()">
+                                <span><i class="la la-save"></i>
+                                    <span> Set Default </span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="m-portlet__body">
+                    <div class="row">
+                        <div [froalaEditor]="optionEditor" [(froalaModel)]="hblArrivalNote.arrivalFooter">
+                            {{ hblArrivalNote.arrivalFooter }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

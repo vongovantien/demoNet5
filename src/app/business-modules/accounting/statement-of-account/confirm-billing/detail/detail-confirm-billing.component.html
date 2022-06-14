@@ -1,0 +1,193 @@
+<div class="create-booking-note-page">
+    <app-sub-header> </app-sub-header>
+    <div class="m-content">
+        <div class="m-portlet">
+            <div class="m-portlet__body"
+                [ngStyle]="{'font-style': (accountingManagement.status !== 'New' ? 'italic' : '')}">
+                <div class="d-flex align-items-center justify-content-between p-1">
+                    <h3>{{accountingManagement.voucherId}}
+                        <span
+                            class="m-badge m-badge--{{accountingManagement.status === 'New' ? 'danger' : 'success'}} m-badge--wide">
+                            {{accountingManagement.status}} </span>
+                    </h3>
+                    <div>
+                        <div class="c-button-actions">
+                            <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="gotoList()">
+                            </app-default-button>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="m-animate-fade-in mt-3">
+                    <div class="m-form m-form--state">
+                        <div class="form" [formGroup]="formGroup">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="" required>Partner Name</label>
+                                                <app-combo-grid-virtual-scroll [disabled]="isDisabled"
+                                                    [currentActiveItemId]="{ field: 'id', value: partnerId.value}"
+                                                    [selectedDisplayFields]="['partnerNameVn']"
+                                                    [dataSources]="partners | async"
+                                                    [displayFields]="displayFieldsCustomer"
+                                                    (remove)="resetFormControl(partnerId)"
+                                                    placeholder="Please select partner">
+                                                </app-combo-grid-virtual-scroll>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <div class="form-group">
+                                                <label>Personal Name</label>
+                                                <input type="text" class="form-control" formControlName="personalName">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <div class="form-group">
+                                                <label>Address</label>
+                                                <input type="text" class="form-control"
+                                                    formControlName="partnerAddress">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <div class="form-group">
+                                                <label>Description</label>
+                                                <textarea class="form-control" cols="30" rows="5"
+                                                    formControlName="description"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <div class="form-group">
+                                                <label required>Payment Term</label>
+                                                <input type="text" class="form-control" formControlName="paymentTerm"
+                                                    [value]="accountingManagement.paymentTerm">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8">
+                                            <div class="form-group">
+                                                <label>General Exchange Rate
+                                                </label>
+                                                <input type="number" class="form-control"
+                                                    formControlName="totalExchangeRate" autoFormatCurrency numeric
+                                                    [decimals]="digitDecimal">
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label required>Voucher ID</label>
+                                                <input type="text" class="form-control" placeholder="Voucher"
+                                                    formControlName="voucherId">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label>Date</label>
+                                                <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                                    <input type="text" class="form-control m-input m-input--square"
+                                                        ngxDaterangepickerMd [locale]="{format: 'DD/MM/YYYY'}"
+                                                        [autoApply]="true" [singleDatePicker]="true"
+                                                        [alwaysShowCalendars]="true" formControlName="date"
+                                                        name="daterange" placeholder="DD/MM/YYYY" readonly calendar
+                                                        [allowRemove]="!!date.value && !!date.value.startDate"
+                                                        (remove)="resetFormControl(date)" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label required>Invoice No (Temp)</label>
+                                                <input type="text" class="form-control" placeholder="Invoice Temp"
+                                                    formControlName="invoiceNoTempt">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label>Real Invoice</label>
+                                                <input type="text" class="form-control" formControlName="invoiceNoReal">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label required>Series</label>
+                                                <input type="text" class="form-control" placeholder="Please input"
+                                                    formControlName="serie">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label>Payment Method</label>
+                                                <ng-select [items]="paymentMethods" formControlName="paymentMethod"
+                                                    bindValue="id" bindLabel="text" class="custom">
+                                                </ng-select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <div class="form-group">
+                                                <label>Account No</label>
+                                                <app-combo-grid-virtual-scroll [disabled]="isDisabled"
+                                                    [currentActiveItemId]="{ field: 'accountCode', value: accountNo.value}"
+                                                    [selectedDisplayFields]="['accountCode','accountNameLocal']"
+                                                    [dataSources]="chartOfAccounts | async"
+                                                    [displayFields]="displayFieldsChartAccount"
+                                                    (remove)="resetFormControl(accountNo)" placeholder="Please select">
+                                                </app-combo-grid-virtual-scroll>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label>Total Amount</label>
+                                                <input type="text" class="form-control"
+                                                    [value]="accountingManagement.totalAmount | number: '.0-3'"
+                                                    formControlName="totalAmount">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label>Currency</label>
+                                                <ng-select [items]="listCurrency" formControlName="currency"
+                                                    bindValue="id" bindLabel="text" class="custom">
+                                                </ng-select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label>Attach Document Info</label>
+                                        <textarea class="form-control" cols="30" rows="5"
+                                            [value]="accountingManagement.attachDocInfo"
+                                            formControlName="attachDocInfo"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row m--margin-top-20">
+                                <div class="col-md-6">
+                                    <span>Created:
+                                        {{accountingManagement.datetimeCreated | date: 'dd/MM/yyyy HH:mm'}} by
+                                    </span>
+                                    <span class="text-success">{{accountingManagement.userNameCreated}}</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <span>Modified:
+                                        {{accountingManagement.datetimeModified | date: 'dd/MM/yyyy HH:mm'}} by
+                                    </span> <span class="text-success">{{accountingManagement.userNameModified}}</span>
+                                </div>
+                                <ng-content></ng-content>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <list-charge-confirm-billing></list-charge-confirm-billing>
+            </div>
+        </div>
+    </div>
+</div>

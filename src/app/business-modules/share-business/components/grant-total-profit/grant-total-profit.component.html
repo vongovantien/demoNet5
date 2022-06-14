@@ -1,0 +1,43 @@
+<div class="m-portlet">
+    <div class="m-portlet__head alert-block__heading pointer">
+        <div class="m-portlet__head-caption">
+            <div class="m-portlet__head-title w-100">
+                <h3 class="m-portlet__head-text collapse-toggle" data-toggle="collapse" data-target="#data-summary">
+                    <i class="la la-angle-up m--margin-right-5"></i> Grand Total Profit
+                </h3>
+            </div>
+        </div>
+    </div>
+    <div class="m-portlet__body">
+        <div class="collapse show" id="data-summary">
+            <div class="table-wrapper" id="">
+                <table class="table table-striped table-brand">
+                    <thead app-table-header [headers]="headers" [align]="right">
+                        <th class="first"></th>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngIf="!!(shipmentProfits$ | async)?.length">
+                            <tr *ngFor="let profit of (shipmentProfits$ | async); let i = index; trackBy: trackByFn">
+                                <td>{{profit.hblNo}}</td>
+                                <td *ngFor="let header of headers; let j = index; trackBy: trackByFn"
+                                    class="text-right">
+                                    <app-table-cell [item]="profit" [type]="header.dataType" [field]="header.field">
+                                    </app-table-cell>
+                                </td>
+                            </tr>
+                        </ng-container>
+                        <tr app-table-none-record *ngIf="!(shipmentProfits$ | async).length">
+                        </tr>
+                    </tbody>
+                    <tfoot *ngIf="!!(shipmentProfits$ | async)?.length">
+                        <tr class="font-weight-bold">
+                            <td>Total</td>
+                            <td class="text-right">{{totalUSD$ | async | number: '.0-3'}} USD</td>
+                            <td class="text-right">{{totalVND$ | async | number: '.0-3'}} VND</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

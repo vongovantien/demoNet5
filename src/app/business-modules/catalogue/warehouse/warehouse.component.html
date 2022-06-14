@@ -1,0 +1,96 @@
+<div class="m-subheader">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <app-breadcrumb></app-breadcrumb>
+        </div>
+        <div class="c-button-actions">
+            <app-permission-button (onClick)="showAdd()" type="add" title="Add New"></app-permission-button>
+            <app-permission-button [routerLink]="['/home/catalogue/ware-house/import']" type="import" title="Import">
+            </app-permission-button>
+            <app-permission-button type="export" (onClick)="export()" title="Export">
+            </app-permission-button>
+        </div>
+    </div>
+</div>
+
+<div class="m-content">
+
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <div class="m-form">
+                <app-search-options [configSearch]="configSearch" (search)="onSearch($event)"
+                    (reset_search)=resetSearch($event)></app-search-options>
+            </div>
+        </div>
+    </div>
+
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <div class="table-wrapper">
+                <table class="table table-striped table-brand dataTable">
+                    <thead app-table-header [headers]="headers"
+                        (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                        <th class="m--w-50 first table-actions-col">
+                            Actions
+                        </th>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngIf="!!warehouses.length">
+                            <tr *ngFor="let warehouse of warehouses;let i = index;">
+                                <td class="table-actions-col">
+                                    <div class="table-actions" style="width: 70px">
+                                        <app-permission-button type="detail" (onClick)="showDetail(warehouse)"
+                                            [user]="warehouse.userCreated">
+                                        </app-permission-button>
+                                        <app-permission-button type="delete" (onClick)="showConfirmDelete(warehouse)"
+                                            [user]="warehouse.userCreated">
+                                        </app-permission-button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span>{{warehouse.code}}</span>
+                                </td>
+                                <td>
+                                    <span>{{warehouse.nameEn}}</span>
+                                </td>
+                                <td>
+                                    <span>{{warehouse.nameVn}}</span>
+                                </td>
+                                <td>
+                                    <span>{{warehouse.displayName}}</span>
+                                </td>
+                                <td>
+                                    <span>{{warehouse.countryName}}</span>
+                                </td>
+                                <td>
+                                    <span>{{warehouse.provinceName}}</span>
+                                </td>
+                                <td>
+                                    <span>{{warehouse.districtName}}</span>
+                                </td>
+                                <td>
+                                    <span>{{warehouse.address}}</span>
+                                </td>
+                                <td>
+                                    <span [ngClass]="warehouse.active ? 'text-success' : 'text-danger'">
+                                        {{ warehouse.active ? 'Active' : 'Inactive'}}
+                                    </span>
+                                </td>
+                            </tr>
+                        </ng-container>
+                        <tr app-table-row-loading *ngIf="isLoading"></tr>
+                        <tr app-table-none-record *ngIf="!warehouses.length && !isLoading"></tr>
+                    </tbody>
+                </table>
+            </div>
+            <app-pagination [total]="totalItems" [pageNum]="page" [itemPerPage]="pageSize"
+                (onChange)="updatePagingData($event)"></app-pagination>
+        </div>
+    </div>
+</div>
+
+<form-warehouse (saveSuccess)="resetSearch($event)"></form-warehouse>
+
+<confirm-popup body="You want to delete this warehouse?" (onSubmit)="onDelete($event)"></confirm-popup>
+
+<permission-403-popup></permission-403-popup>

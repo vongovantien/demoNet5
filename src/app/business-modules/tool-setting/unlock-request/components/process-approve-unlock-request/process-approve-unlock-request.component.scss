@@ -1,0 +1,22 @@
+:host {
+    .list-progress-wp {
+        .list-progress {
+            .progress-content {
+                .icon-check {
+                    margin: 20px 0px;
+                    min-height: 55px;
+                    i {
+                        font-size: 48px;
+                        background: #0ca940;
+                        color: #fff;
+                        border-radius: 50%;
+                        -webkit-border-radius: 50%;
+                        -moz-border-radius: 50%;
+                        -ms-border-radius: 50%;
+                        -o-border-radius: 50%;
+                    }
+                }
+            }
+        }
+    }
+}

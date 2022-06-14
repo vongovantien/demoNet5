@@ -1,0 +1,311 @@
+<div class="m-portlet" [ngClass]="{'margin-bottom-100': !isGeneralReport}" style="padding-bottom:20px;">
+    <div class="m-portlet__body">
+        <!--begin::Form-->
+        <form class="m-form m-form--state" [formGroup]="formSearch" (ngSubmit)="searchReport()">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label class="form-control-label" for="">
+                            Date
+                        </label>
+                        <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                            [autoApply]="true" [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" [ranges]="ranges"
+                            [alwaysShowCalendars]="true" name="daterange" formControlName="serviceDate"
+                            placeholder="From date - to date" readonly />
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label class="form-control-label">
+                            Date Type
+                        </label>
+                        <ng-select formControlName="dateType" [clearable]="false" [items]="dateTypeList" class="custom"
+                            bindLabel="text" bindValue="id">
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group"
+                        [ngClass]="{'m-form__group has-danger': (isCommissionIncentive && isSubmitted && typeReport.value == typeComReportList[2].id && (!this.customerActive || !this.customerActive.length))}">
+                        <label class="form-control-label">
+                            {{ isSheetDebitRpt ? "Partner": "Customer" }}
+                        </label>
+                        <label *ngIf="isCommissionIncentive && typeReport.value == typeComReportList[2].id" required></label>
+                        <!-- <app-combo-grid-virtual-scroll [currentActiveItemId]="{ field: 'id', value: customer.value}"
+                            (itemSelected)="onSelectDataFormInfo($event, 'customer')"
+                            [selectedDisplayFields]="['shortName']" [dataSources]="customers | async"
+                            [displayFields]="displayFieldsCustomer" [height]="150"
+                            (remove)="resetFormControl(customer)">
+                        </app-combo-grid-virtual-scroll> -->
+                        <ng-select formControlName="customer" [items]="customers | async" [(ngModel)]="customerActive"
+                            [virtualScroll]='true' [multiple]='true' [clearable]='true' class="custom"
+                            bindLabel="taxCodeAbbrName" bindValue="id" (open)="getPartnerData('customer')">
+                        </ng-select>
+                        <div class="form-control-feedback" *ngIf="isCommissionIncentive && isSubmitted && typeReport.value == typeComReportList[2].id && (!this.customerActive || !this.customerActive.length)">
+                            Please select customer
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label class="form-control-label" for="">
+                            Service
+                        </label>
+                        <ng-select [multiple]='true' class="custom" formControlName="service"
+                            (remove)="onRemoveDataFormInfo($event, 'service')" [items]="serviceList"
+                            (add)="onSelectDataFormInfo($event, 'service')" [(ngModel)]="serviceActive" bindLabel="text"
+                            bindValue="id">
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group" *ngIf="!isCommissionIncentive">
+                        <label class="form-control-label">
+                            Currency
+                        </label>
+                        <ng-select formControlName="currency" class="custom" [clearable]="false" [items]="currencyList"
+                            bindLabel="id" bindValue="id">
+                        </ng-select>
+                    </div>
+                    <div class="form-group" *ngIf="isCommissionIncentive"
+                            [ngClass]="{'m-form__group has-danger': (isCommissionIncentive && isSubmitted && (typeReport.value !== typeComReportList[2].id && !this.partnerAccount.value))}">
+                        <label class="form-control-label">
+                            Beneficiary
+                        </label>
+                        <label *ngIf="typeReport.value !== typeComReportList[2].id" required></label>
+                        <app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event, 'acPartner')"
+                            [currentActiveItemId]="{ field: 'id', value: partnerAccount.value}"
+                            [selectedDisplayFields]="['partnerNameVn']" [dataSources]="partners | async" (click)="getPartnerData('partner')"
+                            [displayFields]="displayFieldsPartner" (remove)="resetFormControl(partnerAccount)"
+                            placeholder="Select Beneficiary">
+                        </app-combo-grid-virtual-scroll>
+                        <div class="form-control-feedback" *ngIf="isCommissionIncentive && isSubmitted && (typeReport.value !== typeComReportList[2].id && !this.partnerAccount.value)">
+                            Please select beneficiary!
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group" *ngIf="!isCommissionIncentive">
+                        <label class="form-control-label">
+                            Ref No
+                        </label>
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <input type="text" id="searchText" class="form-control m-input m-input--square"
+                                    formControlName="refNo" autocomplete="nope">
+                            </div>
+                            <div class="col-lg-5">
+                                <ng-select formControlName="refNoType" [clearable]="false" [items]="refNoTypeList"
+                                    class="custom" bindLabel="text" bindValue="id">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" *ngIf="isCommissionIncentive">
+                        <label class="form-control-label" for="">
+                            Ex.Rate
+                        </label>
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <input type="number" class="form-control" formControlName="exchangeRate"
+                                    autoFormatCurrency numeric>
+                            </div>
+                            <div class="col-lg-5">
+                                <a class="pointer" style="text-decoration: underline;"
+                                    (click)="openInputShipment()">Shipment List</a>&nbsp;&nbsp;<span
+                                    class="text-warning">{{numberOfShipment}} item</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--begin::Advance-search-->
+
+            <div class="collapse" id="advance-filter-search-report">
+                <div class="div-inside bg-secondary">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group" *ngIf="!!menuPermission">
+                                <label class="form-control-label" for="">
+                                    Office
+                                </label>
+                                <ng-select [multiple]='true' formControlName="office" class="custom"
+                                    (change)="detectChangeDataInfo($event, 'office')" [items]="officeList"
+                                    [(ngModel)]="officeActive"
+                                    [readonly]="menuPermission.list !== 'Office' && menuPermission.list !== 'Company' && menuPermission.list !== 'All'"
+                                    bindLabel="text" bindValue="id">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group" *ngIf="!!menuPermission">
+                                <label class="form-control-label" for="">
+                                    Department
+                                </label>
+                                <ng-select [multiple]='true' formControlName="department" class="custom"
+                                    (change)="detectChangeDataInfo($event, 'department')" [items]="departmentList"
+                                    [(ngModel)]="departmentActive"
+                                    [readonly]="menuPermission.list !== 'Department' && menuPermission.list !== 'Office' && menuPermission.list !== 'Company' && menuPermission.list !== 'All'"
+                                    bindLabel="text" bindValue="id">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group" *ngIf="!!menuPermission">
+                                <label class="form-control-label" for="">
+                                    Group
+                                </label>
+                                <ng-select [multiple]='true' formControlName="group" class="custom"
+                                    (change)="detectChangeDataInfo($event, 'group')" [items]="groupList"
+                                    [(ngModel)]="groupActive"
+                                    [readonly]="menuPermission.list !== 'Group' && menuPermission.list !== 'Department' && menuPermission.list !== 'Office' && menuPermission.list !== 'Company' && menuPermission.list !== 'All'"
+                                    bindLabel="text" bindValue="id">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group" *ngIf="!!menuPermission">
+                                <label class="form-control-label" for="">
+                                    Staff Name
+                                </label>
+                                <ng-select [multiple]='true' formControlName="staff" class="custom"
+                                    (change)="detectChangeDataInfo($event, 'staff')" [items]="staffList"
+                                    [(ngModel)]="staffActive"
+                                    [readonly]="menuPermission.list !== 'Group' && menuPermission.list !== 'Department' && menuPermission.list !== 'Office' && menuPermission.list !== 'Company' && menuPermission.list !== 'All'"
+                                    bindLabel="text" bindValue="id">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-control-label" for="">
+                                    Type
+                                </label>
+                                <ng-select formControlName="staffType" [clearable]="false" [items]="staffTypeList"
+                                    class="custom" bindLabel="text" bindValue="id">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4" *ngIf="!isSheetDebitRpt">
+                            <div class="form-group">
+                                <label class="form-control-label" for="">
+                                    {{isGeneralReport? "Carrier" : "Carrier/Supplier/Vendor"}}
+                                </label>
+                                <app-combo-grid-virtual-scroll
+                                    [currentActiveItemId]="{ field: 'id', value: carrier.value}"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'carrier')"
+                                    [selectedDisplayFields]="['shortName']" [dataSources]="carriers | async"
+                                    [displayFields]="displayFieldsCustomer" [height]="150" (click)="getPartnerData('carrier')"
+                                    (remove)="resetFormControl(carrier)">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4" *ngIf="!isSheetDebitRpt">
+                            <div class="form-group">
+                                <label class="form-control-label" for="">
+                                    Agent
+                                </label>
+                                <app-combo-grid-virtual-scroll
+                                    [currentActiveItemId]="{ field: 'id', value: agent.value}"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'agent')"
+                                    [selectedDisplayFields]="['shortName']" [dataSources]="agents | async"
+                                    [displayFields]="displayFieldsCustomer" [height]="150" (click)="getPartnerData('agent')"
+                                    (remove)="resetFormControl(agent)">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-control-label" for="">
+                                    P.O.L/A.O.L
+                                </label>
+                                <app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event, 'pol')"
+                                    [currentActiveItemId]="{ field: 'id', value: pol.value}"
+                                    [selectedDisplayFields]="['nameEn']" [dataSources]="ports | async"
+                                    [displayFields]="displayFieldPort" [height]="150" (remove)="resetFormControl(pol)">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-control-label" for="">
+                                    P.O.D/A.O.D
+                                </label>
+                                <app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event, 'pod')"
+                                    [currentActiveItemId]="{ field: 'id', value: pod.value}"
+                                    [selectedDisplayFields]="['nameEn']" [dataSources]="ports | async"
+                                    [displayFields]="displayFieldPort" [height]="150" (remove)="resetFormControl(pod)">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!--end::Advance-search-->
+            <div class="form-actions">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label class="form-control-label" for="">&nbsp;</label>
+                            <a class="btn btn-link collapsed collapse-toggle" data-toggle="collapse"
+                                href="#advance-filter-search-report" role="button" aria-expanded="false"
+                                aria-controls="advance-filter-search-report">
+                                <span>
+                                    <i class="la la-angle-up"></i>
+                                    <span>Advance Filter</span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="form-group" *ngIf="!isGeneralReport">
+                            <label class="form-control-label" for="">
+                                Report Type
+                            </label>
+                            <ng-select formControlName="typeReport" [clearable]="false" [items]="typeReportActive" appendTo="body"
+                                class="custom" (add)="onSelectDataFormInfo($event, 'typeReport')" bindLabel="text"
+                                bindValue="id">
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 m--align-right">
+                        <div class="form-group">
+                            <label class="form-control-label" for="">
+                                &nbsp;
+                            </label>
+                            <div>
+                                <button type="submit" class="btn btn-brand  m-btn--icon m-btn--uppercase">
+                                    <span>
+                                        <i class="la la-search"></i>
+                                        <span>
+                                            Apply
+                                        </span>
+                                    </span>
+                                </button>
+                                <button type="button" class="btn btn-default  m-btn--icon m-btn--uppercase"
+                                    (click)="resetSearch()">
+                                    <span>
+                                        <i class="la la-refresh"></i>
+                                        <span>
+                                            Reset Filter
+                                        </span>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!--end::Form-->
+    </div>
+</div>
+
+<input-shipment-popup (onInputShipment)="onShipmentList($event)"></input-shipment-popup>

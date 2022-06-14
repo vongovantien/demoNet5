@@ -1,0 +1,29 @@
+:host ::ng-deep {
+    .eta-date-picker .daterange-rtl .md-drppicker {
+        left: -105px !important;
+    }
+    .table-prepaid-collect {
+        .form-control {
+            background: inherit;
+            padding: 4px 8px;
+            border: 0;
+        }
+    }
+
+    .table-dims-wrapper {
+        width: 100%;
+        max-height: 170px;
+        overflow-y: scroll;
+    }
+    .bg-separate {
+        background-color: #f5bcba;
+    }
+
+    .opacity-5 {
+        opacity: 0.5;
+    }
+
+    .shipper-description{
+        padding-top:0;
+    }
+}

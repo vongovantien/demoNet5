@@ -1,0 +1,110 @@
+:host /deep/ {
+    .list-advance-carrier-wrapper {
+        .list-advance-carrier-content {
+            .table-wrapper {
+                padding-bottom: 60px !important;
+                &.h {
+                    max-height: 510px;
+                    min-height: 400px;
+                    // padding-bottom: 175px;
+                }
+                .form-group {
+                    .form-control {
+                        font-size: 12px;
+                        color: #000;
+                    }
+                }
+            }
+            .cdk-virtual-scroll-viewport {
+                overflow-y: auto;
+                overflow-x: hidden;
+                height: 150px !important;
+            }
+            .table-editable {
+                // * Calendar
+                .table-date {
+                    .table-condensed {
+                        tr {
+                            th:not(:first-child) {
+                                min-width: 40px;
+                            }
+                            td:not(:first-child) {
+                                min-width: auto;
+                            }
+                        }
+                    }
+                }
+                .e--combogrid {
+                    table {
+                        white-space: pre-wrap;
+                    }
+                    .form-control {
+                        // border: unset;
+                        background: inherit;
+                        padding: 4px 8px;
+                    }
+                    tr {
+                        th:not(:first-child) {
+                            min-width: 130px;
+                        }
+                        td:not(:first-child) {
+                            min-width: 130px;
+                        }
+                        th:first-child {
+                            min-width: 130px;
+                        }
+                        td:first-child {
+                            min-width: 130px;
+                        }
+                    }
+                }
+                .bg-warning {
+                    .form-control {
+                        background: inherit;
+                    }
+                    .fixed-side {
+                        background: rgb(255,242,204) !important;
+                    }
+                    .e--combogrid_icon,
+                    .e--combogrid_icon__clear {
+                        background: rgb(255,242,204) !important;
+                    }
+                }
+            }
+
+            .quantity-hint {
+                .p-l-none {
+                    padding-left: 0;
+                }
+                .p-r-none {
+                    padding-right: 0;
+                }
+            }
+            .m--w-90 {
+                min-width: 90px;
+            }
+
+            .fixed-side {
+                left: -1px;
+                background: #fff;
+            }
+
+            .dropdown-charge {
+                position: absolute;
+                z-index: 2;
+            }
+        }
+    }
+
+    .list-master-unit {
+        .e--combogrid-content {
+            min-width: 265px;
+        }
+    }
+
+    .list-master-charge {
+        .e--combogrid-content {
+            min-width: 520px;
+        }
+    }
+}

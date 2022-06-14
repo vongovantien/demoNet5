@@ -1,0 +1,40 @@
+<div class="sea-lcl-create-hbl-page">
+    <app-sub-header>
+        <div class="c-button-actions">
+            <app-default-button *ngIf="(permissionShipments | async)?.allowUpdate" (click)="showImportPopup()"
+                [buttonSetting]="importButtonSetting">
+            </app-default-button>
+            <app-default-button *ngIf="(permissionShipments | async)?.allowUpdate" (click)="showCreatePpoup()"
+                [buttonSetting]="saveButtonSetting">
+            </app-default-button>
+            <app-default-button (click)="combackToHBLList()" [buttonSetting]="cancelButtonSetting"></app-default-button>
+        </div>
+    </app-sub-header>
+</div>
+
+<div class="m-content">
+    <div class="m-portlet__body">
+        <tabset class="custom-class-tab">
+            <tab heading="HBL Detail">
+                <app-form-create-hbl-sea-import [type]="'SLI'"></app-form-create-hbl-sea-import>
+
+                <hbl-goods-summary-lcl (onSelectQty)="selectedPackage($event)"> HBL Goods Summary
+                </hbl-goods-summary-lcl>
+            </tab>
+            <tab heading="Arrival Notice">
+                <hbl-arrival-note-sea type="SLI"></hbl-arrival-note-sea>
+            </tab>
+            <tab heading="Delivery Order (D/O)">
+                <hbl-delivery-order type="SLI"></hbl-delivery-order>
+            </tab>
+            <tab heading="Proof Of Delivery">
+                <hbl-proof-of-delivery type="SLI"></hbl-proof-of-delivery>
+            </tab>
+        </tabset>
+    </div>
+</div>
+
+<import-house-bill-detail (onImport)="onImport($event)" [jobId]="jobId" [typeTransaction]="9">
+</import-house-bill-detail>
+
+<ng-template inject></ng-template>

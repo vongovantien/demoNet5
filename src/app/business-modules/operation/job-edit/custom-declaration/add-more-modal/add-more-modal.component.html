@@ -1,0 +1,181 @@
+<div class="modal fade" id="add-custom-declaration-modal" bsModal #popup="bs-modal" role="dialog"
+    (onHide)="onHide($event)" (onShow)="onShow($event)">
+    <div class="modal-dialog c-modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Custom Declaration</h5>
+                <button type="button" class="close" aria-label="Close"
+                    (click)="checkAllNotImported = false;changeAllNotImported(); close()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="modal-actions c-button-actions">
+                    <button type="button" class="btn btn-sm btn-default  m-btn--icon m-btn--uppercase"
+                        (click)="refreshData(); checkAllNotImported = false; changeAllNotImported()">
+                        <span>
+                            <i class="la la-refresh"></i>
+                            <span>
+                                Refresh
+                            </span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="m-form m-form--state">
+                    <div class="m-form m-form--state">
+                        <div class="m-form m-form--label-align-right">
+                            <div class="row align-items-center">
+                                <form class="col-3" [formGroup]="form">
+                                    <div class="form-group">
+                                        <div (clickOutside)="isShow = false">
+                                            <input name="keyword"
+                                                class="form-control m-input m-input--square dropdown-toggle" type="text"
+                                                placeholder="Input keyword" (click)="isShow = !isShow"
+                                                formControlName="customNo"
+                                                (ngModelChange)="onSearchAutoComplete($event)">
+                                        </div>
+                                    </div>
+                                </form>
+                                <button type="button" class="btn btn-success  m-btn--icon m-btn--uppercase"
+                                    data-toggle="modal" (click)='showPopupSearch()'>
+                                    <span>
+                                        <i class="la la-plus"></i>
+                                        <span>
+                                            Search Multiple
+                                        </span>
+                                    </span>
+                                </button>
+
+
+                            </div>
+
+                        </div>
+                        <div class="table-wrapper fit-height-div">
+                            <table class="table table-striped table-brand dataTable">
+                                <thead>
+                                    <tr>
+                                        <th class="table-actions-col no-sorting">
+                                            <div class="table-actions">
+                                                <label class="m-checkbox">
+                                                    <input type="checkbox" name="checkAllNotImported"
+                                                        [checked]="checkAllNotImported"
+                                                        (change)="checkAllNotImported =! checkAllNotImported; changeAllNotImported()">
+                                                    <span></span>
+                                                </label>
+                                            </div>
+                                        </th>
+                                        <th *ngFor="let header of headers; let i = index; trackBy: trackByFn"
+                                            [class]="sortClass(header.sortable ? header.field : '')"
+                                            (click)="sortBy(header.sortable ? header.field : '')">
+                                            <span>{{header.title}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="tbody-group">
+                                    <tr *ngIf="!isLoading && !notImportedCustomClearances.length" app-table-none-record
+                                        [colspan]="headers.length + 1">
+                                    </tr>
+                                    <ng-container *ngIf="!isLoading && !!notImportedCustomClearances.length">
+                                        <tr class=""
+                                            *ngFor="let item of notImportedCustomClearances; let i=index; trackBy: trackByFn">
+                                            <td class="table-actions-col">
+                                                <div class="table-actions">
+                                                    <label class="m-checkbox">
+                                                        <input type="checkbox" [attr.name]="item.clearanceNo"
+                                                            [checked]="item.isChecked"
+                                                            (change)="item.isChecked=!item.isChecked; removeAllChecked();">
+                                                        <span></span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span>{{ item.clearanceNo }}</span>
+                                            </td>
+                                            <td>
+                                                <span>{{ item.datetimeCreated | date:'dd/MM/yyyy' }}</span>
+                                            </td>
+                                            <td>
+                                                <span>{{ item.clearanceDate| date:'dd/MM/yyyy' }}</span>
+                                            </td>
+                                            <td>
+                                                <span>{{ item.hblid }}</span>
+                                            </td>
+                                            <td>
+                                                <span>{{ item.exportCountryCode }}</span>
+                                            </td>
+                                            <td>
+                                                <span>{{ item.importCountryCode }}</span>
+                                            </td>
+                                            <td>
+                                                <span>{{ item.commodityCode }}</span>
+                                            </td>
+                                            <td>
+                                                <span>{{ item.qtyCont }}</span>
+                                            </td>
+                                            <td>
+                                                <span>{{ item.firstClearanceNo }}</span>
+                                            </td>
+                                            <td>
+                                                <span>{{ item.note }}</span>
+                                            </td>
+                                        </tr>
+                                    </ng-container>
+                                    <tr app-table-row-loading *ngIf="isLoading && !notImportedCustomClearances.length">
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="pagination-nav">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="select-box" style="max-width: 190px">
+                                        <select class="form-control" id="" aria-label="" [(ngModel)]="pageSize"
+                                            (change)="selectPageSize(pageSize)" name="pagesize">
+                                            <ng-container
+                                                *ngFor="let item of numberToShow; index as i; first as isFirst">
+                                                <option [ngValue]="item" [selected]="isFirst">{{item}} entries / page
+                                                </option>
+                                            </ng-container>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6" *ngIf="totalItems > pageSize">
+                                    <div class="float-right">
+                                        <pagination [boundaryLinks]="true" [totalItems]="totalItems"
+                                            [itemsPerPage]="pageSize" (pageChanged)="pageChanged($event)"
+                                            [(ngModel)]="page" [maxSize]=10>
+                                        </pagination>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer m--align-center">
+                <button class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="updateJobToClearance()">
+                    <span>
+                        <i class="la la-save"></i>
+                        <span>
+                            add
+                        </span>
+                    </span>
+                </button>
+                <button type="button" class="btn btn-cancel  m-btn--icon m-btn--uppercase"
+                    (click)="checkAllNotImported = false;changeAllNotImported();close()">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span>
+                            cancel
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-search-multiple (isCloseModal)="closepp($event)"></app-search-multiple>

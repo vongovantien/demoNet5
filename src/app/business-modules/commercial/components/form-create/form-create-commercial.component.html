@@ -1,0 +1,279 @@
+<div class="m-animate-fade-in mt-3">
+    <div class="m-form m-form--state">
+        <div class="form" [formGroup]="formGroup">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Partner Id</label>
+                        <input type="text" class="form-control" formControlName="accountNo">
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="form-group"
+                        [ngClass]="{'m-form__group has-danger':(isSubmitted || partnerNameEn.dirty) && !partnerNameEn.valid }">
+                        <label required>English Name</label>
+                        <input type="text" class="form-control" formControlName="partnerNameEn" [attr.disabled]="this.isActive === true ? 'disabled' : null">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group"
+                        [ngClass]="{'m-form__group has-danger':(isSubmitted || shortName.dirty) && !shortName.valid }">
+                        <label required>ABBR Name</label>
+                        <input type="text" class="form-control" formControlName="shortName" [attr.disabled]="this.isActive === true ? 'disabled' : null">
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="form-group"
+                        [ngClass]="{'m-form__group has-danger':(isSubmitted || partnerNameVn.dirty) && !partnerNameVn.valid }">
+                        <label required>Local Name</label>
+                        <input type="text" class="form-control" formControlName="partnerNameVn" [attr.disabled]="this.isActive === true ? 'disabled' : null">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSubmitted  && ( !partnerLocation.valid || !partnerLocation.value)}">
+                                <label required class="form-control-label"> Partner Location </label>
+                                <ng-select (change)="selectedPartnerLocation($event)" [items]="partnerLocations"
+                                    class="custom" name="partnerLocation" [clearable]="false" [readonly]="this.isActive === true ? true : false" 
+                                    formControlName="partnerLocation" placeholder="Partner location">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger':(isSubmitted || taxCode.dirty) && !taxCode.valid }">
+                                <label required>Tax Code</label>
+                                <input type="text" class="form-control" formControlName="taxCode"
+                                    [attr.disabled]="active ? 'disabled' : null">
+                                <div class="form-control-feedback" *ngIf="isSubmitted && 
+                        ((taxCode.errors | equalError:'maxlength') || (taxCode.errors | equalError:'minlength'))">
+                                    Tax Code include 7 - 14 characters!
+                                </div>
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmitted && taxCode.errors  | equalError:'pattern'">
+                                    Tax Code invalid
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="col-lg-8">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger':(isSubmitted || internalReferenceNo.dirty) && !internalReferenceNo.valid}">
+                                <label>Internal Reference</label>
+                                <input [attr.disabled]="isDisabled === true ? 'disabeld' : null" #focusInput type="text"
+                                    class="form-control" formControlName="internalReferenceNo">
+                                <div class="form-control-feedback" *ngIf="isSubmitted && 
+                                ((internalReferenceNo.errors | equalError: 'maxlength' )|| (internalReferenceNo.errors | equalError: 'minlength'))
+                                ">
+                                    Internal Reference include 3 - 10 characters!
+                                </div>
+                                <!---->
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmitted && internalReferenceNo.errors  | equalError:'pattern'">
+                                    Internal Reference invalid
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>A/C Ref</label>
+                                <app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event, 'acRef')"
+                                    [currentActiveItemId]="{ field: 'id', value: parentId.value, hardValue: parentName }"
+                                    [selectedDisplayFields]="['shortName']" [dataSources]="acRefCustomers | async"
+                                    [displayFields]="displayFieldCustomer" placeholder="Select partner"
+                                    (remove)="resetFormControl(parentId);onRemove()" [disabled]="isBranchSub||(this.isActive === true ? true : false)">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row m--margin-top-20">
+                <div class="col-lg-12">
+                    <div class="alert-block__heading font-weight-bold row m-0 pl-0 pr-0">
+                        <div class="col-lg-4">Shipping Address</div>
+                        <div class="col-lg-4">
+                            <div class="d-flex align-items-center justify-content-between">
+                                Billing Address
+                                <i class="la la-copy pointer" (click)="copyInfoShipping($event)"></i>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            Contact Info
+                            <span class="collapse-toggle" data-toggle="collapse" data-target="#data-contact">
+                                <i class="la la-angle-up m--margin-right-5 float-right" data-toggle="collapse"
+                                    data-target="#data-contact"></i></span>
+                        </div>
+                    </div>
+                    <div class="row collapse show" id="data-contact">
+                        <div class="col-lg-4">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group"
+                                        [ngClass]="{'m-form__group has-danger':(isSubmitted || addressShippingEn.dirty) && !addressShippingEn.valid }">
+                                        <label required>EN Address</label>
+                                        <textarea rows="5" class="form-control"
+                                            formControlName="addressShippingEn"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group"
+                                        [ngClass]="{'m-form__group has-danger':(isSubmitted || addressShippingVn.dirty) && !addressShippingVn.valid }">
+                                        <label required>Local Address</label>
+                                        <textarea rows="5" class="form-control"
+                                            formControlName="addressShippingVn"></textarea>
+
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group"
+                                        [ngClass]="{'m-form__group has-danger': isSubmitted  && countryShippingId.invalid}">
+                                        <label required>Country</label>
+                                        <app-combo-grid-virtual-scroll
+                                            (itemSelected)="onSelectDataFormInfo($event, 'shippping-country')"
+                                            [currentActiveItemId]="{ field: 'id', value: countryShippingId.value, hardValue: countryShippingIdName}"
+                                            [selectedDisplayFields]="['nameEn']" [dataSources]="countries | async"
+                                            [displayFields]="displayFieldCountry" placeholder="Select country"
+                                            (remove)="resetFormControl(countryShippingId)" [size]="15">
+                                        </app-combo-grid-virtual-scroll>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label>City</label>
+                                        <app-combo-grid-virtual-scroll
+                                            (itemSelected)="onSelectDataFormInfo($event, 'shippping-city')"
+                                            [currentActiveItemId]="{ field: 'id', value: provinceShippingId.value, hardValue: provinceShippingIdName}"
+                                            [selectedDisplayFields]="['name_EN']" [dataSources]="shipingsProvinces"
+                                            [displayFields]="displayFieldCity" placeholder="Select city"
+                                            (remove)="resetFormControl(provinceShippingId)" [size]="15">
+                                        </app-combo-grid-virtual-scroll>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label>Zip Code</label>
+                                        <input type="text" class="form-control" formControlName="zipCodeShipping">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="row ">
+                                <div class=" col-lg-12">
+                                    <div class="form-group"
+                                        [ngClass]="{'m-form__group has-danger':(isSubmitted || addressEn.dirty) && !addressEn.valid }">
+                                        <label required>EN Address</label>
+                                        <textarea rows="5" class="form-control" formControlName="addressEn"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group"
+                                        [ngClass]="{'m-form__group has-danger':(isSubmitted || addressVn.dirty) && !addressVn.valid }">
+                                        <label required>Local Address</label>
+                                        <textarea rows="5" class="form-control" formControlName="addressVn"></textarea>
+
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group"
+                                        [ngClass]="{'m-form__group has-danger': isSubmitted  && countryId.invalid}">
+                                        <label required>Country</label>
+                                        <app-combo-grid-virtual-scroll
+                                            (itemSelected)="onSelectDataFormInfo($event, 'billing-country')"
+                                            [currentActiveItemId]="{ field: 'id', value: countryId.value, hardValue: countryIdName}"
+                                            [selectedDisplayFields]="['nameEn']" [dataSources]="countries | async"
+                                            [displayFields]="displayFieldCountry" placeholder="Select country"
+                                            (remove)="resetFormControl(countryId)" [size]="15">
+                                        </app-combo-grid-virtual-scroll>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label>City</label>
+                                        <app-combo-grid-virtual-scroll
+                                            (itemSelected)="onSelectDataFormInfo($event, 'billing-city')"
+                                            [currentActiveItemId]="{ field: 'id', value: provinceId.value, hardValue: provinceIdName}"
+                                            [selectedDisplayFields]="['name_EN']" [dataSources]="billingsProvinces"
+                                            [displayFields]="displayFieldCity" placeholder="Select city"
+                                            (remove)="resetFormControl(provinceId)" [size]="15">
+                                        </app-combo-grid-virtual-scroll>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label>Zip Code</label>
+                                        <input type="text" class="form-control" formControlName="zipCode">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="row ">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label>Personal Contact</label>
+                                        <input type="text" class="form-control" formControlName="contactPerson">
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label>Phone</label>
+                                        <input type="text" class="form-control" formControlName="tel">
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label>Fax</label>
+                                        <input type="text" class="form-control" formControlName="fax">
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label>Work Phone</label>
+                                        <input type="text" class="form-control" formControlName="workPhoneEx">
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <input type="text" class="form-control" formControlName="email">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Billing Email</label>
+                                        <input type="text" class="form-control" formControlName="billingEmail">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Billing Phone</label>
+                                        <input type="text" class="form-control" formControlName="billingPhone">
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label>Bank Account Name</label>
+                                        <input type="text" class="form-control" formControlName="bankAccountName">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

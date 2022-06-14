@@ -1,0 +1,33 @@
+:host /deep/ {
+    .partner-other-charge-list-popup {
+        .e--combogrid {
+            table {
+                white-space: pre-wrap;
+            }
+            .form-control {
+                // border: unset;
+                background: inherit;
+                padding: 4px 8px;
+            }
+            tr {
+                th:not(:first-child) {
+                    min-width: 130px;
+                }
+                td:not(:first-child) {
+                    min-width: 130px;
+                }
+                th:first-child {
+                    min-width: 130px;
+                }
+                td:first-child {
+                    min-width: 130px;
+                }
+            }
+        }
+        .list-master-charge {
+            .e--combogrid-content {
+                min-width: 520px;
+            }
+        }
+    }
+}

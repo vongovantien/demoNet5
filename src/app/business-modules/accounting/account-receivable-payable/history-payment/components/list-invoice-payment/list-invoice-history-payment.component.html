@@ -1,0 +1,190 @@
+<div class="m-portlet">
+    <div class="m-portlet__body">
+        <div class="m-form">
+            <div class="row">
+                <div class="col-lg-8 m--align-left">
+                    <div class="form-group">
+                        <div class="c-button-actions">
+                            <ng-container *ngIf="menuSpecialPermission | async | specialPermission: 'UpdateInvoice'">
+                                <button class="btn btn-success  m-btn--icon m-btn--uppercase" (click)="import()">
+                                    <span>
+                                        <i class="la la-plus"></i>
+                                        <span>
+                                            Update
+                                        </span>
+                                    </span>
+                                </button>
+                            </ng-container>
+
+                            <div class="btn-group"
+                                *ngIf="menuSpecialPermission | async | specialPermission: 'ExportInvoice'">
+
+                                <button id="button-nested" [dpToggle]="dropdownMenu" position="bottomLeft" type="button"
+                                    class="btn btn-danger dropdown-toggle" aria-controls="dropdown-nested">
+                                    <i class="la la-download"></i>Export<span class="caret"></span>
+                                </button>
+
+                            </div>
+
+                            <app-dropdown #dropdownMenu>
+                                <a (click)="exportExcel()" class="dropdown-item pointer">General
+                                </a>
+                                <a (click)="exportAdvanceReceiptData()" class="dropdown-item pointer">Advance Receipt
+                                </a>
+                                <a (click)="exportStatementReceivableCustomer()" class="dropdown-item pointer">Statement
+                                    of Receivable Customer
+                                </a>
+                                <a (click)="exportStatementReceivableAgency()" class="dropdown-item pointer">Statement
+                                    of Receivable Agency
+                                </a>
+                            </app-dropdown>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 m--margin-top-20">
+                    <div class="table-wrapper" id="payment-table">
+                        <table class="table table-hover table-brand dataTable">
+                            <thead app-table-header [headers]="headers" (onClick)="sortBy($event.sortField)">
+                                <th class="first table-actions-col">
+                                    Action
+                                </th>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngIf="!!refPayments">
+                                    <ng-container *ngFor="let item of refPayments; let i = index; trackBy: trackByFn">
+                                        <tr class="collapse-toggle-row">
+                                            <td class="table-actions-col">
+                                                <div class="table-actions">
+                                                    <!--  href="'#id-00' + (item.refId) + item.refNo"-->
+                                                    <button type="button"
+                                                        class="btn btn-sm  m-btn--icon m-btn--icon-only collapsed"
+                                                        data-toggle="collapse"
+                                                        [attr.data-target]="'#id-00' + item.refNo + item.type + item.invoiceNoReal"
+                                                        title="Collapse" (click)="getPayments(item.refNo, item.type, item.invoiceNoReal)">
+                                                        <i class="la la-angle-up"></i>
+                                                    </button>
+                                                    <!-- <button type="button"
+                                                        class="btn btn-sm m-btn--icon m-btn--icon-only"
+                                                        title="Sync to accountant system (Add)"
+                                                        (click)="confirmSync(item.refId, 'ADD')">
+                                                        <i class="la la-cloud-upload text-warning"></i>
+                                                    </button>
+                                                    <button type="button"
+                                                        class="btn btn-sm m-btn--icon m-btn--icon-only"
+                                                        title="Sync to accountant system (Update)"
+                                                        (click)="confirmSync(item.refId, 'UPDATE')">
+                                                        <i class="la la-cloud-upload text-info"></i>
+                                                    </button> -->
+                                                </div>
+                                            </td>
+                                            <td class="text-primary">{{ item.refNo }} </td>
+                                            <td>{{ item.type }} </td>
+                                            <td>{{ item.invoiceNoReal }} </td>
+                                            <td class="text-info">{{ item.partnerName }}</td>
+                                            <td class="text-right">{{ item.totalAmountVnd | number: '.0-3'}} VND</td>
+                                            <td class="text-right">{{ item.totalAmountUsd | number: '.0-3'}} USD</td>
+                                            <td class="text-right">{{ item.paidAmountVnd | number: '.0-3'}} VND</td>
+                                            <td class="text-right">{{ item.paidAmountUsd | number: '.0-3'}} USD</td>
+                                            <td class="text-right">{{ item.unpaidAmountVnd | number: '.0-3'}} VND</td>
+                                            <td class="text-right">{{ item.unpaidAmountUsd | number: '.0-3'}} USD</td>
+                                            <td>
+                                                <ng-container [ngSwitch]="item.status">
+                                                    <span class="text-danger" *ngSwitchCase="'Unpaid'">
+                                                        {{ item.status }}
+                                                    </span>
+                                                    <span class="text-warning" *ngSwitchCase="'Paid A Part'">
+                                                        {{ item.status }}
+                                                    </span>
+                                                    <span class="text-success" *ngSwitchDefault>
+                                                        {{ item.status }}
+                                                    </span>
+                                                </ng-container>
+                                            </td>
+                                            <td><a href="javascript:void(0)"
+                                                    (click)="showExtendDateModel(item.refNo, item.type, item.invoiceNoReal)">{{ item.dueDate | date:
+                                                    'dd/MM/yyyy'}}</a>
+                                            </td>
+                                            <td class="text-right">{{ item.overdueDays }}</td>
+                                            <td class="text-right">{{ item.extendDays}}</td>
+                                            <td>{{ item.issuedDate | date: 'dd/MM/yyyy' }}</td>
+                                            <td>{{ item.serie}}</td>
+                                            <td class="text-right">{{ item.amount | number: '.0-3'}} {{item.currency}}
+                                            </td>
+                                            <td class="text-right">{{ item.paidAmount | number: '.0-3'}}
+                                                {{item.currency}}</td>
+                                            <td class="text-right">{{ item.unpaidAmount | number: '.0-3'}}
+                                                {{item.currency}}</td>
+                                        </tr>
+                                        <tr class="collapse-panel-row" app-table-collapse-row
+                                            [id]="'id-00' + item.refNo + item.type + item.invoiceNoReal" [parentId]="'#payment-table'">
+                                            <table class="table table-secondary dataTable">
+                                                <thead app-table-header [headers]="paymentHeaders"
+                                                    (onClick)="sortPayment($event.sortField, $event.order)">
+                                                    <!-- <th class="m--w-50 first table-actions-col">
+                                                        Action
+                                                    </th> -->
+                                                </thead>
+                                                <tbody>
+                                                    <ng-container *ngIf="!!payments.length">
+                                                        <tr
+                                                            *ngFor="let payment of payments; let j = index; trackBy: trackByFn">
+                                                            <!-- <td class="table-actions-col">
+                                                                <div class="table-actions">
+                                                                    <button (click)="showConfirmDelete(payment, j)"
+                                                                        class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only">
+                                                                        <i class="la la-trash"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </td> -->
+                                                            <td>{{j+1}}</td>
+                                                            <td>{{ payment.receiptNo }}</td>
+                                                            <td class="text-right">{{ payment.paymentAmount| number:
+                                                                '.0-3' }} {{item.currency}}
+                                                            </td>
+                                                            <td class="text-right">{{ payment.balance| number: '.0-3' }}
+                                                                {{item.currency}}
+                                                            </td>
+                                                            <td>{{ payment.paidDate | date: 'dd/MM/yyyy'}}
+                                                            </td>
+                                                            <td>{{ payment.paymentMethod }}</td>
+                                                            <td>{{ payment.note }}</td>
+                                                        </tr>
+                                                    </ng-container>
+                                                    <tr app-table-none-record *ngIf="!payments.length">
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </tr>
+                                    </ng-container>
+                                </ng-container>
+                                <tr app-table-none-record *ngIf="!(isLoading | async) && !refPayments.length">
+                                </tr>
+                                <tr app-table-row-loading *ngIf="isLoading | async"></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <app-pagination [total]="totalItems" [pageNum]="page" [itemPerPage]="pageSize"
+                        (onChange)="updatePagingData($event)"></app-pagination>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<update-extend-day-popup (onUpdateExtendDate)="handleUpdateExtendDate($event)"></update-extend-day-popup>
+
+
+<confirm-popup [body]="'Do you want to delete?'" [labelConfirm]="'Yes'" (onSubmit)="onDeletePayment()">
+</confirm-popup>
+
+<info-popup [body]="'You can only delete the last payment. Please check again!'" [title]="'Notification'"
+    [label]="'Ok'">
+</info-popup>
+
+<confirm-popup #confirmInvoicePaymentPopup (onSubmit)="onConfirmInvoicePayment()" [body]="confirmMessage"
+    [labelConfirm]="'Ok'"></confirm-popup>
+
+<loading-popup></loading-popup>

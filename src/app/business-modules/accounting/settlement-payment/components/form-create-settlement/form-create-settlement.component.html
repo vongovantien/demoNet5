@@ -1,0 +1,205 @@
+<div class="form-update-advpayment">
+    <form [formGroup]="form">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label">
+                        Settlement No: <ng-content></ng-content>
+                    </label>
+                    <input type="text" class="form-control m-input m-input--square" placeholder="Settlement no"
+                        formControlName="settlementNo">
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label">
+                        Requester:
+                    </label>
+                    <ng-container *ngIf="!readonlyForm; else userTpl">
+                        <select class="form-control" formControlName="requester">
+                            <option *ngFor="let user of (users | async)" [ngValue]="user.id">{{user.username}}</option>
+                        </select>
+                    </ng-container>
+                    <ng-template #userTpl>
+                        <input type="text" class="form-control" formControlName="requester">
+                    </ng-template>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-control-label" required>
+                                Request Date:
+                            </label>
+                            <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                    [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" [singleDatePicker]="true"
+                                    name="daterange" placeholder="Select request date" [autoApply]="true"
+                                    formControlName="requestDate" [attr.disabled]="isDisabled" calendar />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 due-date-picker">
+                        <div class="form-group">
+                            <label class="form-control-label">
+                                Due Date
+                            </label>
+                            <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                    [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" [singleDatePicker]="true"
+                                    name="dueDateRange" placeholder="Select due date" [autoApply]="true"
+                                    (remove)="resetFormControl(dueDate)"
+                                    [allowRemove]="!!dueDate.value && !!dueDate.value.startDate"
+                                    formControlName="dueDate" calendar />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Payee:</label>
+                    <app-combo-grid-virtual-scroll [currentActiveItemId]="{field:'id',value:payee.value}"
+                        (itemSelected)="payee.setValue($event.id); getBeneficiaryInfo()" [dataSources]="customers"
+                        [displayFields]="[
+                        { field: 'shortName', label: 'Name ABBR' },
+                        { field: 'partnerNameEn', label: 'Name EN' },
+                        { field: 'taxCode', label: 'Tax Code' }]" [selectedDisplayFields]="['shortName']"
+                        [disabled]="isDisabled" placeholder="Select partner"
+                        (remove)="resetFormControl(payee);getBeneficiaryInfo();">
+                    </app-combo-grid-virtual-scroll>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>Settlement Amount:</label>
+                            <input type="text" formControlName="amount" class="form-control" formatDecimalFormControl
+                                disabled>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>Advance Amount:</label>
+                            <input type="text" formControlName="advanceAmount" class="form-control"
+                                formatDecimalFormControl disabled>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>Balance:</label>
+                            <input type="text" formControlName="balanceAmount" class="form-control" disabled
+                                formatDecimalFormControl>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>Currency:</label>
+                            <select formControlName="currency" class="form-control">
+                                <option *ngFor="let currency of currencyList" [ngValue]="currency.id">{{currency.id}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>Payment Method:</label>
+                                    <select formControlName="paymentMethod" class="form-control"
+                                        (change)="getBeneficiaryInfo()">
+                                        <option *ngFor="let method of methods" [ngValue]="method">{{method.title}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-control-label">
+                                        Status Approval:
+                                    </label>
+                                    <input type="text"
+                                        class="form-control m-input m-input--square text-{{statusApproval.value | classStatusApproval}}"
+                                        placeholder="Status Approval" formControlName="statusApproval" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-control-label">
+                                Beneficiary Name:
+                            </label>
+                            <input type="text" class="form-control m-input m-input--square text-info" placeholder=""
+                                name="beneficiaryName" autocomplete="nope" formControlName="beneficiaryName">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-control-label">
+                                Bank Name:
+                            </label>
+                            <ng-container *ngIf="!readonlyForm; else bankTpl">
+                                <app-combo-grid-virtual-scroll
+                                    (itemSelected)="onSelectDataFormInfo($event, 'bankName'); mapBankCode($event.code)"
+                                    [dataSources]="banks | async" formControlName="bankNameDescription"
+                                    [displayFields]="displayFieldBank" [selectedDisplayFields]="['bankNameEn']"
+                                    allowFreeText [disabled]="isDisabled" placeholder="Select partner"
+                                    (remove)="resetFormControl(bankName);resetFormControl(bankNameDescription)">
+                                </app-combo-grid-virtual-scroll>
+                            </ng-container>
+                            <ng-template #bankTpl>
+                                <input type="text" class="form-control" formControlName="bankNameDescription">
+                            </ng-template>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-control-label">
+                                        Bank Code
+                                    </label>
+                                    <input type="text" formControlName="bankCode" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-control-label">
+                                        Bank Account No:
+                                    </label>
+                                    <input type="text" class="form-control m-input m-input--square text-success"
+                                        placeholder="" name="bankAccountNo" autocomplete="nope"
+                                        formControlName="bankAccountNo">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>General Reason:</label>
+                    <textarea class="form-control" name="" id="" cols="30" rows="5" formControlName="note"></textarea>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

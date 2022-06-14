@@ -1,0 +1,70 @@
+<div class="modal fade" id="assign-modal" role="dialog" bsModal #popup="bs-modal">
+    <div class="modal-dialog c-modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 *ngIf="isAsignment === false" class="modal-title">OPS Assignment</h5>
+                <h5 *ngIf="isAsignment === true" class="modal-title"> Assignment</h5>
+
+                <button type="button" class="close" aria-label="Close" (click)=closePopup()>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row m-form m-form--state">
+                    <div class="col-md-6 ">
+                        <div class="form-group"
+                            [ngClass]="{'m-form__group has-danger': isSubmitted && !selectedStage.value}">
+                            <label for="">Stage Content <span class="text-danger">(*)</span></label>
+                            <app-combo-grid-virtual-scroll [currentActiveItemId]="selectedStage" [height]="150"
+                                (itemSelected)="onSelectStage($event)" [dataSources]="configStage.dataSource"
+                                [displayFields]="configStage.displayFields"
+                                [selectedDisplayFields]="configStage.selectedDisplayFields" (remove)="removeStage()">
+                            </app-combo-grid-virtual-scroll>
+
+                            <div class="form-control-feedback" *ngIf="isSubmitted && !selectedStage.value">
+                                Stage is required!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group"
+                            [ngClass]="{'m-form__group has-danger': isSubmitted && !selectedUser.value}">
+                            <label for="">Assign To <span class="text-danger">(*)</span></label>
+                            <app-combo-grid-virtual-scroll [currentActiveItemId]="selectedUser" [height]="150"
+                                (itemSelected)="onSelectUser($event)" [dataSources]="configUser.dataSource"
+                                [displayFields]="configUser.displayFields"
+                                [selectedDisplayFields]="configUser.selectedDisplayFields" (remove)="removeUser()">
+                            </app-combo-grid-virtual-scroll>
+                            <div class="form-control-feedback" *ngIf="isSubmitted && !selectedUser.value">
+                                User is required!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="">Description</label>
+                        <textarea cols="30" rows="10" class="form-control" [(ngModel)]="description"
+                            name=description></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer m--align-center c-button-actions">
+                <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="assignStage()">
+                    <span>
+                        <i class="la la-save"></i>
+                        <span>
+                            Save
+                        </span>
+                    </span>
+                </button>
+                <button type="button" class="btn btn-cancel  m-btn--icon m-btn--uppercase" (click)="closePopup()">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span>
+                            Cancel
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

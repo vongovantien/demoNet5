@@ -1,0 +1,110 @@
+<div class="modal fade" role="dialog" bsModal #popup="bs-modal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{title}}</h5>
+                <button type="button" class="close" aria-label="Close"
+                    (click)="formGroup.reset(); hide(); isSubmitted = false">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="formGroup">
+
+                    <div class="form">
+                        <div class="row m-form m-form m-form--state">
+                            <div class="col-md-6">
+                                <div class="form-group"
+                                    [ngClass]="{ 'm-form__group has-danger': (name.dirty && !name.valid) || (isSubmitted && !name.valid) }">
+                                    <label required>Name</label>
+                                    <input type="text" class="form-control" formControlName="name">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group"
+                                    [ngClass]="{ 'm-form__group has-danger': isSubmitted && (userId.errors | equalError: 'required') }">
+                                    <label required>User Name</label>
+                                    <ng-select class="custom" [items]="Users | async" formControlName="userId"
+                                        bindLabel="username" bindValue="id"
+                                        (removed)="formGroup.controls['userId'].setValue(null)"
+                                        placeholder="Select User">
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group"
+                                    [ngClass]="{ 'm-form__group has-danger': (serverName.dirty && !serverName.valid) || (isSubmitted && !serverName.valid) }">
+                                    <label required>Server Name</label>
+                                    <input type="text" class="form-control" formControlName="serverName">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group"
+                                    [ngClass]="{ 'm-form__group has-danger': (dbname.dirty && !dbname.valid) || (isSubmitted && !dbname.valid) }">
+                                    <label required>Database Name</label>
+                                    <input type="text" class="form-control" formControlName="dbname">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group"
+                                    [ngClass]="{ 'm-form__group has-danger': (dbusername.dirty && !dbusername.valid) || (isSubmitted && !dbusername.valid) }">
+                                    <label required>Database User Name</label>
+                                    <input type="text" class="form-control" formControlName="dbusername">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Database Password</label>
+                                    <input type="text" class="form-control" formControlName="dbpassword">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Status</label>
+                                    <div class="form-group">
+                                        <app-switch formControlName="active">
+                                        </app-switch>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Note</label>
+                                    <textarea class="form-control" rows="4" formControlName="note"></textarea>
+                                </div>
+                            </div>
+                            <ng-container *ngIf="!!isShowUpdate">
+                                <div class="col-md-6 m--margin-top-10 m--margin-bottom-5">
+                                    <span class="m--font-bolder">Create:</span>
+                                    <span class="m--font-success m--margin-left-5">{{datetimeCreated | date:'dd/MM/yyyy
+                                        h:mm:ss a'}}</span>
+                                    <span class="m--font-bolder m--margin-left-5">by</span>
+                                    <span class="m--font-success m--margin-left-5">{{userCreatedName}}</span>
+                                </div>
+                                <div class="col-md-6 m--margin-top-10 m--margin-bottom-5">
+                                    <span class="m--font-bolder">Modified:</span>
+                                    <ng-container *ngIf="!!userModifiedName">
+                                        <span class="m--font-success m--margin-left-5">{{datetimeModified |
+                                            date:'dd/MM/yyyy h:mm:ss a'}}</span>
+                                        <span class="m--font-bolder m--margin-left-5">by</span>
+                                        <span class="m--font-success m--margin-left-5">{{userModifiedName}}</span>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer m--align-center c-button-actions">
+                <ng-container *ngIf="!!isAllowUpdate">
+                    <app-default-button [buttonSetting]="saveButtonSetting" (onClick)="onSaveEcus()">
+                    </app-default-button>
+                </ng-container>
+
+                <app-default-button [buttonSetting]="cancelButtonSetting"
+                    (onClick)="isSubmitted = false; formGroup.reset(); hide()">
+                </app-default-button>
+            </div>
+        </div>
+    </div>
+</div>

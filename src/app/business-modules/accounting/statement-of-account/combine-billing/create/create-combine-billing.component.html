@@ -1,0 +1,32 @@
+<div class="detail-combine-billing">
+    <app-sub-header> </app-sub-header>
+    <div class="m-content">
+        <div class="m-portlet">
+            <div class="m-portlet__body">
+                <h3>Create Combine Billing</h3>
+                <hr />
+                <form-get-billing-list (onSearch)="onSearchShipmet($event)"></form-get-billing-list>
+            </div>
+        </div>
+        <div class="m-portlet">
+            <div class="m-form">
+                <div class="m-portlet__body">
+
+                    <combine-billing-list></combine-billing-list>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="m--align-center m--margin-top-20">
+                                <div class="c-button-actions">
+                                    <app-permission-button type="save" title="Save" (onClick)="saveBilling()">
+                                    </app-permission-button>
+                                    <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="back()">
+                                    </app-default-button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

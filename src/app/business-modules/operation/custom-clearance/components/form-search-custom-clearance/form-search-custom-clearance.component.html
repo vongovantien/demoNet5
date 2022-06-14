@@ -1,0 +1,140 @@
+<div class="m-portlet">
+    <div class="m-form">
+        <div class="m-portlet__body">
+            <form [formGroup]="formSearch">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-control-label">
+                                Clearance No
+                            </label>
+                            <textarea rows="5" class="form-control" formControlName="clearanceNo"
+                                placeholder="Clearance No"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-8">
+                        <div class="row">
+                            <div class="col-lg-5">
+                                <div class="form-group">
+                                    <label>Customer</label>
+                                    <app-combo-grid-virtual-scroll
+                                        [currentActiveItemId]="{ field: 'accountNo', value: customer.value}"
+                                        (itemSelected)="onSelectDataFormInfo($event, 'customer')"
+                                        [selectedDisplayFields]="['shortName']" [dataSources]="customers | async"
+                                        [displayFields]="displayFieldsCustomer" [height]="150"
+                                        (remove)="resetFormControl(customer)" placeholder="Select Customer">
+                                    </app-combo-grid-virtual-scroll>
+                                </div>
+                            </div>
+                            <div class="col-lg-7">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-control-label">
+                                                Person Handle
+                                            </label>
+                                            <ng-select class="custom" formControlName="personalHandle" [items]="users"
+                                                bindLabel="username" bindValue="id">
+                                            </ng-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-control-label">
+                                                Clearance Date
+                                            </label>
+                                            <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                                <input type="text" class="form-control m-input m-input--square"
+                                                    ngxDaterangepickerMd
+                                                    [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}"
+                                                    formControlName="clearanceDate" [ranges]="ranges"
+                                                    [alwaysShowCalendars]="true" name="daterange"
+                                                    placeholder="From date - to date" readonly />
+                                                <span class="m-input-icon__icon m-input-icon__icon--right">
+                                                    <span>
+                                                        <i class="la la-calendar"></i>
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-5">
+                                <div class="form-group">
+                                    <label class="form-control-label">
+                                        Import Date
+                                    </label>
+                                    <div class="m-input-icon m-input-icon--right down daterange-ltr">
+                                        <input type="text" class="form-control m-input m-input--square"
+                                            ngxDaterangepickerMd [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}"
+                                            formControlName="importDate" [ranges]="ranges" [maxDate]="maxDate"
+                                            [alwaysShowCalendars]="true" name="daterange"
+                                            placeholder="From date - to date" readonly />
+                                        <span class="m-input-icon__icon m-input-icon__icon--right">
+                                            <span>
+                                                <i class="la la-calendar"></i>
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-7">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-control-label">
+                                                Import Status
+                                            </label>
+                                            <ng-select class="custom" formControlName="importStatus" [items]="status"
+                                                bindLabel="title" bindValue="value">
+                                            </ng-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-control-label">
+                                                Type
+                                            </label>
+                                            <ng-select class="custom" formControlName="type" [items]="types"
+                                                bindLabel="title" bindValue="value">
+                                            </ng-select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <div class="row">
+                        <div class="col-lg-6"></div>
+                        <div class="col-lg-6 m--align-right">
+                            <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase"
+                                (click)="searchCustomClearance()">
+                                <span>
+                                    <i class="la la-search"></i>
+                                    <span>
+                                        Search
+                                    </span>
+                                </span>
+                            </button>
+                            <button type="button" class="btn btn-default  m-btn--icon m-btn--uppercase"
+                                (click)="resetSearch()">
+                                <span>
+                                    <i class="la la-refresh"></i>
+                                    <span>
+                                        Reset
+                                    </span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>

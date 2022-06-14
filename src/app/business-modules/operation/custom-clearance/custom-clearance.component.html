@@ -1,0 +1,162 @@
+<div class="m-subheader">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <app-breadcrumb></app-breadcrumb>
+        </div>
+        <div class="c-button-actions">
+            <app-permission-button title="add new" (onClick)="gotoCreateCD()"></app-permission-button>
+            <app-permission-button title="Export" (onClick)="export()" type="export"></app-permission-button>
+            <app-permission-button title="Import" (onClick)="import()" type="import"></app-permission-button>
+        </div>
+    </div>
+</div>
+
+<div class="m-content">
+
+    <custom-clearance-form-search (onSearch)="onSearchClearance($event)">
+    </custom-clearance-form-search>
+
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <div class="m--margin-bottom-15">
+                <div class="row">
+                    <div class="col-lg-12 c-button-actions">
+                        <button type="button" class="btn btn-danger  m-btn--icon m-btn--uppercase"
+                            (click)="deleteClearance()">
+                            <span>
+                                <i class="la la-trash"></i>
+                                <span>
+                                    delete
+                                </span>
+                            </span>
+                        </button>
+
+                        <button class="btn btn-primary dropdown-toggle" [dpToggle]="dropdownMenuClearance"
+                            position="bottomCenter">
+                            <i class="la la-exchange"></i>
+                            Convert
+                            <span class="caret"></span>
+                        </button>
+
+                        <button class="btn btn-default dropdown-toggle" [dpToggle]="dropdownMenuClearanceGetFrom"
+                            position="bottomCenter">
+                            <i class="la la-refresh"></i>
+                            Get From Ecus
+                            <span class="caret"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="table-wrapper table-scrollable">
+                <table class="table table-hover table-brand dataTable">
+                    <thead app-table-header [headers]="headers" (onClick)="sortBy($event.sortField)">
+                        <th class="m--w-50 first table-actions-col">
+                            <label class="m-checkbox">
+                                <input type="checkbox" [(ngModel)]="isCheckAll" (change)="checkUncheckAll()">
+                                <span></span>
+                            </label>
+                        </th>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let custom of listCustomDeclaration; let i = index; trackBy: trackByFn" class="">
+                            <td class="table-actions-col">
+                                <div class="table-actions">
+                                    <label class="m-checkbox">
+                                        <input *ngIf="custom.jobNo; else allowChecked" type="checkbox"
+                                            disabled="disabled">
+                                        <ng-template #allowChecked>
+                                            <input type="checkbox" [(ngModel)]="custom.isSelected"
+                                                (change)="onChangeAction()">
+                                        </ng-template>
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </td>
+                            <td>
+                                <!-- <a
+                                    [routerLink]="['/home/operation/custom-clearance/detail',   custom.id ]">{{custom.clearanceNo}}</a> -->
+                                <a href="javascript:void(0)" (click)="showDetail(custom.id)">{{custom.clearanceNo}}</a>
+                            </td>
+                            <td>
+                                <span>{{custom.clearanceDate | date: 'dd/MM/yyyy'}}</span>
+                            </td>
+                            <td>
+                                <span>{{custom.type}}</span>
+                            </td>
+                            <td>
+                                <span>{{custom.gatewayName}}</span>
+                            </td>
+                            <td>
+                                <span>{{custom.customerName}}</span>
+                            </td>
+                            <td>
+                                <span>{{custom.pcs | number :'.0-3'}}</span>
+                            </td>
+                            <td>
+                                <span>{{custom.grossWeight | number :'.0-3'}}</span>
+                            </td>
+                            <td>
+                                <span>{{custom.jobNo}}</span>
+                            </td>
+                            <td>
+                                <span class="text-success">{{custom.userCreatedName}}</span>
+                            </td>
+                            <td>
+                                <span *ngIf="custom.jobNo; else nojobno" class="m--font-success">Imported</span>
+                                <ng-template #nojobno>
+                                    <span class="m--font-danger">Not Imported</span>
+                                </ng-template>
+                            </td>
+                            <td>
+                                <span>{{custom.importCountryName}}</span>
+                            </td>
+                            <td>
+                                <span>{{custom.exportCountryName}}</span>
+                            </td>
+                        </tr>
+                        <tr class="loading-wrapper" *ngIf="(isLoading | async)">
+                            <td colspan="100">
+                                <div class="on-loading">
+                                    <div class="m-loader m-loader--brand">
+                                    </div><span>Loading</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr *ngIf="!(isLoading | async) && !listCustomDeclaration.length">
+                            <td colspan="100">
+                                <div class="no-data">
+                                    <i class="flaticon-coins"></i>
+                                    <span class="no-data-text">No records found</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+            <app-pagination [total]="totalItems" [pageNum]="page" [itemPerPage]="pageSize"
+                (onChange)="updatePagingData($event)"></app-pagination>
+        </div>
+    </div>
+</div>
+
+<permission-403-popup></permission-403-popup>
+
+<app-dropdown #dropdownMenuClearance>
+    <a class="dropdown-item pointer" (click)="confirmConvert(true)" title="Create clearance with replicate">
+        <i class="la la-copy"></i>
+        <span> Replicate</span>
+    </a>
+
+    <a class="dropdown-item pointer" (click)="confirmConvert(false)" title="Create clearance with non-replicate">
+        <i class="la la-save"></i>
+        <span> Non-Replicate </span>
+    </a>
+</app-dropdown>
+
+<app-dropdown #dropdownMenuClearanceGetFrom>
+    <a class="dropdown-item pointer" (click)="getDataFromEcus()"> Get From Ecus</a>
+    <a class="dropdown-item pointer" (click)="getDataOlaFromEcus()"> Get Ola From Ecus</a>
+</app-dropdown>
+
+<ng-template inject></ng-template>

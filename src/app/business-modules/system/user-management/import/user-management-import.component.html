@@ -1,0 +1,141 @@
+<!--begin:: subheader-->
+<div class="m-subheader">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <!--begin:: breadcrumbs-->
+            <app-breadcrumb></app-breadcrumb>
+            <!--end:: breadcrumbs-->
+        </div>
+    </div>
+</div>
+<!--end:: subheader-->
+<!--begin::m-content-->
+<div class="m-content">
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <!--begin::Form-->
+            <div class="m-form m-form--state">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <input type="file" #inputFile id="inputFile" class="form-control m-input m-input--square"
+                            placeholder="" (change)="chooseFile($event)" onclick="this.value=null;" accept=".xlsx">
+                        <span class="m-form__help">
+                            <a class="btn-link" href="javascript:void(0)" (click)="downloadSample()">Download sample</a>
+                        </span>
+                    </div>
+                    <div class="col-lg-7 offset-lg-1">
+                        <div class="row">
+                            <div class="col-sm-4 m--margin-top-10 text-right">
+                                <span class="m--font-brand m--font-bolder">
+                                    Total rows: {{ totalRows }}
+                                </span>
+                            </div>
+                            <div class="col-sm-4 m--margin-top-10 text-right">
+                                <span class="m--font-success m--font-bolder">
+                                    Valid rows: {{ totalValidRows }}
+                                </span>
+                            </div>
+                            <div class="col-sm-4 m--margin-top-10 text-right">
+                                <span class="m--font-danger  m--font-bolder">
+                                    Invalid rows: {{ totalRows - totalValidRows }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions m--margin-top-5 m--align-right">
+                    <button type="button" class="btn btn-danger  m-btn--icon m-btn--uppercase" (click)="hideInvalid()">
+                        <span>
+                            <span *ngIf="isShowInvalid">
+                                Show invalid rows
+                            </span>
+                            <span *ngIf="isShowInvalid == false">
+                                Show All
+                            </span>
+                        </span>
+                    </button>
+                    <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase"
+                        (click)="import(inputFile)">
+                        <span>
+                            <i class="la la-save"></i>
+                            <span>
+                                save
+                            </span>
+                        </span>
+                    </button>
+                    <button type="button" class="btn btn-cancel  m-btn--icon m-btn--uppercase"
+                        routerLink="/home/system/user-management">
+                        <span>
+                            <i class="la la-ban"></i>
+                            <span>
+                                close
+                            </span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+            <!--end::Form-->
+        </div>
+    </div>
+    <!--end::m-portlet-->
+    <div class="m-portlet" style="position: relative">
+        <ng-progress [thick]="true" [color]="'#2ea2f4'" [spinner]="true"></ng-progress>
+        <div class="m-portlet__body">
+            <div class="table-wrapper table-scrollable" id="">
+                <table class="table table-striped table-brand dataTable">
+                    <thead app-table-header [headers]="headers"
+                        (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                    </thead>
+                    <tbody *ngFor="let item of pagedItems; let i = index">
+                        <tr [ngClass]="{ 'invalid-row': !item.isValid }">
+                            <td>
+                                <span>{{(i + this.pager.startIndex + 1)}}</span>
+                            </td>
+                            <td>
+                                <span [ngClass]="{'m--font-danger' : !item.staffCode}">{{ item.staffCode }}</span>
+                            </td>
+                            <td>
+                                <span [ngClass]="{'m--font-danger' : !item.username}">{{ item.username }}</span>
+                            </td>
+                            <td>
+                                <span
+                                    [ngClass]="{'m--font-danger' : !item.employeeNameVn}">{{ item.employeeNameVn }}</span>
+                            </td>
+                            <td>
+                                <span
+                                    [ngClass]="{'m--font-danger' : !item.employeeNameEn}">{{ item.employeeNameEn }}</span>
+                            </td>
+
+                            <td> <span [ngClass]="{'m--font-danger' : !item.title}">{{ item.title }}</span></td>
+                            <td>
+                                <span [ngClass]="{'m--font-danger' : !item.userType}">{{ item.userType }}</span>
+                            </td>
+                            <td>
+                                <span [ngClass]="{'m--font-danger' : !item.status}">{{ item.status }}</span>
+                            </td>
+                            <td>
+                                <span
+                                    [ngClass]="{'m--font-danger' : !item.workingStatus}">{{ item.workingStatus }}</span>
+                            </td>
+                            <td>
+                                <span [ngClass]="{'m--font-danger' : !item.email}">{{ item.email }}</span>
+                            </td>
+                            <td>
+                                <span [ngClass]="{'m--font-danger' : !item.tel}">{{ item.tel }}</span>
+                            </td>
+                            <td>
+                                <span [ngClass]="{'m--font-danger' : !item.description}">{{ item.description }}</span>
+                            </td>
+                            <td>
+                                <span [ngClass]="{'m--font-danger' : !item.userRole}">{{ item.userRole }}</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<info-popup body="There are invalid data. Please check Import!" title="Notification"></info-popup>

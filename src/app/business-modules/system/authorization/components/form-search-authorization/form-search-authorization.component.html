@@ -1,0 +1,106 @@
+<div class="m-portlet">
+    <div class="m-form">
+        <div class="m-portlet__body">
+            <form class="row" action="" [formGroup]="formSearch">
+                <div class="col-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="">Service</label>
+                                <ng-select class="custom" formControlName="service" [items]="serviceList | async"
+                                    (removed)="service.setValue(null)" bindValue="value" bindLabel="displayName">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="">Effective Date</label>
+                                <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                    <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                        [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" [singleDatePicker]="true"
+                                        name="daterange" [autoApply]="true" formControlName="effectiveDate" readonly />
+                                    <span class="m-input-icon__icon m-input-icon__icon--right">
+                                        <span>
+                                            <i class="la la-calendar"></i>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="">Person In Charge</label>
+                                <ng-select class="custom" formControlName="personInCharge"
+                                    [items]="personInChargeList | async" bindValue="id" bindLabel="username">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="">Expiration Date</label>
+                                <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                    <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                        [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" [singleDatePicker]="true"
+                                        name="daterange" [autoApply]="true" formControlName="expirationDate" readonly />
+                                    <span class="m-input-icon__icon m-input-icon__icon--right">
+                                        <span>
+                                            <i class="la la-calendar"></i>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="">Authorized Person</label>
+                                <ng-select class="custom" formControlName="authorizedPerson"
+                                    [items]="personInChargeList | async" bindValue="id" bindLabel="username">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="">Status</label>
+                                <ng-select class="custom" formControlName="status" [items]="statusList" bindValue="id"
+                                    bindLabel="text">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="form-actions">
+                <div class="row">
+                    <div class="col-lg-6"></div>
+                    <div class="col-lg-6 m--align-right">
+                        <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="search()">
+                            <span>
+                                <i class="la la-search"></i>
+                                <span>
+                                    Search
+                                </span>
+                            </span>
+                        </button>
+                        <button type="button" class="btn btn-default  m-btn--icon m-btn--uppercase" (click)="reset()">
+                            <span>
+                                <i class="la la-refresh"></i>
+                                <span>
+                                    Reset
+                                </span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

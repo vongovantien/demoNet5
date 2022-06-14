@@ -1,0 +1,127 @@
+<div class="m-portlet">
+    <div class="m-portlet__body">
+        <div class="m-form m-form--label-align-right m--margin-bottom-10">
+            <div class="row align-items-center">
+                <div class="col-lg-4 order-2 order-lg-1">
+                    <div class="form-group">
+                        <div class="m-input-icon m-input-icon--left">
+                            <input type="text" class="form-control m-input m-input--square" placeholder="Search..."
+                                autocomplete="nope" name="searchImportedString" [(ngModel)]="searchImportedString"
+                                (change)="searchImportedString = searchImportedString.trim()"
+                                (keyup)="searchClearanceImported()">
+                            <span class="m-input-icon__icon m-input-icon__icon--left">
+                                <span>
+                                    <i class="la la-search"></i>
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8 order-1 order-lg-2 c-button-actions m--align-right"
+                    *ngIf="!!currentJob && currentJob.permission.allowUpdate">
+                    <button type="button" class="btn btn-danger  m-btn--icon m-btn--uppercase"
+                        (click)="removeImported()" appLoadingButton [state]="!!currentJob && currentJob.isLocked">
+                        <span>
+                            <i class="la la-trash"></i>
+                            <span>
+                                remove
+                            </span>
+                        </span>
+                    </button>
+                    <button type="button" class="btn btn-success  m-btn--icon m-btn--uppercase" (click)="showPopupAdd()"
+                        appLoadingButton [state]="!!currentJob && currentJob.isLocked">
+                        <span>
+                            <i class="la la-plus"></i>
+                            <span>
+                                add
+                            </span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="table-wrapper table-scrollable">
+            <table class="table table-striped table-brand dataTable">
+                <thead>
+                    <tr>
+                        <th class="table-actions-col no-sorting">
+                            <div class="table-actions">
+                                <label class="m-checkbox">
+                                    <input type="checkbox" name="checkAllNotImported" [checked]="checkAllImported"
+                                        (change)="checkAllImported =! checkAllImported; changeAllImported()">
+                                    <span></span>
+                                </label>
+                            </div>
+                        </th>
+                        <th *ngFor="let header of headers; let i = index; trackBy: trackByFn"
+                            [class]="sortClass(header.sortable ? header.field : '')"
+                            (click)="sortBy(header.sortable ? header.field : '')">
+                            <span>{{header.title}}</span>
+                            <span class="sort-indicator"></span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="tbody-group" *ngIf="customClearances">
+                    <ng-container *ngFor="let clearance of customClearances; let i=index">
+                        <tr [contextMenu]="cdContextMenu" (onTouch)="onSelectCd(clearance)">
+                            <td class="table-actions-col">
+                                <div class="table-actions">
+                                    <label class="m-checkbox">
+                                        <input type="checkbox" [attr.name]="clearance.clearanceNo"
+                                            [checked]="clearance.isChecked"
+                                            (change)="clearance.isChecked=!clearance.isChecked; removeChecked();">
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </td>
+                            <td>
+                                <span>{{ clearance.clearanceNo }}</span>
+                            </td>
+                            <td>
+                                <span>{{ clearance.clearanceDate| date:'dd/MM/yyyy' }}</span>
+                            </td>
+                            <td>
+                                <span>{{ clearance.hblid }}</span>
+                            </td>
+                            <td>
+                                <span>{{ clearance.exportCountryCode }}</span>
+                            </td>
+                            <td>
+                                <span>{{ clearance.importCountryCode }}</span>
+                            </td>
+                            <td>
+                                <span>{{ clearance.commodityCode }}</span>
+                            </td>
+                            <td>
+                                <span>{{ clearance.qtyCont }}</span>
+                            </td>
+                            <td>
+                                <span>{{ clearance.firstClearanceNo }}</span>
+                            </td>
+                            <td>
+                                <span>{{ clearance.note }}</span>
+                            </td>
+                        </tr>
+                    </ng-container>
+                    <tr app-table-none-record *ngIf="!customClearances.length"></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <app-pagination [total]="totalItems" [pageNum]="page" [itemPerPage]="pageSize"
+            (onChange)="updatePagingData($event)"></app-pagination>
+    </div>
+</div>
+
+<app-add-more-modal [currentJob]="currentJob" (isCloseModal)="closeAddMore($event)">
+</app-add-more-modal>
+
+
+<app-context-menu #cdContextMenu (clickOutside)="selectedCd = null">
+    <div class="menu-context__item" (click)="confirmSyncCDToReplicateJob()">
+        <span><i class="la la-refresh"></i><span> Sync to replicate job</span></span>
+    </div>
+</app-context-menu>
+
+<!-- Popup -->
+<ng-template inject></ng-template>

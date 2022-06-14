@@ -1,0 +1,30 @@
+.combogrid_icon {
+    position: absolute;
+    top: 25%;
+    background: #fff;
+    right: 4px;
+    width: 33px;
+    height: auto;
+    i {
+        color: #6f727d;
+    }
+    .combogrid_icon__clear {
+        width: 17px;
+        background: #fff;
+
+        i {
+            font-size: 0.8rem;
+            font-weight: bold;
+            &:hover {
+                color: red;
+            }
+        }
+    }
+    .combogrid_icon__dropdown {
+        position: absolute;
+        right: 5px;
+        i {
+            font-size: 1.3rem;
+        }
+    }
+}

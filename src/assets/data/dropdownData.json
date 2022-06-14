@@ -1,0 +1,29 @@
+
+    {
+        "DropDownUserRole": [
+            {
+                "title": "CS Document",
+                "value": "CS"
+            },
+            {
+                "title": "Sale",
+                "value": "Sale"
+            },
+            {
+                "title": "Accountant",
+                "value": "FIN"
+            },
+            {
+                "title": "Internal Audit",
+                "value": "IA"
+            },
+            {
+                "title": "Account Receivable",
+                "value": "AR"
+            },
+            {
+                "title": "BOD",
+                "value": "BOD"
+            }
+        ]
+    }

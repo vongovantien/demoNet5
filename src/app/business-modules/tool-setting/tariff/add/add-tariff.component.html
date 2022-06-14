@@ -1,0 +1,41 @@
+<div class="company-infomation-page">
+    <app-sub-header> </app-sub-header>
+    <div class="m-content">
+
+        <form-add-tariff [(tariff)]="tariff.setTariff">
+            <div class="title">
+                Create New OPS Tariff
+            </div>
+        </form-add-tariff>
+
+        <div class="m-portlet">
+            <div class="m-portlet__body">
+                <tabset>
+                    <tab heading="Tariff">
+
+                        <list-charge-tariff [(charges)]="tariff.setTariffDetails"></list-charge-tariff>
+
+                        <div class="form-actions m--align-center">
+                            <button class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="createTariff()">
+                                <span>
+                                    <i class="la la-copy"></i>
+                                    <span>
+                                        Create
+                                    </span>
+                                </span>
+                            </button>
+                            <button type="button" class="btn btn-cancel  m-btn--icon m-btn--uppercase" (click)="back()">
+                                <span>
+                                    <i class="la la-ban"></i>
+                                    <span>
+                                        cancel
+                                    </span>
+                                </span>
+                            </button>
+                        </div>
+                    </tab>
+                </tabset>
+            </div>
+        </div>
+    </div>
+</div>

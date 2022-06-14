@@ -1,0 +1,563 @@
+<!--begin:: subheader-->
+<div class="modal fade form-contract-commercial-popup" role="dialog" bsModal #popup="bs-modal" aria-hidden="true">
+    <div class="modal-dialog c-modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="d-flex align-items-center justify-content-between p-1">
+                    <h5 class="modal-title" style="margin-right:10px;">
+                        {{isUpdate == false ? 'Create Contract Info' : type === 'Customer' ? 'Customer - Contract Info'
+                        : type === 'Agent' ? 'Agent - Contract Info' : 'Contract Info'}}
+                    </h5>
+                    <ng-container *ngIf="!!this.selectedContract">
+                        <ng-container *ngIf="this.selectedContract.active else inactive">
+                            <span class="m-badge m-badge--success m-badge--wide">
+                                Active
+                            </span>
+                        </ng-container>
+                        <ng-template #inactive>
+                            <span class="m-badge m-badge--danger m-badge--wide">
+                                Inactive
+                            </span>
+                        </ng-template>
+                    </ng-container>
+                    <button type="button" class="close" aria-label="Close" (click)="close()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form class="m-form m-form--state" [formGroup]="formGroup">
+                    <div class="row" *ngIf="isCustomerRequest">
+                        <div class="col-lg-12">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSubmitted && !partnerIds.value}">
+                                <label required>Partner</label>
+                                <app-combo-grid-virtual-scroll (itemSelected)="onSelectedDataFormInfo($event,'partner')"
+                                    [currentActiveItemId]="{ field: 'id', value: partnerIds.value}"
+                                    [selectedDisplayFields]="['partnerNameVn']" [dataSources]="partners | async"
+                                    [displayFields]="[{ field: 'partnerNameVn', label: 'Name Vn' },{ field: 'accountNo', label: 'Tax Code' } ]"
+                                    placeholder="Select Partner" [height]="200" size="15"
+                                    (remove)="resetFormControl('partner')">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSubmitted  && !salesmanId.value}">
+                                <label required>Salesman</label>
+                                <app-combo-grid-virtual-scroll
+                                    (itemSelected)="onSelectedDataFormInfo($event,'salesman')"
+                                    [currentActiveItemId]="{ field: 'id', value: salesmanId.value}"
+                                    [selectedDisplayFields]="selectedDisplaySalesman" [dataSources]="users"
+                                    [displayFields]="displayFieldSalesman"
+                                    placeholder="Select Salesman" [height]="200" size="15"
+                                    (remove)="resetFormControl('salesmanId')">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSubmitted  && !companyId.value}">
+                                <label required>Company</label>
+                                <app-combo-grid-virtual-scroll
+                                    [currentActiveItemId]="{ field: 'id', value: companyId.value}"
+                                    (itemSelected)="onSelectedDataFormInfo($event,'company')"
+                                    [selectedDisplayFields]="['bunameAbbr']" [dataSources]="companies"
+                                    (remove)="resetFormControl('company')"
+                                    [displayFields]="[{field: 'bunameAbbr', label: 'Abbr Name'}, { field: 'bunameEn', label: 'Name EN' }]"
+                                    [height]="200" placeholder="Select Company">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSubmitted  && ( !officeId.valid || !officeId.value)}">
+                                <label required>Office</label>
+                                <div class="pos-rel">
+                                    <ng-select [items]="offices" [clearable]="true" class="custom"
+                                        formControlName="officeId" [multiple]="true" bindLabel="text"
+                                        (change)="selectedOffice($event)" placeholder="Please select">
+                                    </ng-select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': (contractNo.dirty && !contractNo.valid)  || ( contractType.value === 'Official' && !contractNo.value )} ">
+                                <label>Contract No</label>
+                                <input type="text" class="form-control" formControlName="contractNo">
+                                <div class="form-control-feedback" *ngIf="contractNo.errors | equalError: 'maxlength'">
+                                    Contract No is required max 50 characters
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group"
+                                        [ngClass]="{'m-form__group has-danger': isSubmitted  &&  !effectiveDate.value.startDate }">
+                                        <label required for="">Effective Date</label>
+                                        <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                            <input (datesUpdated)="onUpdateEffectiveDate($event)" type="text"
+                                                class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                                [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" [singleDatePicker]="true"
+                                                name="daterange" [autoApply]="true" formControlName="effectiveDate" readonly />
+                                            <span class="m-input-icon__icon m-input-icon__icon--right">
+                                                <span>
+                                                    <i class="la la-calendar"></i>
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group"
+                                        [ngClass]="{'m-form__group has-danger': isSubmitted && !expiredDate.value.startDate }">
+                                        <label required for="">Expired Date</label>
+                                        <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                            <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                                [attr.disabled]="!isDisabledExpiredDateField ?  null : 'disabled'"
+                                                [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" [singleDatePicker]="true"
+                                                name="daterange" [autoApply]="true" formControlName="expiredDate" readonly
+                                                [minDate]="minDateExpired" />
+                                            <span class="m-input-icon__icon m-input-icon__icon--right">
+                                                <span>
+                                                    <i class="la la-calendar"></i>
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="row">
+                                <!-- <div class="col-lg-7">
+                                    <div class="form-group">
+                                        <label>Expired Date</label>
+                                        <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                            <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                                [attr.disabled]="!isDisabledExpiredDateField ?  null : 'disabled'"
+                                                [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" [singleDatePicker]="true"
+                                                name="daterange" [autoApply]="true" formControlName="expiredDate" readonly
+                                                [minDate]="minDateExpired" />
+                                            <span class="m-input-icon__icon m-input-icon__icon--right">
+                                                <span>
+                                                    <i class="la la-calendar"></i>
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div> -->
+                                <div class="col-lg-8">
+                                    <div class="form-group">
+                                        <label>Auto Extend (Year)
+                                        </label>
+                                        <input type="number" min="0" numeric [decimals]="digitDecimal" autoFormatCurrency (change)="formatAutoExtendDays()"
+                                            class="form-control" formControlName="autoExtendDays">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="">
+                                            No Due
+                                        </label>
+                                        <div>
+                                            <label class="m-checkbox m-checkbox--state-success mb-0">
+                                                <input type="checkbox" formControlName="noDue" (onclick)="onSelectedDataFormInfo($event,'noDue')">
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSubmitted  && contractType.invalid}">
+                                <label required>Agreement Type</label>
+                                <ng-select [items]="contractTypes" (change)="selectedAgreementType($event)"
+                                    class="custom" formControlName="contractType" placeholder="Please select">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSubmitted  &&  !saleService.value }">
+                                <label required>Sale Service</label>
+                                <div class="pos-rel">
+                                    <ng-select [items]="serviceTypes" (change)="selectedService($event)"
+                                        bindLabel="text" class="custom" [disabled]="true" [clearable]="true"
+                                        formControlName="saleService" [multiple]="true" placeholder="Please select">
+                                    </ng-select>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>Payment Method</label>
+                                <ng-select [items]="paymentMethods" [clearable]="true" [disabled]="type === 'Agent'"
+                                    class="custom" formControlName="paymentMethod" placeholder="Please select">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="form-group" [ngClass]="{'m-form__group has-danger': isSubmitted  && !currencyId.value}">
+                                <label required>Invoice Currency</label>
+                                <ng-select [items]="listCurrency | async" [clearable]="true" bindLabel="id"
+                                    class="custom" formControlName="currencyId" placeholder="Select Currency">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="form-group" [ngClass]="{'m-form__group has-danger': isSubmitted  && !creditCurrency.value}">
+                                <label required>AR Currency</label>
+                                <ng-select [items]="listCurrency | async" [clearable]="true" bindLabel="id"
+                                    class="custom" formControlName="creditCurrency"
+                                    placeholder="Select Credit Currency">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>VAS</label>
+                                <div class="pos-rel">
+                                    <ng-select class="custom" [items]="vaslst" [clearable]="true" bindLabel="text"
+                                        (change)="selectedVas($event)" [multiple]="true" formControlName="vas"
+                                        placeholder="Please select">
+                                    </ng-select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <ng-container>
+                        <div class="row" *ngIf=" isUpdate ||  (!isUpdate && (contractType.value ==='Official' || contractType.value ==='Trial'))">
+                            <div class="col-lg-12">
+                                <div class="alert-block__heading font-weight-bold collapse-toggle "
+                                    data-toggle="collapse" data-target="#data-form-contact">
+                                    Credit Term Info
+                                    <i class="la la-angle-up m--margin-right-5 float-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row collapse show" id="data-form-contact">
+                            <ng-container *ngIf="isUpdate">
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label>Trial Credit Limit
+                                        </label>
+                                        <input type="text" formatDecimalFormControl minimum='0'
+                                            [attr.disabled]="(menuSpecialPermission | async | specialPermission: 'AccountReceivable') === true ?  null : 'disabled'"
+                                            class="form-control" formControlName="trialCreditLimit">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label>Trial Credit Days
+                                        </label>
+                                        <input type="number" min="0" (change)="onChageTrialCreditDays()"
+                                            [attr.disabled]="(menuSpecialPermission | async | specialPermission: 'AccountReceivable') === true  ?  null : 'disabled'"
+                                            class="form-control" formControlName="trialCreditDays">
+                                    </div>
+                                </div>
+                                <div class="col-lg-2">
+                                    <div class="form-group">
+                                        <label>Trial Effective Date
+                                        </label>
+                                        <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                            <input
+                                                [attr.disabled]="(menuSpecialPermission | async | specialPermission: 'AccountReceivable') === true?  null : 'disabled'"
+                                                type="text" class="form-control m-input m-input--square"
+                                                ngxDaterangepickerMd
+                                                [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}"
+                                                [singleDatePicker]="true" name="daterange" [autoApply]="true"
+                                                (datesUpdated)="onUpdateTrialEffectiveDate($event)"
+                                                formControlName="trialEffectDate" readonly />
+                                            <span class="m-input-icon__icon m-input-icon__icon--right">
+                                                <span>
+                                                    <i class="la la-calendar"></i>
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2">
+                                    <div class="form-group">
+                                        <label>Trial Expired Date
+                                        </label>
+                                        <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                            <input
+                                                [attr.disabled]="(menuSpecialPermission | async | specialPermission: 'AccountReceivable') === true ?  null : 'disabled'"
+                                                type="text" class="form-control m-input m-input--square"
+                                                ngxDaterangepickerMd
+                                                [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}"
+                                                [singleDatePicker]="true" name="daterange" [autoApply]="true"
+                                                formControlName="trialExpiredDate" [minDate]="minDateExpiredTrial"
+                                                readonly />
+                                            <span class="m-input-icon__icon m-input-icon__icon--right">
+                                                <span>
+                                                    <i class="la la-calendar"></i>
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf=" isUpdate ||  (!isUpdate  && (contractType.value ==='Official' || contractType.value ==='Trial'))">
+                                <div class="col-lg-2">
+                                    <div class="form-group">
+                                        <label>Payment Term</label>
+                                        <input type="number" min="0" numeric [decimals]="digitDecimal"
+                                            [attr.disabled]="(menuSpecialPermission | async | specialPermission: 'AccountReceivable') === true ?  null : 'disabled'"
+                                            autoFormatCurrency class="form-control" formControlName="paymentTerm">
+                                    </div>
+                                </div>
+                                <div class="col-lg-2">
+                                    <div class="form-group">
+                                        <label>Base On</label>
+                                        <ng-select [items]="basesOn" [clearable]="false" class="custom"
+                                            formControlName="baseOn" placeholder="Please select">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label>Credit Limit</label>
+                                        <input
+                                            [attr.disabled]="(menuSpecialPermission | async | specialPermission: 'AccountReceivable') === true || !isUpdate ?  null : 'disabled'"
+                                            type="text" class="form-control" formatDecimalFormControl
+                                            formControlName="creditLimit">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label>Credit Limited Rate</label>
+                                        <input min="0"
+                                            [attr.disabled]="(menuSpecialPermission | async | specialPermission: 'AccountReceivable') === true  ?  null : 'disabled'"
+                                            type="number" class="form-control" formControlName="creditLimitRate">
+                                    </div>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="isUpdate">
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label>Debit Amount</label>
+                                        <input type="text" formatDecimalFormControl minimum="0" disabled
+                                            class="form-control" formControlName="debitAmount">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label>Billing Amount</label>
+                                        <input type="text" formatDecimalFormControl minimum="0" disabled
+                                            class="form-control" formControlName="billingAmount">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label>Paid Amount</label>
+                                        <input type="text" formatDecimalFormControl minimum="0" disabled
+                                            class="form-control" formControlName="paidAmount">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label>UnPaid Amount</label>
+                                        <input type="text" formatDecimalFormControl disabled class="form-control"
+                                            formControlName="unpaidAmount">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label>Advance Amount USD</label>
+                                                <input formatDecimalFormControl disabled type="text"
+                                                    class="form-control" formControlName="customerAdvanceAmountUsd">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label>Advance Amount VND</label>
+                                                <input formatDecimalFormControl disabled type="text"
+                                                    class="form-control" formControlName="customerAdvanceAmountVnd">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="">
+                                                    Credit Unlimited
+                                                </label>
+                                                <div>
+                                                    <label class="m-checkbox m-checkbox--bold">
+                                                        <input type="checkbox" formControlName="creditUnlimited"
+                                                            [attr.disabled]="(menuSpecialPermission | async | specialPermission: 'AccountReceivable') === true  ?  null : 'disabled'">
+                                                        <span></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8">
+                                            <div class="form-group">
+                                                <label>Credit Rate</label>
+                                                <input min="0" disabled type="number" class="form-control"
+                                                    formControlName="creditRate" numeric [decimals]="digitDecimal"
+                                                    autoFormatCurrency>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </ng-container>
+                        </div>
+                        <div class="row" *ngIf=" isUpdate || (!isUpdate  && (contractType.value ==='Official' || contractType.value ==='Trial'))">
+                            <div class="col-lg-8">
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <textarea class="form-control" cols="30" rows="5"
+                                        formControlName="description"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label>Contract File</label>
+                                    <input style="display:none" type="file" #file (change)="handleFileInput($event)">
+                                    <div class="form-group ">
+                                        <button (click)="file.click()" type="button"
+                                            class=" btn btn-success  m-btn--icon m-btn--uppercase margin-right-10">
+                                            <span>
+                                                <i class="la la-plus"></i>
+                                                <span>
+                                                    Attach Files
+                                                </span>
+                                            </span>
+                                        </button>
+                                        <ng-container
+                                            *ngIf=" (!!fileList && !isUpdate) || (!!fileList && isCreateNewCommercial)">
+                                            <span class="text-underline text-primary">
+                                                {{ !!fileList ? fileList[0].name : null}}
+                                            </span>
+                                        </ng-container>
+                                        <ng-container *ngIf="!isLoading && !!files && isUpdate">
+                                            <li *ngFor="let file of files">
+                                                <a [href]="file.url" target="_blank" [title]="file.name"
+                                                download>{{file.name}}</a>
+                                                <span class="pointer text-center">
+                                                    <a title="Delete" (click)="deleteFile(file)">
+                                                        <i class="la la-times fa-lg text-danger"></i>
+                                                    </a>
+                                                </span>    
+                                            </li>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="isUpdate && !isCreateNewCommercial">
+                        <div class="row">
+                            <div class="col-6">
+                                Created:
+                                {{selectedContract.datetimeCreated | date: 'dd/MM/yyyy HH:mm'}} by <span
+                                    class="text-success">{{selectedContract.userCreatedName}}</span>
+                            </div>
+                            <div class="col-6">
+                                Modified:
+                                {{selectedContract.datetimeModified | date: 'dd/MM/yyyy HH:mm'}} by <span
+                                    class="text-success">{{selectedContract.userModifiedName}}</span>
+                            </div>
+                        </div>
+                    </ng-container>
+
+                </form>
+            </div>
+            <div class="modal-footer m--align-center">
+                <ng-container *ngIf="openOnPartner === false">
+                    <button
+                        *ngIf="((menuSpecialPermission | async | specialPermission: 'AccountReceivable') === true ||  (menuSpecialPermission | async | specialPermission: 'ActiveContract') === true ) || !isUpdate || isCreateNewCommercial || this.selectedContract.active === false"
+                        (click)="onSubmit()" class="btn btn-brand  m-btn--icon m-btn--uppercase m--margin-right-10">
+                        <span>
+                            <i class="la la-save"></i>
+                            <span> Save </span>
+                        </span>
+                    </button>
+                    <button (click)="onSubmit(true)"
+                        *ngIf="(((menuSpecialPermission | async | specialPermission: 'ActiveContract') === false && !selectedContract.active && !isCreateNewCommercial) )  "
+                        class="btn btn-brand m-btn--square m-btn--icon m-btn--uppercase m--margin-right-10">
+                        <span>
+                            <i class="la la-send"></i>
+                            <span> Request Approval </span>
+                        </span>
+                    </button>
+                    <button (click)="onARConfirmed()"
+                        *ngIf="(menuSpecialPermission | async | specialPermission: 'AccountReceivable') === true && selectedContract.active === false && isUpdate && !isCreateNewCommercial &&  (selectedContract.arconfirmed === false || selectedContract.arconfirmed === null)   "
+                        class="btn btn-success  m-btn--icon m-btn--uppercase m--margin-right-10">
+                        <span>
+                            <i class="la la-check"></i>
+                            <span> AR Confirmed </span>
+                        </span>
+                    </button>
+                    <button (click)="activeInactiveContract(selectedContract.id)"
+                        *ngIf="(menuSpecialPermission | async | specialPermission: 'ActiveContract') === true && selectedContract.active === false && isUpdate && !isCreateNewCommercial"
+                        class="btn btn-success  m-btn--icon m-btn--uppercase m--margin-right-10">
+                        <span>
+                            <i class="la la-check-square-o"></i>
+                            <span> Active </span>
+                        </span>
+                    </button>
+                    <button
+                        *ngIf="( (menuSpecialPermission | async | specialPermission: 'ActiveContract') === true || (menuSpecialPermission | async | specialPermission: 'AccountReceivable') === true   ) && selectedContract.active === false && isUpdate && !isCreateNewCommercial"
+                        type="button" class="btn btn-warning   m-btn--icon  m-btn--uppercase"
+                        (click)="showRejectCommentPopup()">
+                        <span>
+                            <i class="la la-ban"></i>
+                            <span>
+                                Reject
+                            </span>
+                        </span>
+                    </button>
+                    <button (click)="activeInactiveContract(selectedContract.id)"
+                        *ngIf="(menuSpecialPermission | async | specialPermission: 'ActiveContract') === true && selectedContract.active === true && isUpdate && !isCreateNewCommercial"
+                        class="btn btn-danger  m-btn--icon m-btn--uppercase m--margin-right-10">
+                        <span>
+                            <i class="la la-remove"></i>
+                            <span> Inactive </span>
+                        </span>
+                    </button>
+                </ng-container>
+                <app-default-button [buttonSetting]="cancelButtonSetting" (click)="close()"></app-default-button>
+            </div>
+        </div>
+    </div>
+</div>
+<popup-salesman-credit-limit (onRequest)="onSalesmanCreditRequest($event)">
+</popup-salesman-credit-limit>
+
+<partner-reject-popup (onSave)="onSaveReject($event)"></partner-reject-popup>
+
+<confirm-popup [body]="confirmChangeAgreementTypeText" [labelConfirm]="'Yes'"
+    (onSubmit)="onSubmitChangeAgreementType()">
+</confirm-popup>
+
+<confirm-popup #confirmActive
+    [body]="'There are Other Agreement that same service, If Agreement is actived, Those Agreement will be Inactive. Are You Sure Active this agreement?'"
+    [labelConfirm]="'OK'" (onSubmit)="onSubmitActiveContract()">
+</confirm-popup>
+
+<confirm-popup #confirmDelete body="Are you sure to delete this file ?" labelConfirm="Yes" labelCancel="No"
+    (onSubmit)="onDeleteFile()"></confirm-popup>

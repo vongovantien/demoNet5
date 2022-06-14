@@ -1,0 +1,2232 @@
+<div class="m-content">
+    <div class="m-portlet">
+        <div class="m-portlet__head">
+            <div class="m-portlet__head-caption">
+                <div class="m-portlet__head-title">
+                    <h3 class="m-portlet__head-text">
+                        Combogrid navigation
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="m-portlet__body">
+            <div class="form-group">
+                <label for="">Basic Vitual Combogrid</label>
+                <!-- <app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event)"
+                    [currentActiveItemId]="{ field: 'id', value: selectedCountry}" [selectedDisplayFields]="['name_EN']"
+                    [dataSources]="countries | async" [displayFields]="displayFieldCity" placeholder="Select city">
+                </app-combo-grid-virtual-scroll> -->
+            </div>
+            <div class="form-group">
+                <label for="">Allow Editing {{countryText}}</label>
+                <app-combo-grid-virtual-scroll (itemSelected)="selectedCountryFreeText = $event?.id"
+                    [currentActiveItemId]="{ field: 'id', value: selectedCountryFreeText}"
+                    [selectedDisplayFields]="['name_EN']" [dataSources]="countries | async"
+                    [displayFields]="displayFieldCity" placeholder="Select city" allowFreeText
+                    [(ngModel)]="countryText">
+                </app-combo-grid-virtual-scroll>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="m-portlet">
+        <div class="m-portlet__head">
+            <div class="m-portlet__head-caption">
+                <div class="m-portlet__head-title">
+                    <h3 class="m-portlet__head-text">
+                        Table no data
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="m-portlet__body">
+            <div class="table-wrapper" id="">
+                <table class="table table-striped table-brand">
+                    <thead>
+                        <tr>
+                            <th class="table-actions-col"></th>
+                            <th>
+                                <span>Stage ID</span>
+                            </th>
+                            <th>
+                                <span>Role</span>
+                            </th>
+                            <th>
+                                <span>Stage ABBR</span>
+                            </th>
+                            <th>
+                                <span>Name (VN)</span>
+                            </th>
+                            <th>
+                                <span>Name (EN)</span>
+                            </th>
+                            <th>
+                                <span>Description (VN</span>
+                            </th>
+                            <th>
+                                <span>Description (EN)</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="8">
+                                <div class="no-data">
+                                    <i class="flaticon-coins"></i>
+                                    <span class="no-data-text">No records found</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="m-portlet">
+        <div class="m-portlet__head">
+            <div class="m-portlet__head-caption">
+                <div class="m-portlet__head-title">
+                    <h3 class="m-portlet__head-text">
+                        Table simple
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="m-portlet__body">
+            <div class="form-group m-form__group m--margin-top-10">
+                <div class="alert m-alert m-alert--default" role="alert">
+                    Add
+                    <code>invalid-row</code>
+                    class to the tr element with Error state,
+                    <code>selected-row</code>
+                    class to the tr element with selected state.
+                </div>
+            </div>
+
+            <div class="table-wrapper" id="">
+                <table class="table table-striped table-brand">
+                    <thead>
+                        <tr>
+                            <th class="table-actions-col"></th>
+                            <th>
+                                <span>Stage ID</span>
+                            </th>
+                            <th>
+                                <span>Role</span>
+                            </th>
+                            <th>
+                                <span>Stage ABBR</span>
+                            </th>
+                            <th>
+                                <span>Name (VN)</span>
+                            </th>
+                            <th>
+                                <span>Name (EN)</span>
+                            </th>
+                            <th>
+                                <span>Description (VN</span>
+                            </th>
+                            <th>
+                                <span>Description (EN)</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="invalid-row">
+                            <td class="table-actions-col">
+                                <div class="table-actions" style="width: 70px">
+                                    <button type="button" class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="Edit">
+                                        <i class="la la-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="remove" data-toggle="modal" data-target="#confirm-delete-modal">
+                                        <i class="la la-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td>
+                                <span>LH001</span>
+                            </td>
+                            <td>
+                                <span>Customer services</span>
+                            </td>
+                            <td>
+                                <span>ABBR</span>
+                            </td>
+                            <td>
+                                <span>Ký kết hợp đồng ngoại thương</span>
+                            </td>
+                            <td>
+                                <span>Shipping Schedule</span>
+                            </td>
+                            <td>
+                                <span>Đây là mô tả bằng tiếng Việt</span>
+                            </td>
+                            <td>
+                                <span>This is description by EN</span>
+                            </td>
+                        </tr>
+                        <tr class="selected-row">
+                            <td class="table-actions-col">
+                                <div class="table-actions" style="width: 70px">
+                                    <button type="button" class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="Edit">
+                                        <i class="la la-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="remove" data-toggle="modal" data-target="#confirm-delete-modal">
+                                        <i class="la la-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td>
+                                <span>LH001</span>
+                            </td>
+                            <td>
+                                <span>Customer services</span>
+                            </td>
+                            <td>
+                                <span>ABBR</span>
+                            </td>
+                            <td>
+                                <span>Ký kết hợp đồng ngoại thương</span>
+                            </td>
+                            <td>
+                                <span>Shipping Schedule</span>
+                            </td>
+                            <td>
+                                <span>Đây là mô tả bằng tiếng Việt</span>
+                            </td>
+                            <td>
+                                <span>This is description by EN</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="table-actions-col">
+                                <div class="table-actions" style="width: 70px">
+                                    <button type="button" class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="Edit">
+                                        <i class="la la-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="remove" data-toggle="modal" data-target="#confirm-delete-modal">
+                                        <i class="la la-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td>
+                                <span>LH001</span>
+                            </td>
+                            <td>
+                                <span>Customer services</span>
+                            </td>
+                            <td>
+                                <span>ABBR</span>
+                            </td>
+                            <td>
+                                <span>Ký kết hợp đồng ngoại thương</span>
+                            </td>
+                            <td>
+                                <span>Shipping Schedule</span>
+                            </td>
+                            <td>
+                                <span>Đây là mô tả bằng tiếng Việt</span>
+                            </td>
+                            <td>
+                                <span>This is description by EN</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="m-portlet">
+        <div class="m-portlet__head">
+            <div class="m-portlet__head-caption">
+                <div class="m-portlet__head-title">
+                    <h3 class="m-portlet__head-text">
+                        Data table simple with sorting
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="m-portlet__body">
+            <div class="form-group m-form__group m--margin-top-10">
+                <div class="alert m-alert m-alert--default" role="alert">
+                    Add
+                    <code>dataTable</code>
+                    class to the table element and
+                    <code>sorting, sorting_asc, sorting_desc</code>
+                    to the th element to sorting table
+                </div>
+            </div>
+            <div class="table-wrapper" id="">
+                <table class="table table-striped table-brand dataTable">
+                    <thead>
+                        <tr>
+                            <th class="table-actions-col no-sorting"></th>
+                            <th class="sorting_asc">
+                                <span>Stage ID</span>
+                            </th>
+                            <th class="sorting">
+                                <span>Role</span>
+                            </th>
+                            <th class="sorting">
+                                <span>Stage ABBR</span>
+                            </th>
+                            <th class="sorting">
+                                <span>Name (VN)</span>
+                            </th>
+                            <th class="sorting">
+                                <span>Name (EN)</span>
+                            </th>
+                            <th class="sorting">
+                                <span>Description (VN</span>
+                            </th>
+                            <th class="sorting">
+                                <span>Description (EN)</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="table-actions-col">
+                                <div class="table-actions" style="width: 70px">
+                                    <button type="button" class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="Edit">
+                                        <i class="la la-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="Remove" data-toggle="modal" data-target="#confirm-delete-modal">
+                                        <i class="la la-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td>
+                                <span>LH001</span>
+                            </td>
+                            <td>
+                                <span>Customer services</span>
+                            </td>
+                            <td>
+                                <span>ABBR</span>
+                            </td>
+                            <td>
+                                <span>Ký kết hợp đồng ngoại thương</span>
+                            </td>
+                            <td>
+                                <span>Shipping Schedule</span>
+                            </td>
+                            <td>
+                                <span>Đây là mô tả bằng tiếng Việt</span>
+                            </td>
+                            <td>
+                                <span>This is description by EN</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="table-actions-col">
+                                <div class="table-actions" style="width: 70px">
+                                    <button type="button" class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="Edit">
+                                        <i class="la la-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="remove" data-toggle="modal" data-target="#confirm-delete-modal">
+                                        <i class="la la-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td>
+                                <span>LH001</span>
+                            </td>
+                            <td>
+                                <span>Customer services</span>
+                            </td>
+                            <td>
+                                <span>ABBR</span>
+                            </td>
+                            <td>
+                                <span>Ký kết hợp đồng ngoại thương</span>
+                            </td>
+                            <td>
+                                <span>Shipping Schedule</span>
+                            </td>
+                            <td>
+                                <span>Đây là mô tả bằng tiếng Việt</span>
+                            </td>
+                            <td>
+                                <span>This is description by EN</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="table-actions-col">
+                                <div class="table-actions" style="width: 70px">
+                                    <button type="button" class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="Edit">
+                                        <i class="la la-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="remove" data-toggle="modal" data-target="#confirm-delete-modal">
+                                        <i class="la la-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td>
+                                <span>LH001</span>
+                            </td>
+                            <td>
+                                <span>Customer services</span>
+                            </td>
+                            <td>
+                                <span>ABBR</span>
+                            </td>
+                            <td>
+                                <span>Ký kết hợp đồng ngoại thương</span>
+                            </td>
+                            <td>
+                                <span>Shipping Schedule</span>
+                            </td>
+                            <td>
+                                <span>Đây là mô tả bằng tiếng Việt</span>
+                            </td>
+                            <td>
+                                <span>This is description by EN</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination-nav">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="tatable__pager-size" style="max-width: 190px">
+                            <div class="select-box">
+                                <select class="form-control m-input m-input--square" id="" aria-label="">
+                                    <option value="1">15 line/screen</option>
+                                    <option value="2">30 line/screen</option>
+                                    <option value="3">50 line/screen</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <nav aria-label="">
+                            <ul class="pagination justify-content-end">
+                                <li class="page-item"><a class="page-link" href="#">First</a></li>
+                                <li class="page-item"><a class="page-link" href="#">Back</a></li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                                <li class="page-item"><a class="page-link" href="#">Last</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="m-portlet">
+        <div class="m-portlet__head">
+            <div class="m-portlet__head-caption">
+                <div class="m-portlet__head-title">
+                    <h3 class="m-portlet__head-text">
+                        Data table with fix header
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="m-portlet__body">
+            <div class="table-wrapper" id="">
+                <table class="table table-striped table-brand dataTable">
+                    <thead>
+                        <tr>
+                            <th class="sorting_asc">
+                                <span>No</span>
+                            </th>
+                            <th class="sorting" style="width: 17%">
+                                <span>Name/Code</span>
+                            </th>
+                            <th class="sorting" style="width: 17%">
+                                <span>Action</span>
+                            </th>
+                            <th class="sorting" style="width: 17%">
+                                <span>User Update</span>
+                            </th>
+                            <th class="sorting" style="width: 17%">
+                                <span>Update Time</span>
+                            </th>
+                            <th class="sorting" style="width: 17%">
+                                <span>Log Content</span>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+
+                <perfect-scrollbar style="max-height: 280px">
+                    <table class="table table-striped table-brand dataTable">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <span>1</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>12345678945</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Update</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Alex Phương</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>dd/mm/yyyy</span>&nbsp;
+                                    <span>hh:mm:ss</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Update Currency list</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span>1</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>12345678945</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Update</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Alex Phương</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>dd/mm/yyyy</span>&nbsp;
+                                    <span>hh:mm:ss</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Update Currency list</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span>1</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>12345678945</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Update</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Alex Phương</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>dd/mm/yyyy</span>&nbsp;
+                                    <span>hh:mm:ss</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Update Currency list</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span>1</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>12345678945</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Update</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Alex Phương</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>dd/mm/yyyy</span>&nbsp;
+                                    <span>hh:mm:ss</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Update Currency list</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span>1</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>12345678945</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Update</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Alex Phương</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>dd/mm/yyyy</span>&nbsp;
+                                    <span>hh:mm:ss</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Update Currency list</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span>1</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>12345678945</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Update</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Alex Phương</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>dd/mm/yyyy</span>&nbsp;
+                                    <span>hh:mm:ss</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Update Currency list</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span>1</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>12345678945</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Update</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Alex Phương</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>dd/mm/yyyy</span>&nbsp;
+                                    <span>hh:mm:ss</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Update Currency list</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span>1</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>12345678945</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Update</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Alex Phương</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>dd/mm/yyyy</span>&nbsp;
+                                    <span>hh:mm:ss</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Update Currency list</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span>1</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>12345678945</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Update</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Alex Phương</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>dd/mm/yyyy</span>&nbsp;
+                                    <span>hh:mm:ss</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Update Currency list</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span>1</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>12345678945</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Update</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Alex Phương</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>dd/mm/yyyy</span>&nbsp;
+                                    <span>hh:mm:ss</span>
+                                </td>
+                                <td style="width: 17%">
+                                    <span>Update Currency list</span>
+                                </td>
+                            </tr>
+                            <tr class="loading-wrapper">
+                                <td colspan="6">
+                                    <div class="on-loading">
+                                        <div class="m-loader m-loader--brand"
+                                            style="width: 30px; display: inline-block;"></div>
+                                        <span>Loading</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </perfect-scrollbar>
+            </div>
+        </div>
+    </div>
+    <div class="m-portlet">
+        <div class="m-portlet__head">
+            <div class="m-portlet__head-caption">
+                <div class="m-portlet__head-title">
+                    <h3 class="m-portlet__head-text">
+                        Data editable with fix left side
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="m-portlet__body">
+            <div class="table-wrapper" id="" style="min-height: 300px">
+                <table class="table table-striped table-brand table-editable">
+                    <thead class="">
+                        <tr class="">
+                            <th class="fixed-side"></th>
+                            <th class="">
+                                <span>
+                                    Cont Type
+                                </span>
+                            </th>
+                            <th class="">
+                                <span>
+                                    Cont Q'ty
+                                </span>
+                            </th>
+                            <th class="">
+                                <span>
+                                    Cont No.
+                                </span>
+                            </th>
+                            <th class="">
+                                <span>
+                                    Seal No.
+                                </span>
+                            </th>
+                            <th class="">
+                                <span>
+                                    Mark No.
+                                </span>
+                            </th>
+                            <th class="">
+                                <span>
+                                    Commodity
+                                </span>
+                            </th>
+                            <th class="">
+                                <span>
+                                    Package Type
+                                </span>
+                            </th>
+                            <th class="">
+                                <span>
+                                    Package Q'ty
+                                </span>
+                            </th>
+                            <th class="">
+                                <span>
+                                    Description of Good
+                                </span>
+                            </th>
+                            <th class="">
+                                <span>
+                                    N.W
+                                </span>
+                            </th>
+                            <th class="">
+                                <span>
+                                    G.W
+                                </span>
+                            </th>
+                            <th class="">
+                                <span>
+                                    C.W
+                                </span>
+                            </th>
+                            <th class="">
+                                <span>
+                                    Unit
+                                </span>
+                            </th>
+                            <th class="">
+                                <span>
+                                    CBM
+                                </span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="m-form m-form--state invalid-row row-editing">
+                            <td class="table-actions-col fixed-side">
+                                <div class="table-actions content-editable" style="width: 70px">
+                                    <button type="button" class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="Edit">
+                                        <i class="la la-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="Remove">
+                                        <i class="la la-trash"></i>
+                                    </button>
+                                </div>
+                                <div class="table-actions control-editable" style="width: 70px">
+                                    <button type="button" class="btn btn-primary btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="Save">
+                                        <i class="la la-save"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="Cancel">
+                                        <i class="la la-ban"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    Cont Type
+                                </span>
+                                <div class="control-editable">
+                                    <ng-select class="custom" [items]="items" [isOpen]="disabled"
+                                        (data)="refreshValue($event)" (change)="selected($event)"
+                                        (removed)="removed($event)" (typed)="typed($event)" placeholder="Select filter">
+                                    </ng-select>
+                                </div>
+                                <div class="has-danger row-control-feedback">
+                                    <div class="form-control-feedback">
+                                        Duplicate container detail
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    Cont Q'ty
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    Cont No.
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    Seal No.
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    Mark No.
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    Commodity
+                                </span>
+                                <div class="control-editable">
+                                    <div class="dropdown e--combogrid">
+                                        <input class="form-control m-input m-input--square dropdown-toggle" type="text"
+                                            readonly data-toggle="dropdown" placeholder="Please selected"
+                                            value="Vũng Tàu, Bà Rịa, Việt">
+                                        <div class="dropdown-menu  dropdown-menu-right e--combogrid-content">
+                                            <div class="tabel-wrapper table-fixed">
+                                                <div class="table-head-fixed">
+                                                    <div class="table-filter-block">
+                                                        <div class="search-field">
+                                                            <input class="form-control m-input m-input--square"
+                                                                type="text" placeholder="Search...">
+                                                            <i class="icon-search"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div class="table-header">
+                                                        <table class="table table-hover">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Name EN</th>
+                                                                    <th>Name VN</th>
+                                                                    <th>Group</th>
+                                                                </tr>
+                                                            </thead>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="table-body-scroll">
+                                                    <table class="table table-hover">
+                                                        <tbody>
+                                                            <tr class="data-row data-selected" data-id="1">
+                                                                <td>Option EN 1</td>
+                                                                <td>Option VN 1</td>
+                                                                <td>Group 1</td>
+                                                            </tr>
+                                                            <tr class="data-row" data-id="2">
+                                                                <td>Option EN 2</td>
+                                                                <td>Option VN 2</td>
+                                                                <td>Group 2</td>
+                                                            </tr>
+                                                            <tr class="data-row" data-id="3">
+                                                                <td>Option EN 3</td>
+                                                                <td>Option VN 3</td>
+                                                                <td>Group 3</td>
+                                                            </tr>
+                                                            <tr class="data-row" data-id="4">
+                                                                <td>Option EN 4</td>
+                                                                <td>Option VN 4</td>
+                                                                <td>Group 4</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    Package Type
+                                </span>
+                                <div class="control-editable">
+                                    <ng-select class="custom" [items]="items" [isOpen]="disabled"
+                                        (data)="refreshValue($event)" (change)="selected($event)"
+                                        (removed)="removed($event)" (typed)="typed($event)" placeholder="Select filter">
+                                    </ng-select>
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    Package Q'ty
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="" style="width: 130px">
+                                <span class="content-editable">
+                                    Description of Good dài thiệt là dài đó nha Tem Tem
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    N.W
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    G.W
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    C.W
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    Unit
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    CBM
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="m-form m-form--state invalid-row row-editing">
+                            <td class="table-actions-col fixed-side">
+                                <div class="table-actions content-editable" style="width: 70px">
+                                    <button type="button" class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="Edit">
+                                        <i class="la la-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="Remove">
+                                        <i class="la la-trash"></i>
+                                    </button>
+                                </div>
+                                <div class="table-actions control-editable" style="width: 70px">
+                                    <button type="button" class="btn btn-primary btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="Save">
+                                        <i class="la la-save"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="Cancel">
+                                        <i class="la la-ban"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    Cont Type
+                                </span>
+                                <div class="control-editable">
+                                    <ng-select class="custom" [items]="items" [isOpen]="disabled"
+                                        (data)="refreshValue($event)" (change)="selected($event)"
+                                        (removed)="removed($event)" (typed)="typed($event)" placeholder="Select filter">
+                                    </ng-select>
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    Cont Q'ty
+                                </span>
+                                <div class="control-editable has-danger">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                    <div class="form-control-feedback">
+                                        Sorry, that's not correct. Try another?
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    Cont No.
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    Seal No.
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    Mark No.
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    Commodity
+                                </span>
+                                <div class="control-editable">
+                                    <div class="dropdown e--combogrid">
+                                        <input class="form-control m-input m-input--square dropdown-toggle" type="text"
+                                            readonly data-toggle="dropdown" placeholder="Please selected"
+                                            value="Vũng Tàu, Bà Rịa, Việt">
+                                        <div class="dropdown-menu  dropdown-menu-right e--combogrid-content">
+                                            <div class="tabel-wrapper table-fixed">
+                                                <div class="table-head-fixed">
+                                                    <div class="table-filter-block">
+                                                        <div class="search-field">
+                                                            <input class="form-control m-input m-input--square"
+                                                                type="text" placeholder="Search...">
+                                                            <i class="icon-search"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div class="table-header">
+                                                        <table class="table table-hover">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Name EN</th>
+                                                                    <th>Name VN</th>
+                                                                    <th>Group</th>
+                                                                </tr>
+                                                            </thead>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="table-body-scroll">
+                                                    <table class="table table-hover">
+                                                        <tbody>
+                                                            <tr class="data-row data-selected" data-id="1">
+                                                                <td>Option EN 1</td>
+                                                                <td>Option VN 1</td>
+                                                                <td>Group 1</td>
+                                                            </tr>
+                                                            <tr class="data-row" data-id="2">
+                                                                <td>Option EN 2</td>
+                                                                <td>Option VN 2</td>
+                                                                <td>Group 2</td>
+                                                            </tr>
+                                                            <tr class="data-row" data-id="3">
+                                                                <td>Option EN 3</td>
+                                                                <td>Option VN 3</td>
+                                                                <td>Group 3</td>
+                                                            </tr>
+                                                            <tr class="data-row" data-id="4">
+                                                                <td>Option EN 4</td>
+                                                                <td>Option VN 4</td>
+                                                                <td>Group 4</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    Package Type
+                                </span>
+                                <div class="control-editable">
+                                    <ng-select class="custom" [items]="items" [isOpen]="disabled"
+                                        (data)="refreshValue($event)" (change)="selected($event)"
+                                        (removed)="removed($event)" (typed)="typed($event)" placeholder="Select filter">
+                                    </ng-select>
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    Package Q'ty
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="" style="width: 130px">
+                                <span class="content-editable">
+                                    Description of Good dài thiệt là dài đó nha Tem Tem
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    N.W
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    G.W
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    C.W
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    Unit
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    CBM
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="">
+                            <td class="table-actions-col fixed-side">
+                                <div class="table-actions" style="width: 70px">
+                                    <button type="button" class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="Edit">
+                                        <i class="la la-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="Remove">
+                                        <i class="la la-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    Cont Type
+                                </span>
+                                <div class="control-editable">
+                                    <ng-select class="custom" [items]="items" [isOpen]="disabled"
+                                        (data)="refreshValue($event)" (change)="selected($event)"
+                                        (removed)="removed($event)" (typed)="typed($event)" placeholder="Select filter">
+                                    </ng-select>
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    Cont Q'ty
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    Cont No.
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    Seal No.
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    Mark No.
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    Commodity
+                                </span>
+                                <div class="control-editable">
+                                    <ng-select class="custom" [items]="items" [isOpen]="disabled"
+                                        (data)="refreshValue($event)" (change)="selected($event)"
+                                        (removed)="removed($event)" (typed)="typed($event)" placeholder="Select filter">
+                                    </ng-select>
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    Package Type
+                                </span>
+                                <div class="control-editable">
+                                    <ng-select class="custom" [items]="items" [isOpen]="disabled"
+                                        (data)="refreshValue($event)" (change)="selected($event)"
+                                        (removed)="removed($event)" (typed)="typed($event)" placeholder="Select filter">
+                                    </ng-select>
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    Package Q'ty
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="" style="width: 130px">
+                                <span class="content-editable">
+                                    Description of Good dài thiệt là dài đó nha Tem Tem
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    N.W
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    G.W
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    C.W
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    Unit
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                            <td class="">
+                                <span class="content-editable">
+                                    CBM
+                                </span>
+                                <div class="control-editable">
+                                    <input type="text" class="form-control m-input m-input--square"
+                                        placeholder="Please enter">
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="m-portlet">
+        <div class="m-portlet__head">
+            <div class="m-portlet__head-caption">
+                <div class="m-portlet__head-title">
+                    <h3 class="m-portlet__head-text">
+                        Data table with scroll
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="m-portlet__body">
+            <div class="form-group m-form__group m--margin-top-10">
+                <div class="alert m-alert m-alert--default" role="alert">
+                    Add
+                    <code>table-scrollable</code>
+                    class to the div element has class
+                    <code>table-wrapper</code>
+                </div>
+            </div>
+
+            <div class="table-wrapper table-scrollable" id="">
+                <table class="table table-striped table-brand dataTable">
+                    <thead>
+                        <tr>
+                            <th class="table-actions-col no-sorting"></th>
+                            <th class="sorting_asc">
+                                <span>Stage ID</span>
+                            </th>
+                            <th class="sorting">
+                                <span>Role</span>
+                            </th>
+                            <th class="sorting">
+                                <span>Stage ABBR</span>
+                            </th>
+                            <th class="sorting">
+                                <span>Name (VN)</span>
+                            </th>
+                            <th class="sorting">
+                                <span>Name (EN)</span>
+                            </th>
+                            <th class="sorting">
+                                <span>Description (VN</span>
+                            </th>
+                            <th class="sorting">
+                                <span>Description (EN)</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="table-actions-col">
+                                <div class="table-actions" style="width: 70px">
+                                    <button type="button" class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="Edit">
+                                        <i class="la la-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="remove" data-toggle="modal" data-target="#confirm-delete-modal">
+                                        <i class="la la-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td>
+                                <span>LH001</span>
+                            </td>
+                            <td>
+                                <span>Customer services</span>
+                            </td>
+                            <td>
+                                <span>ABBR</span>
+                            </td>
+                            <td>
+                                <span>Ký kết hợp đồng ngoại thương</span>
+                            </td>
+                            <td>
+                                <span>Shipping Schedule</span>
+                            </td>
+                            <td>
+                                <span>Đây là mô tả bằng tiếng Việt</span>
+                            </td>
+                            <td>
+                                <span>This is description by EN</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="table-actions-col">
+                                <div class="table-actions" style="width: 70px">
+                                    <button type="button" class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="Edit">
+                                        <i class="la la-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="remove" data-toggle="modal" data-target="#confirm-delete-modal">
+                                        <i class="la la-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td>
+                                <span>LH001</span>
+                            </td>
+                            <td>
+                                <span>Customer services</span>
+                            </td>
+                            <td>
+                                <span>ABBR</span>
+                            </td>
+                            <td>
+                                <span>Ký kết hợp đồng ngoại thương</span>
+                            </td>
+                            <td>
+                                <span>Shipping Schedule</span>
+                            </td>
+                            <td>
+                                <span>Đây là mô tả bằng tiếng Việt</span>
+                            </td>
+                            <td>
+                                <span>This is description by EN</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="table-actions-col">
+                                <div class="table-actions" style="width: 70px">
+                                    <button type="button" class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="Edit">
+                                        <i class="la la-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="remove" data-toggle="modal" data-target="#confirm-delete-modal">
+                                        <i class="la la-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td>
+                                <span>LH001</span>
+                            </td>
+                            <td>
+                                <span>Customer services</span>
+                            </td>
+                            <td>
+                                <span>ABBR</span>
+                            </td>
+                            <td>
+                                <span>Ký kết hợp đồng ngoại thương</span>
+                            </td>
+                            <td>
+                                <span>Shipping Schedule</span>
+                            </td>
+                            <td>
+                                <span>Đây là mô tả bằng tiếng Việt</span>
+                            </td>
+                            <td>
+                                <span>This is description by EN</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+    <div class="m-portlet">
+        <div class="m-portlet__head">
+            <div class="m-portlet__head-caption">
+                <div class="m-portlet__head-title">
+                    <h3 class="m-portlet__head-text">
+                        Table with table inside
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="m-portlet__body">
+
+            <div class="table-wrapper" id="table-001">
+                <table class="table table-striped table-brand dataTable">
+                    <thead>
+                        <tr>
+                            <th class="table-actions-col no-sorting"></th>
+                            <th class="sorting">
+                                <span>Port Code</span>
+                            </th>
+                            <th class="sorting">
+                                <span>Name(EN)</span>
+                            </th>
+                            <th class="sorting">
+                                <span>Name(VI)</span>
+                            </th>
+                            <th class="sorting">
+                                <span>Country</span>
+                            </th>
+                            <th class="sorting">
+                                <span>Zone</span>
+                            </th>
+                            <th class="sorting">
+                                <span>Mode</span>
+                            </th>
+                            <th>
+                                <span>Status</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="tbody-group">
+
+                        <tr class="collapse-toggle-row">
+                            <td class="table-actions-col">
+                                <div class="table-actions">
+                                    <button type="button" class="btn btn-sm  m-btn--icon m-btn--icon-only collapsed"
+                                        data-toggle="collapse" data-target="#id-001" title="Collapse">
+                                        <i class="la la-angle-up"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="Edit">
+                                        <i class="la la-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="Remove" data-toggle="modal" data-target="#confirm-delete-modal">
+                                        <i class="la la-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td>
+                                <span>text</span>
+                            </td>
+                            <td>
+                                <span>text</span>
+                            </td>
+                            <td>
+                                <span>text</span>
+                            </td>
+                            <td>
+                                <span>text</span>
+                            </td>
+                            <td>
+                                <span>text</span>
+                            </td>
+                            <td>
+                                <span>text</span>
+                            </td>
+                            <td>
+                                <span>Active</span>
+                            </td>
+                        </tr>
+
+                        <tr class="collapse-panel-row">
+                            <td colspan="8">
+                                <div class="detail-panel-block collapse" id="id-001" data-parent="#table-001">
+                                    <div class="table-inside-block">
+                                        <table class="table table-secondary dataTable">
+                                            <thead>
+                                                <tr>
+                                                    <th class="sorting_asc">
+                                                        <span>Stage ID</span>
+                                                    </th>
+                                                    <th class="sorting">
+                                                        <span>Role</span>
+                                                    </th>
+                                                    <th class="sorting">
+                                                        <span>Stage ABBR</span>
+                                                    </th>
+                                                    <th class="sorting">
+                                                        <span>Name (VN)</span>
+                                                    </th>
+                                                    <th class="sorting">
+                                                        <span>Name (EN)</span>
+                                                    </th>
+                                                    <th class="sorting">
+                                                        <span>Description (VN</span>
+                                                    </th>
+                                                    <th class="sorting">
+                                                        <span>Description (EN)</span>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <span>LH001</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>Customer services</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>ABBR</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>Ký kết hợp đồng ngoại thương</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>Shipping Schedule</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>Đây là mô tả bằng tiếng Việt</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>This is description by EN</span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                    <tbody class="tbody-group">
+
+                        <tr class="collapse-toggle-row">
+                            <td class="table-actions-col">
+                                <div class="table-actions">
+                                    <button type="button" class="btn btn-sm  m-btn--icon m-btn--icon-only collapsed"
+                                        data-toggle="collapse" data-target="#id-002" title="Collapse">
+                                        <i class="la la-angle-up"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="Edit">
+                                        <i class="la la-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="Remove" data-toggle="modal" data-target="#confirm-delete-modal">
+                                        <i class="la la-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td>
+                                <span>text</span>
+                            </td>
+                            <td>
+                                <span>text</span>
+                            </td>
+                            <td>
+                                <span>text</span>
+                            </td>
+                            <td>
+                                <span>text</span>
+                            </td>
+                            <td>
+                                <span>text</span>
+                            </td>
+                            <td>
+                                <span>text</span>
+                            </td>
+                            <td>
+                                <span>Active</span>
+                            </td>
+                        </tr>
+
+                        < <tr class="collapse-panel-row">
+                            <td colspan="8">
+                                <div class="detail-panel-block collapse" id="id-002" data-parent="#table-001">
+                                    <div class="table-inside-block">
+                                        <table class="table table-secondary dataTable">
+                                            <thead>
+                                                <tr>
+                                                    <th class="sorting_asc">
+                                                        <span>Stage ID</span>
+                                                    </th>
+                                                    <th class="sorting">
+                                                        <span>Role</span>
+                                                    </th>
+                                                    <th class="sorting">
+                                                        <span>Stage ABBR</span>
+                                                    </th>
+                                                    <th class="sorting">
+                                                        <span>Name (VN)</span>
+                                                    </th>
+                                                    <th class="sorting">
+                                                        <span>Name (EN)</span>
+                                                    </th>
+                                                    <th class="sorting">
+                                                        <span>Description (VN</span>
+                                                    </th>
+                                                    <th class="sorting">
+                                                        <span>Description (EN)</span>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <span>LH001</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>Customer services</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>ABBR</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>Ký kết hợp đồng ngoại thương</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>Shipping Schedule</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>Đây là mô tả bằng tiếng Việt</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>This is description by EN</span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </td>
+                            </tr>
+
+                    </tbody>
+                    <tbody class="tbody-group">
+
+                        <tr class="collapse-toggle-row">
+                            <td class="table-actions-col">
+                                <div class="table-actions">
+                                    <button type="button" class="btn btn-sm  m-btn--icon m-btn--icon-only collapsed"
+                                        data-toggle="collapse" data-target="#id-003" title="Collapse">
+                                        <i class="la la-angle-up"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="Edit">
+                                        <i class="la la-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only"
+                                        title="Remove" data-toggle="modal" data-target="#confirm-delete-modal">
+                                        <i class="la la-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td>
+                                <span>text</span>
+                            </td>
+                            <td>
+                                <span>text</span>
+                            </td>
+                            <td>
+                                <span>text</span>
+                            </td>
+                            <td>
+                                <span>text</span>
+                            </td>
+                            <td>
+                                <span>text</span>
+                            </td>
+                            <td>
+                                <span>text</span>
+                            </td>
+                            <td>
+                                <span>Active</span>
+                            </td>
+                        </tr>
+
+                        < <tr class="collapse-panel-row">
+                            <td colspan="8">
+                                <div class="detail-panel-block collapse" id="id-003" data-parent="#table-001">
+                                    <div class="table-inside-block">
+                                        <table class="table table-secondary dataTable">
+                                            <thead>
+                                                <tr>
+                                                    <th class="sorting_asc">
+                                                        <span>Stage ID</span>
+                                                    </th>
+                                                    <th class="sorting">
+                                                        <span>Role</span>
+                                                    </th>
+                                                    <th class="sorting">
+                                                        <span>Stage ABBR</span>
+                                                    </th>
+                                                    <th class="sorting">
+                                                        <span>Name (VN)</span>
+                                                    </th>
+                                                    <th class="sorting">
+                                                        <span>Name (EN)</span>
+                                                    </th>
+                                                    <th class="sorting">
+                                                        <span>Description (VN</span>
+                                                    </th>
+                                                    <th class="sorting">
+                                                        <span>Description (EN)</span>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <span>LH001</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>Customer services</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>ABBR</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>Ký kết hợp đồng ngoại thương</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>Shipping Schedule</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>Đây là mô tả bằng tiếng Việt</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>This is description by EN</span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </td>
+                            </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+    <div class="m-portlet">
+        <div class="m-portlet__head">
+            <div class="m-portlet__head-caption">
+                <div class="m-portlet__head-title">
+                    <h3 class="m-portlet__head-text">
+                        Table with collapse by group
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="m-portlet__body">
+
+            <div class="table-wrapper table-scrollable" id="">
+                <table class="table table-striped table-brand table-collapse-group dataTable">
+                    <thead>
+                        <tr>
+                            <th class="table-actions-col no-sorting">
+                                <span>Action</span>
+                            </th>
+                            <th class="sorting">
+                                <span>Type</span>
+                            </th>
+                            <th class="sorting">
+                                <span>Note No</span>
+                            </th>
+                            <th class="sorting">
+                                <span>Charges Count</span>
+                            </th>
+                            <th class="sorting">
+                                <span>Balance Amount</span>
+                            </th>
+                            <th class="sorting">
+                                <span>Creator</span>
+                            </th>
+                            <th class="sorting">
+                                <span>Create Date</span>
+                            </th>
+                            <th class="sorting">
+                                <span>SOA No</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="tbody-group">
+
+                        <tr class="collapse-toggle-row tgroup">
+                            <td colspan="8">
+                                <label class="btn-toggle-collapse m--font-danger" title="view more"
+                                    data-toggle="collapse" data-target="#id-cd-001">
+                                    <i class="la la-minus-square"></i>
+                                </label>
+                                <span class="tgroup-title m--margin-right-10">No-1</span>&nbsp;<span
+                                    class="tgroup-title">Partner name:</span>&nbsp;<span class="tgroup-title">Tâm
+                                    Tâm</span>
+                            </td>
+                        </tr>
+
+                        < <tr class="collapse-panel-row">
+                            <td colspan="8">
+                                <div class="collapse show" id="id-cd-001">
+                                    <table class="table">
+                                        <tbody>
+                                            <tr class="">
+                                                <td class="table-actions-col">
+                                                    <div class="table-actions">
+                                                        <button type="button"
+                                                            class="btn btn-brand btn-sm  m-btn--icon m-btn--icon-only"
+                                                            title="Edit" data-toggle="modal"
+                                                            data-target="#detail-credit-debit-note-modal">
+                                                            <i class="la la-list"></i>
+                                                        </button>
+                                                        <button type="button"
+                                                            class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only"
+                                                            title="Remove" data-toggle="modal"
+                                                            data-target="#confirm-delete-CDnote-modal">
+                                                            <i class="la la-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span>text</span>
+                                                </td>
+                                                <td>
+                                                    <a class="" href="javascript:void(0)" data-toggle="modal"
+                                                        data-target="#detail-credit-debit-note-modal">Note no</a>
+                                                </td>
+                                                <td>
+                                                    <span>text</span>
+                                                </td>
+                                                <td>
+                                                    <span>text</span>
+                                                </td>
+                                                <td>
+                                                    <span>text</span>
+                                                </td>
+                                                <td>
+                                                    <span>text</span>
+                                                </td>
+                                                <td>
+                                                    <span>Active</span>
+                                                </td>
+                                            </tr>
+                                            <tr class="">
+                                                <td class="table-actions-col" width="70">
+                                                    <div class="table-actions">
+                                                        <button type="button"
+                                                            class="btn btn-brand btn-sm  m-btn--icon m-btn--icon-only"
+                                                            title="Edit" data-toggle="modal"
+                                                            data-target="#detail-credit-debit-note-modal">
+                                                            <i class="la la-list"></i>
+                                                        </button>
+                                                        <button type="button"
+                                                            class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only"
+                                                            title="Remove" data-toggle="modal"
+                                                            data-target="#confirm-delete-CDnote-modal">
+                                                            <i class="la la-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span>text</span>
+                                                </td>
+                                                <td>
+                                                    <a class="" href="javascript:void(0)" data-toggle="modal"
+                                                        data-target="#detail-credit-debit-note-modal">Note no</a>
+                                                </td>
+                                                <td>
+                                                    <span>text</span>
+                                                </td>
+                                                <td>
+                                                    <span>text</span>
+                                                </td>
+                                                <td>
+                                                    <span>text</span>
+                                                </td>
+                                                <td>
+                                                    <span>text</span>
+                                                </td>
+                                                <td>
+                                                    <span>Active</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </td>
+                            </tr>
+
+
+
+                            <tr class="collapse-toggle-row tgroup">
+                                <td colspan="8">
+                                    <label class="btn-toggle-collapse m--font-danger" title="view more"
+                                        data-toggle="collapse" data-target="#id-cd-002">
+                                        <i class="la la-minus-square"></i>
+                                    </label>
+                                    <span class="tgroup-title m--margin-right-10">No-2</span>&nbsp;<span
+                                        class="tgroup-title">Partner name:</span>&nbsp;<span class="tgroup-title">Thor
+                                        Thế</span>
+                                </td>
+                            </tr>
+
+                            < <tr class="collapse-panel-row">
+                                <td colspan="8">
+                                    <div class="collapse show" id="id-cd-002">
+                                        <table class="table">
+                                            <tbody>
+                                                <tr class="">
+                                                    <td class="table-actions-col" width="70">
+                                                        <div class="table-actions">
+                                                            <button type="button"
+                                                                class="btn btn-brand btn-sm  m-btn--icon m-btn--icon-only"
+                                                                title="Edit" data-toggle="modal"
+                                                                data-target="#detail-credit-debit-note-modal">
+                                                                <i class="la la-list"></i>
+                                                            </button>
+                                                            <button type="button"
+                                                                class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only"
+                                                                title="Remove" data-toggle="modal"
+                                                                data-target="#confirm-delete-CDnote-modal">
+                                                                <i class="la la-trash"></i>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span>text</span>
+                                                    </td>
+                                                    <td>
+                                                        <a class="" href="javascript:void(0)" data-toggle="modal"
+                                                            data-target="#detail-credit-debit-note-modal">Note no</a>
+                                                    </td>
+                                                    <td>
+                                                        <span>text</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>text</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>text</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>text</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>Active</span>
+                                                    </td>
+                                                </tr>
+                                                <tr class="">
+                                                    <td class="table-actions-col" width="70">
+                                                        <div class="table-actions">
+                                                            <button type="button"
+                                                                class="btn btn-brand btn-sm  m-btn--icon m-btn--icon-only"
+                                                                title="Edit" data-toggle="modal"
+                                                                data-target="#detail-credit-debit-note-modal">
+                                                                <i class="la la-list"></i>
+                                                            </button>
+                                                            <button type="button"
+                                                                class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only"
+                                                                title="Remove" data-toggle="modal"
+                                                                data-target="#confirm-delete-CDnote-modal">
+                                                                <i class="la la-trash"></i>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span>text</span>
+                                                    </td>
+                                                    <td>
+                                                        <a class="" href="javascript:void(0)" data-toggle="modal"
+                                                            data-target="#detail-credit-debit-note-modal">Note no</a>
+                                                    </td>
+                                                    <td>
+                                                        <span>text</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>text</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>text</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>text</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>Active</span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </td>
+                                </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <div class="table-horizontal">
+                <table class="table table-brand">
+                    <thead>
+                        <tr>
+                            <th>Author</th>
+                            <th>Title</th>
+                            <th>Year</th>
+                            <th>ISBN-13</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Miguel De Cervantes</td>
+                            <td>The Ingenious Gentleman Don Quixote of La Mancha</td>
+                            <td>1605</td>
+                            <td>9783125798502</td>
+                        </tr>
+                        <tr>
+                            <td>Gabrielle-Suzanne Barbot de Villeneuve</td>
+                            <td>La Belle et la Bête</td>
+                            <td>1740</td>
+                            <td>9781910880067</td>
+                        </tr>
+                        <tr>
+                            <td>Sir Isaac Newton</td>
+                            <td>The Method of Fluxions and Infinite Series: With Its Application to the Geometry of
+                                Curve-lines</td>
+                            <td>1763</td>
+                            <td>9781330454862</td>
+                        </tr>
+                        <tr>
+                            <td>Mary Shelley</td>
+                            <td>Frankenstein; or, The Modern Prometheus</td>
+                            <td>1818</td>
+                            <td>9781530278442</td>
+                        </tr>
+                        <tr>
+                            <td>Herman Melville</td>
+                            <td>Moby-Dick; or, The Whale</td>
+                            <td>1851</td>
+                            <td>9781530697908</td>
+                        </tr>
+                        <tr>
+                            <td>Emma Dorothy Eliza Nevitte Southworth</td>
+                            <td>The Hidden Hand</td>
+                            <td>1888</td>
+                            <td>9780813512969</td>
+                        </tr>
+                        <tr>
+                            <td>F. Scott Fitzgerald</td>
+                            <td>The Great Gatsby</td>
+                            <td>1925</td>
+                            <td>9780743273565</td>
+                        </tr>
+                        <tr>
+                            <td>George Orwell</td>
+                            <td>Nineteen Eighty-Four</td>
+                            <td>1948</td>
+                            <td>9780451524935</td>
+                        </tr>
+                        <tr>
+                            <td>Nnedi Okorafor</td>
+                            <td>Who Fears Death</td>
+                            <td>2010</td>
+                            <td>9780756406691</td>
+                        </tr>
+                        <tr>
+                            <td>Emma Dorothy Eliza Nevitte Southworth</td>
+                            <td>The Hidden Hand</td>
+                            <td>1888</td>
+                            <td>9780813512969</td>
+                        </tr>
+                        <tr>
+                            <td>F. Scott Fitzgerald</td>
+                            <td>The Great Gatsby</td>
+                            <td>1925</td>
+                            <td>9780743273565</td>
+                        </tr>
+                        <tr>
+                            <td>George Orwell</td>
+                            <td>Nineteen Eighty-Four</td>
+                            <td>1948</td>
+                            <td>9780451524935</td>
+                        </tr>
+                        <tr>
+                            <td>Nnedi Okorafor</td>
+                            <td>Who Fears Death</td>
+                            <td>2010</td>
+                            <td>9780756406691</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>

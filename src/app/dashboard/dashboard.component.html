@@ -1,0 +1,353 @@
+<!--begin:: subheader-->
+<div class="m-subheader">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <!--begin:: breadcrumbs-->
+            <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
+                <li class="m-nav__item">
+                    <a href="" class="m-nav__link">
+                        <span class="m-nav__link-text">Dashboard</span>
+                    </a>
+                </li>
+            </ul>
+            <!--end:: breadcrumbs-->
+        </div>
+    </div>
+</div>
+<!--end:: subheader-->
+<!--begin::m-content-->
+<div class="m-content">
+    <!--begin:: m-portlet of search-form-->
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <!--begin::Form-->
+            <!-- <div class="m-form">
+                <div class="row">
+                    <div class="col col-lg-5">
+                        <div class="m-input-icon m-input-icon--right down">
+                            <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" [(ngModel)]="selectedRange"
+                                [ranges]="ranges" [maxDate]="maxDate" [alwaysShowCalendars]="true" name="daterange"
+                                placeholder="From date - to date" readonly />
+                            <span class="m-input-icon__icon m-input-icon__icon--right">
+                                <span>
+                                    <i class="la la-calendar"></i>
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-auto c-button-actions">
+                        <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase">
+                            <span>
+                                <i class="la la-search"></i>
+                                <span>
+                                    Run
+                                </span>
+                            </span>
+                        </button>
+                        <button type="button" class="btn btn-default  m-btn--icon m-btn--uppercase ">
+                            <span>
+                                <i class="la la-refresh"></i>
+                                <span>
+                                    Reset
+                                </span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div> -->
+       
+                <div class="form">
+                    <div class="row m-form m-form m-form--state">
+                        <div class="col">
+                            <!-- <app-combo-grid-virtual-scroll [currentActiveItemId]="selectedShipment" class="combogridShipmment"
+                                (itemSelected)="onSelectDataFormInfo($event, 'shipment')"
+                                [selectedDisplayFields]="configShipment.selectedDisplayFields"
+                                [dataSources]="configShipment.dataSource"  [(ngModel)]="keyword"
+                                [displayFields]="configShipment.displayFields" [height]="200">
+                            </app-combo-grid-virtual-scroll> -->
+                                <div (clickOutside)="onClickOutsideShipmentName()">
+                                    <div class="m-input-icon m-input-icon--right down">
+                                    <input class="form-control m-input m-input--square dropdown-toggle" type="text"
+                                        placeholder="Enter JobId or MBL No or HBL No" (click)="isShow = !isShow"
+                                        (ngModelChange)="onSearchAutoComplete($event)" [(ngModel)]="keyword"
+                                        [ngModelOptions]="{standalone: true}">
+                                        <span class="m-input-icon__icon m-input-icon__icon--right">
+                                            <span>
+                                                <i class="la la-search"></i>
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <ng-container *ngIf="isShow">
+                                        <app-combo-grid [data]="shipments" [headers]="headersShipment" [hideInput]="true"
+                                            (onClick)="onSelectDataFormInfo($event,'shipment')">
+                                        </app-combo-grid>
+                                    </ng-container>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+
+            <!--end::Form-->
+        </div>
+    </div>
+    <!--end::m-portlet of search-form-->
+
+    <div class="row m--margin-bottom-20">
+        <div class="col-md-12 col-lg-6 col-xl-3">
+            <!--begin::Volume-->
+            <div class="m-widget24 bg-gradient-primary">
+                <div class="fms-widget-icon">
+                    <i class="la la-list"></i>
+                </div>
+                <div class="m-widget24__item">
+                    <h6 class="m-widget24__title">
+                        Volume
+                    </h6>
+                    <br>
+                    <span class="m-widget24__desc">
+                        2000 SHIPT
+                    </span>
+                    <br>
+                    <span class="m-widget24__change">
+                        4000 HBL
+                    </span>
+                </div>
+            </div>
+            <!--end::Volume-->
+        </div>
+        <div class="col-md-12 col-lg-6 col-xl-3">
+            <!--begin::Weight-->
+            <div class="m-widget24 bg-gradient-success">
+                <div class="fms-widget-icon">
+                    <i class="la la-balance-scale"></i>
+                </div>
+                <div class="m-widget24__item">
+                    <h6 class="m-widget24__title">
+                        Weight
+                    </h6>
+                    <br>
+                    <span class="m-widget24__desc">
+                        2000 KG
+                    </span>
+                    <br>
+                    <span class="m-widget24__change">
+                        4000 CBM
+                    </span>
+                </div>
+            </div>
+            <!--end::Weight-->
+        </div>
+        <div class="col-md-12 col-lg-6 col-xl-3">
+            <!--begin::Revenue-->
+            <div class="m-widget24 bg-gradient-warning">
+                <div class="fms-widget-icon">
+                    <i class="la la-money"></i>
+                </div>
+                <div class="m-widget24__item">
+                    <h6 class="m-widget24__title">
+                        Revenue
+                    </h6>
+                    <br>
+                    <span class="m-widget24__desc">
+                        2000 USD
+                    </span>
+                    <br>
+                    <span class="m-widget24__change">
+                        4000 VND
+                    </span>
+                </div>
+            </div>
+            <!--end::Revenue-->
+        </div>
+        <div class="col-md-12 col-lg-6 col-xl-3">
+            <!--begin::Customer-->
+            <div class="m-widget24 bg-gradient-danger">
+                <div class="fms-widget-icon">
+                    <i class="la la-user-plus"></i>
+                </div>
+                <div class="m-widget24__item">
+                    <h6 class="m-widget24__title">
+                        Customer
+                    </h6>
+                    <br>
+                    <span class="m-widget24__desc">
+                        2000 CUST
+                    </span>
+                    <br>
+                    <span class="m-widget24__change">
+                        &nbsp;
+                    </span>
+                </div>
+            </div>
+            <!--end::Customer-->
+        </div>
+    </div>
+
+    <!--begin:: m-portlet-->
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <div class="row">
+                <div class="col-lg-9">
+                    <div class="chart-wrapper">
+                        <div class="pull-right">
+                            <div class="btn-group btn-group fms-btn-group" (click)="onButtonGroupClick($event)"
+                                role="group" aria-label="...">
+                                <button type="button" class="btn btn-secondary">Day</button>
+                                <button type="button" class="btn btn-secondary active">Month</button>
+                                <button type="button" class="btn btn-secondary">Quater</button>
+                                <button type="button" class="btn btn-secondary">Year</button>
+                            </div>
+                        </div>
+                        <highcharts-chart style="width: 100%; display: block; height: 400px;" [Highcharts]="Highcharts"
+                            [options]="chartOptions1">
+                        </highcharts-chart>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="fms-chart-detail-block m--padding-20 border">
+                        <div class="m--margin-bottom-20">
+                            <h6>Per day</h6>
+                            <div class="m--margin-bottom-10">
+                                <span class="m-badge m-badge--warning"></span>
+                                <span class="m--margin-left-15 detail-title">USD:</span>
+                                <span class="m--margin-left-10">200</span>
+                            </div>
+                            <div class="m--margin-bottom-10">
+                                <span class="m-badge m-badge--secondary"></span>
+                                <span class="m--margin-left-15 detail-title">VND:</span>
+                                <span class="m--margin-left-10">200</span>
+                            </div>
+                        </div>
+                        <div class="m--margin-bottom-20">
+                            <h6>Per month</h6>
+                            <div class="m--margin-bottom-10">
+                                <span class="m-badge m-badge--warning"></span>
+                                <span class="m--margin-left-15 detail-title">USD:</span>
+                                <span class="m--margin-left-10">200</span>
+                            </div>
+                            <div class="m--margin-bottom-10">
+                                <span class="m-badge m-badge--secondary"></span>
+                                <span class="m--margin-left-15 detail-title">VND:</span>
+                                <span class="m--margin-left-10">200</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end::m-portlet-->
+
+    <!--begin:: m-portlet-->
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <div class="row">
+                <div class="col-lg-9">
+                    <div class="chart-wrapper">
+                        <div class="pull-right">
+                            <div class="btn-group btn-group fms-btn-group" (click)="onButtonGroupClick($event)"
+                                role="group" aria-label="...">
+                                <button type="button" class="btn btn-secondary">Day</button>
+                                <button type="button" class="btn btn-secondary active">Month</button>
+                                <button type="button" class="btn btn-secondary">Quater</button>
+                                <button type="button" class="btn btn-secondary">Year</button>
+                            </div>
+                        </div>
+                        <highcharts-chart style="width: 100%; display: block; height: 400px;" [Highcharts]="Highcharts"
+                            [options]="chartOptions2">
+                        </highcharts-chart>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="fms-chart-detail-block  m--padding-20 border">
+                        <div class="m--margin-bottom-20">
+                            <h6>Per day</h6>
+                            <div class="m--margin-bottom-10">
+                                <span class="m-badge m-badge--brand"></span>
+                                <span class="m--margin-left-15 detail-title">Shipt:</span>
+                                <span class="m--margin-left-10">200</span>
+                            </div>
+                            <div class="m--margin-bottom-10">
+                                <span class="m-badge m-badge--secondary"></span>
+                                <span class="m--margin-left-15 detail-title">HBL:</span>
+                                <span class="m--margin-left-10">200</span>
+                            </div>
+                        </div>
+                        <div class="m--margin-bottom-20">
+                            <h6>Per month</h6>
+                            <div class="m--margin-bottom-10">
+                                <span class="m-badge m-badge--brand"></span>
+                                <span class="m--margin-left-15 detail-title">Shipt:</span>
+                                <span class="m--margin-left-10">200</span>
+                            </div>
+                            <div class="m--margin-bottom-10">
+                                <span class="m-badge m-badge--secondary"></span>
+                                <span class="m--margin-left-15 detail-title">HBL:</span>
+                                <span class="m--margin-left-10">200</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end::m-portlet-->
+
+    <!--begin:: m-portlet-->
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <div class="row">
+                <div class="col-lg-9">
+                    <div class="chart-wrapper">
+                        <div class="pull-right">
+                            <div class="btn-group btn-group fms-btn-group" (click)="onButtonGroupClick($event)"
+                                role="group" aria-label="...">
+                                <button type="button" class="btn btn-secondary">Day</button>
+                                <button type="button" class="btn btn-secondary active">Month</button>
+                                <button type="button" class="btn btn-secondary">Quater</button>
+                                <button type="button" class="btn btn-secondary">Year</button>
+                            </div>
+                        </div>
+                        <highcharts-chart style="width: 100%; display: block; height: 400px;" [Highcharts]="Highcharts"
+                            [options]="chartOptions3">
+                        </highcharts-chart>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="fms-chart-detail-block m--padding-20 border">
+                        <div class="m--margin-bottom-20">
+                            <h6>Per day</h6>
+                            <div class="m--margin-bottom-10">
+                                <span class="m-badge m-badge--success"></span>
+                                <span class="m--margin-left-15 detail-title">KG:</span>
+                                <span class="m--margin-left-10">200</span>
+                            </div>
+                            <div class="m--margin-bottom-10">
+                                <span class="m-badge m-badge--secondary"></span>
+                                <span class="m--margin-left-15 detail-title">CBM:</span>
+                                <span class="m--margin-left-10">200</span>
+                            </div>
+                        </div>
+                        <div class="m--margin-bottom-20">
+                            <h6>Per month</h6>
+                            <div class="m--margin-bottom-10">
+                                <span class="m-badge m-badge--success"></span>
+                                <span class="m--margin-left-15 detail-title">KG:</span>
+                                <span class="m--margin-left-10">200</span>
+                            </div>
+                            <div class="m--margin-bottom-10">
+                                <span class="m-badge m-badge--secondary"></span>
+                                <span class="m--margin-left-15 detail-title">CBM:</span>
+                                <span class="m--margin-left-10">200</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end::m-portlet-->
+</div>
+<!--end::m-content-->
+<permission-403-popup></permission-403-popup>

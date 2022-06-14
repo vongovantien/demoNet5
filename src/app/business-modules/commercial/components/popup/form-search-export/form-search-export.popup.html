@@ -1,0 +1,77 @@
+<!--begin:: subheader-->
+<div class="modal fade form-search-export-popup" role="dialog" bsModal #popup="bs-modal" aria-hidden="true">
+    <div class="modal-dialog c-modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="d-flex align-items-center justify-content-between p-1">
+                    <h5 class="modal-title">
+                        Search Filter Export
+                    </h5>
+                    <button type="button" class="close" aria-label="Close" (click)="close()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form class="m-form m-form--state" [formGroup]="formSearch">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label" for="">
+                                    Salesman
+                                </label>
+                                <ng-select [multiple]='true' formControlName="salesman" class="custom"
+                                    (change)="detectChangeDataInfo($event, 'salesman')" [items]="salesmanList"
+                                    [(ngModel)]="salesmanActive"
+                                    bindLabel="username" bindValue="id">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group form-control-createdDateFromTo daterange-rtl">
+                                <label class="form-control-label" for="">
+                                    Create Date: From - To
+                                </label>
+                                <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                    [autoApply]="true" [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}"
+                                    [ranges]="ranges" [alwaysShowCalendars]="true" formControlName="createdDate"
+                                    name="daterange" placeholder="From date - to date" readonly />
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="form-group">
+                                <label class="form-control-label" for="">
+                                    Status
+                                </label>
+                                <ng-select formControlName="status" class="custom" [items]="statusList"
+                                    bindLabel="text" bindValue="id">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer m--align-center">
+                <app-default-button [buttonSetting]="resetButtonSetting" (click)="resetSearch()"></app-default-button>
+                <!-- <app-permission-button title="Export" (onClick)="exportData()" type="export"></app-permission-button> -->
+                <app-permission-button title="Export" type="export" [dpToggle]="dropdownMenu" position="bottomCenter"
+                mode="dropdown">
+                </app-permission-button>
+                <app-dropdown #dropdownMenu>
+                    <a class="dropdown-item pointer" (click)="exportData()">
+                        <span>
+                            Partner Info
+                        </span>
+                    </a>
+                    <a class="dropdown-item pointer" (click)="exportAgreementInfo()">
+                        <span>
+                            Agreement Info
+                        </span>
+                    </a>
+                </app-dropdown>
+
+                <app-default-button [buttonSetting]="cancelButtonSetting" (click)="close()"></app-default-button>
+            </div>
+        </div>
+    </div>
+</div>

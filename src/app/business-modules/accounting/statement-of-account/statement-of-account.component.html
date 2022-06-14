@@ -1,0 +1,133 @@
+<app-sub-header>
+    <div class="c-button-actions">
+        <app-permission-button title="Add New" [routerLink]="'/home/accounting/statement-of-account/new'">
+        </app-permission-button>
+    </div>
+</app-sub-header>
+
+
+<div class="m-content">
+    <div class="m-portlet__body">
+        <tabset class="custom-class-tab">
+            <tab heading="Statement Of Account" (selectTab)="onSelectTab('soa')" [active]="true">
+                <div class="tab-pane fade show active" role="tabpanel" id="statement-of-account-tabview-tab">
+                    <div class="m-portlet">
+                        <div class="m-form">
+                            <div class="m-portlet__body">
+                                <soa-search-box (onSearch)="onSearchSoa($event)"></soa-search-box>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="m-portlet">
+                        <div class="m-portlet__body">
+                            <div class="table-wrapper">
+                                <table class="table table-striped table-brand dataTable table-hover">
+                                    <thead app-table-header [headers]="headers"
+                                        (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                                        <th class="m--w-50 first">
+                                        </th>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngIf="!isLoading && !SOAs.length" app-table-none-record>
+                                        </tr>
+                                        <tr *ngFor="let soa of SOAs; let i = index; trackBy: trackByFn"
+                                            [class.invalid-row]="soa.syncStatus === 'Rejected'">
+                                            <td class="table-actions-col">
+                                                <div class="table-actions">
+                                                    <ng-container *ngIf="(soa.status === 'New' || soa.status === 'Need Revise') 
+                                                    && soa.paymentStatus !== 'Paid' 
+                                                    && soa.paymentStatus !== 'Paid A Part' 
+                                                    && soa.syncStatus !== 'Synced'">
+                                                        <app-permission-button type="delete" [user]="soa.userCreated"
+                                                            (onClick)="prepareDeleteSOA(soa)"></app-permission-button>
+                                                    </ng-container>
+                                                </div>
+                                            </td>
+                                            <td class="text-underline">
+                                                <a class="pointer"
+                                                    (click)="viewDetail(soa.id, soa.soano, 'VND')">{{soa.soano}}</a>
+                                            </td>
+                                            <td>
+                                                <span>{{soa.partnerName}}</span>
+                                            </td>
+                                            <td>
+                                                <span>{{soa.shipment}}</span>
+                                            </td>
+                                            <td class="text-right">
+                                                <span>{{soa.creditAmount | number :'.0-2'}}
+                                                    {{soa.currency}}</span>
+                                            </td>
+                                            <td class="text-right">
+                                                <span>{{soa.debitAmount | number: '.0-2'}}
+                                                    {{soa.currency}}</span>
+                                            </td>
+                                            <td class="text-right">
+                                                <span *ngIf="soa.totalAmount >= 0">{{soa.totalAmount | number: '.0-2' }}
+                                                    {{soa.currency}}
+                                                </span>
+                                                <span *ngIf="soa.totalAmount < 0">
+                                                    ({{soa.totalAmount | abs | number:'.0-2' }}) {{soa.currency}}
+                                                </span>
+                                            </td>
+                                            <td [ngSwitch]="soa.status">
+                                                <span *ngSwitchCase="'New'" class="text-danger">
+                                                    {{soa.status}}</span>
+                                                <span *ngSwitchCase="'Done'" class="text-success">
+                                                    {{soa.status}}</span>
+                                                <span *ngSwitchCase="'Issued Invoice'" class="text-info">
+                                                    {{soa.status}}</span>
+                                                <span *ngSwitchCase="'Issued Voucher'" class="text-info">
+                                                    {{soa.status}}</span>
+                                                <span *ngSwitchDefault class="text-primary">
+                                                    {{soa.status}}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span>{{soa.datetimeCreated | date :'dd/MM/yyyy HH:mm'}}</span>
+                                            </td>
+                                            <td>
+                                                <span class="text-primary">{{soa.userNameCreated}}</span>
+                                            </td>
+                                            <td>
+                                                <span>{{soa.datetimeModified | date: 'dd/MM/yyyy HH:mm'}}</span>
+                                            </td>
+                                            <td [ngSwitch]="soa.syncStatus">
+                                                <span *ngSwitchCase="'Synced'" class="text-success">
+                                                    {{soa.syncStatus}}</span>
+                                                <span *ngSwitchCase="'Rejected'" class="text-danger">
+                                                    {{soa.syncStatus}}{{soa.reasonReject ? ' - ' + soa.reasonReject :
+                                                    ''}}
+                                                </span>
+                                                <span *ngSwitchDefault>
+                                                    {{soa.syncStatus}}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="text-info">
+                                                    {{soa.lastSyncDate | date:'dd/MM/yyyy HH:mm'}}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr class="loading-wrapper" *ngIf="isLoading" app-table-row-loading>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <app-pagination [total]="totalItems" [pageNum]="page" [itemPerPage]="pageSize"
+                                (onChange)="updatePagingData($event)"></app-pagination>
+                        </div>
+                    </div>
+                </div>
+            </tab>
+            <tab heading="Confirm Billing" *ngIf="menuSpecialPermission | async | specialPermission:'ConfirmBilling'"
+                (selectTab)="onSelectTab('confirm-billing')"></tab>
+            <tab heading="Combine Billing" *ngIf="menuSpecialPermission | async | specialPermission:'CombineBilling'"
+                (selectTab)="onSelectTab('combine-billing')"></tab>
+        </tabset>
+    </div>
+</div>
+
+<confirm-popup (onSubmit)="onConfirmDeleteSOA()" [body]="messageDelete" [iconConfirm]="'la la-trash'"></confirm-popup>
+
+<permission-403-popup></permission-403-popup>

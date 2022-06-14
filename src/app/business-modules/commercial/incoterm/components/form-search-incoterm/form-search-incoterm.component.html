@@ -1,0 +1,42 @@
+<div class="m-animate-fade-in mt-3">
+    <div class="m-form m-form--state">
+        <div class="form" [formGroup]="formSearch">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Incoterm</label>
+                        <input type="text" class="form-control" formControlName="incoterm">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Service</label>
+                        <ng-select [items]="services" formControlName="service" [multiple]="true"
+                            (add)="selelectedService($event)" bindLabel="text" bindValue="id" class="custom">
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Status</label>
+                        <ng-select class="custom" [items]="statusSelects" formControlName="status" bindLabel="text"
+                            bindValue="id">
+                        </ng-select>
+                    </div>
+                </div>
+
+            </div>
+            <div class="form-actions">
+                <div class="row">
+                    <div class="col-lg-6"></div>
+                    <div class="col-lg-6 m--align-right c-button-actions">
+                        <app-default-button [buttonSetting]="searchlButtonSetting" (click)="onSearchRequest()">
+                        </app-default-button>
+                        <app-default-button [buttonSetting]="resetButtonSetting" (click)="reset()">
+                        </app-default-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

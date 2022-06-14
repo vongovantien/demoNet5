@@ -1,0 +1,25 @@
+<div class="paginging-wrapper">
+    <div class="pagination-nav ">
+        <div class="row" *ngIf="total > 0">
+            <div class="col-sm-6" *ngIf="total > pageSize">
+                <div class="tatable__pager-size">
+                    <div class="select-box">
+                        <select class="form-control" id="" aria-label="" [(ngModel)]="itemPerPage"
+                            (change)="itemPerPageChanged(itemPerPage, dataSearch)" name="itemPerPage">
+                            <ng-container *ngFor="let item of numberToShow; let i = index; trackBy: trackByFn">
+                                <option [ngValue]="item">{{item}} line / screen</option>
+                            </ng-container>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6" *ngIf="total > itemPerPage">
+                <div class="float-right">
+                    <pagination [boundaryLinks]="true" [totalItems]="total" [itemsPerPage]="itemPerPage"
+                        (pageChanged)="pageChanged($event)" [(ngModel)]="pageNum" [maxSize]="maxSize">
+                    </pagination>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

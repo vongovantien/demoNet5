@@ -1,0 +1,105 @@
+<div class="modal fade" role="dialog" bsModal #popup="bs-modal" aria-hidden="true">
+    <div class="modal-dialog modal-xs" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Attachment</h5>
+                <button type="button" (click)="onCancel()" class="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-lg-6"></div>
+                    <div class="col-lg-6 m--align-right">
+                        <div class="m--margin-bottom-10">
+                            <input style="display:none" type="file" #file (change)="chooseFile($event)">
+                            <button (click)="file.click()" type="button"
+                                class=" btn btn-success  m-btn--icon m-btn--uppercase">
+                                <span>
+                                    <i class="la la-plus"></i>
+                                    <span>
+                                        Upload Files
+                                    </span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-wrapper table-scrollable" id="">
+                    <table class="table table-hover table-brand dataTable">
+                        <thead app-table-header [headers]="headers"
+                            (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                            <th class="m--w-50 first table-actions-col">
+                                <label class="m-checkbox">
+                                    <input type="checkbox" [checked]="checkAll"
+                                        (change)="checkAll=!checkAll; checkAllChange()">
+                                    <span></span>
+                                </label>
+                            </th>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngIf="!isLoading && !!files.length">
+                                <tr *ngFor="let file of files; let i = index; trackBy: trackByFn">
+                                    <td class="table-actions-col">
+                                        <div class="table-actions">
+                                            <label class="m-checkbox">
+                                                <input type="checkbox" name="" [checked]="file.isChecked"
+                                                    (change)="file.isChecked=!file.isChecked; removeAllChecked()">
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td> 
+                                        <a [href]="file.url" target="_blank" [title]="file.name"
+                                            download>{{file.name}}</a>
+                                    </td>
+                                    <td>
+                                        <span class="pointer text-center">
+                                            <a title="Delete" (click)="deleteFile(file)">
+                                                <i class="la la-times fa-lg text-danger"></i>
+                                            </a>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr app-table-row-loading *ngIf="isLoading"></tr>
+                                <tr app-table-none-record *ngIf="!files.length && !isLoading"></tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="form-actions">
+                    <div class="row">
+                        <div class="col-lg-6"></div>
+                        <div class="col-lg-6 m--align-right">
+                            <button (click)="onAddToMail()" type="button"
+                                class="btn btn-brand  m-btn--icon m-btn--uppercase">
+                                <span>
+                                    <i class="la la-save"></i>
+                                    <span>
+                                        Add
+                                    </span>
+                                </span>
+                            </button>
+                            <button (click)="onCancel()" type="button"
+                                class="btn btn-default  m-btn--icon m-btn--uppercase">
+                                <span>
+                                    <i class="la la-ban"></i>
+                                    <span>
+                                        Cancel
+                                    </span>
+                                </span>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<confirm-popup #confirmDelete body="Are you sure to delete this file ?" labelConfirm="Yes" labelCancel="No" (onSubmit)="onDeleteFile()"></confirm-popup>

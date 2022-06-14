@@ -1,0 +1,46 @@
+<div class="modal fade" role="dialog" bsModal #popup="bs-modal" (onShow)="onShowPopup()">
+    <div class="modal-dialog modal-xs modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Select attach file</h5>
+                <button type="button" class="close" aria-label="Close" (click)=hide()>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12 m-form m-form--state">
+                        <!-- <div class="form-group" [ngClass]="{'m-form__group has-danger':isSubmitted && !template }">
+                            <label required>Type:</label>
+                            <ng-select [items]="fileTemplates" bindValue="value" bindLabel="title"
+                                [(ngModel)]="template" class="custom" [clearable]="false"
+                                placeholder="Please select file type">
+                            </ng-select>
+                        </div> -->
+                        <ul class="list-template-wp list-unstyled-t"
+                            [class.justify-content-center]="fileTemplates.length < 4">
+                            <li class="list-template-item-wp" *ngFor="let item of fileTemplates; let i = index">
+                                <div class="list-template__item" (click)="selectTemplate(item)"
+                                    [class.active]="!!template && template.value === item.value">
+                                    <img src="https://img.icons8.com/fluency/48/000000/microsoft-excel-2019.png"
+                                        width="100px" onerror="src = 'assets/app/media/img/users/user4.jpg'" />
+                                </div>
+                                <p class="m--margin-top-10 text-center text-muted font-weight-bold">{{item.title}}</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer m--align-center c-button-actions">
+                <button class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="onSubmit()">
+                    <span>
+                        <i class="la la-save"></i>
+                        <span> Sync </span>
+                    </span>
+                </button>
+                <app-default-button [buttonSetting]="cancelButtonSetting" (click)="hide()"></app-default-button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,272 @@
+<div class="arrival-note-wrapper m-animate-fade-in">
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <div class="row form-arrival-note m-form m-form--state m--margin-bottom-20">
+                <div class="col-md-4">
+                    <div class="form-group"
+                        [ngClass]="{'m-form__group has-danger': isSubmitted && !hblArrivalNote.arrivalNo}">
+                        <label required>Arrival No</label>
+                        <input type="text" class="form-control" [(ngModel)]="hblArrivalNote.arrivalNo">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>First Notice</label>
+                        <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                            <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" name="daterange"
+                                placeholder="Please Select" readonly [autoApply]="true" [singleDatePicker]="true"
+                                [alwaysShowCalendars]="true" [(ngModel)]="hblArrivalNote.arrivalFirstNotice" />
+                            <span class="m-input-icon__icon m-input-icon__icon--right">
+                                <span>
+                                    <i class="la la-calendar"></i>
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Second Notice</label>
+                        <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                            <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" name="daterange"
+                                placeholder="Please Select" readonly [autoApply]="true" [singleDatePicker]="true"
+                                [alwaysShowCalendars]="true" [(ngModel)]="hblArrivalNote.arrivalSecondNotice" />
+                            <span class="m-input-icon__icon m-input-icon__icon--right">
+                                <span>
+                                    <i class="la la-calendar"></i>
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="m-portlet">
+                <div class="alert-block__heading">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="alert-block__title">
+                            Freight Charge
+                        </h3>
+                        <div *ngIf="(isLocked | async) === false">
+                            <button type="button" class="btn btn-info  m-btn--icon m-btn--uppercase"
+                                (click)="setDefaultFreightCharge()">
+                                <span><i class="la la-save"></i>
+                                    <span> Set Default </span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="m-portlet__body">
+                    <div class="row">
+                        <div class="table-wrapper table-editable m--margin-top-20">
+                            <table class="table table-bordered dataTable-edit">
+                                <thead app-table-header [headers]="headers"
+                                    (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                                    <th class="m--w-90 first table-actions-col fixed-side">
+                                    </th>
+                                </thead>
+                                <tbody>
+                                    <ng-container *ngIf="!!hblArrivalNote.csArrivalFrieghtCharges.length">
+                                        <tr class="m-form m-form--state"
+                                            *ngFor="let charge of hblArrivalNote.csArrivalFrieghtCharges; let i = index; trackBy: trackByFn">
+                                            <td class="table-actions-col fixed-side">
+                                                <div class="table-actions">
+                                                    <button (click)="duplicateFreightCharge(i)"
+                                                        class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only text-white"
+                                                        title="Duplicate"><i class="la la-copy"></i>
+                                                    </button>
+                                                    <button type="button" (click)="deleteFreightCharge(i,charge)"
+                                                        class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only"
+                                                        title="Remove">
+                                                        <i class="la la-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group pos-rel"
+                                                    [ngClass]="{'m-form__group has-danger': isSubmitted && !charge.chargeId}">
+                                                    <input type="text" class="form-control dropdown-toggle"
+                                                        [(ngModel)]="charge.description" placeholder="Select charge">
+                                                    <combo-grid-icon (onDelete)="charge.chargeId = null; 
+                                            charge.description = null" (onDropdown)="showCharge(charge,i)"
+                                                        [showDelete]="!!charge.description">
+                                                    </combo-grid-icon>
+                                                    <ng-container>
+                                                        <!-- <app-combo-grid [headers]="headerCharge" [data]="listCharges"
+                                                            [fields]="['chargeNameEn']" [active]="charge.chargeId"
+                                                            (onClick)="onSelectCharge($event, charge)">
+                                                        </app-combo-grid> -->
+                                                        <div class="combogrid-charge">
+                                                            <ng-template inject></ng-template>
+                                                        </div>
+                                                    </ng-container>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <div class="row quantity-hint">
+                                                        <div class="col-md-6 p-r-none">
+                                                            <input type="number" class="form-control"
+                                                                [(ngModel)]="charge.quantity"
+                                                                (ngModelChange)="onChangeQuantity($event, charge)"
+                                                                numeric [decimals]="digitDecimal" autoFormatCurrency>
+                                                        </div>
+                                                        <div class="col-md-6 p-l-none">
+                                                            <select class="form-control border"
+                                                                [ngModel]="charge.quantityType"
+                                                                (ngModelChange)="onChangeQuantityType($event, charge)">
+                                                                <option [ngValue]="null">-</option>
+                                                                <option *ngFor="let type of quantityTypes"
+                                                                    [ngValue]="type.value">
+                                                                    {{type.displayName}}</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <div class="list-master-unit">
+                                                        <app-combo-grid-virtual-scroll
+                                                            [currentActiveItemId]="{field: 'id', value: charge.unitId}"
+                                                            (itemSelected)="charge.unitId = $event.id"
+                                                            [selectedDisplayFields]="['code']"
+                                                            [dataSources]="listUnits | async"
+                                                            [displayFields]="[{'field':'code','label':'Code'},{'field':'unitNameEn','label':'Name En'}]"
+                                                            size="15" (remove)="charge.unitId = null"
+                                                            placeholder="Unit">
+                                                        </app-combo-grid-virtual-scroll>
+                                                    </div>
+
+                                                </div>
+
+                                            </td>
+                                            <td>
+                                                <div class="form-group"
+                                                    [ngClass]="{'m-form__group has-danger': isSubmitted && charge.unitPrice < 0}">
+                                                    <input type="text" class="form-control" numeric autoFormatCurrency
+                                                        [decimals]="digitDecimal" [(ngModel)]="charge.unitPrice"
+                                                        (ngModelChange)="onChangeUnitPrice($event,charge)">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <select [(ngModel)]="charge.currencyId" class="form-control"
+                                                        (ngModelChange)="onChangeCurrency($event, charge)">
+                                                        <option [ngValue]="null">-</option>
+                                                        <option *ngFor="let currency of (listCurrency | async)"
+                                                            [ngValue]="currency.id">{{currency.id}}</option>
+                                                    </select>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group"
+                                                    [ngClass]="{'m-form__group has-danger': isSubmitted && charge.vatrate > 100}">
+                                                    <input type="number" class="form-control"
+                                                        [(ngModel)]="charge.vatrate"
+                                                        (ngModelChange)="onChangeVat($event,charge)" placeholder="vat">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" [ngModel]="charge.total"
+                                                        readonly currencyMask>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <input type="number" class="form-control"
+                                                        [(ngModel)]="charge.exchangeRate" numeric autoFormatCurrency
+                                                        [decimals]="digitDecimal">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" [(ngModel)]="charge.notes"
+                                                        placeholder="notes...">
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <app-switch [(ngModel)]="charge.isShow"></app-switch>
+                                            </td>
+                                            <td class="text-center">
+                                                <app-switch [(ngModel)]="charge.isFull"></app-switch>
+                                            </td>
+                                            <td class="text-center">
+                                                <app-switch [(ngModel)]="charge.isTick"></app-switch>
+                                            </td>
+                                        </tr>
+                                    </ng-container>
+                                    <tr app-table-none-record [colspan]="headers.length  + 1"
+                                        *ngIf="!hblArrivalNote.csArrivalFrieghtCharges.length">
+                                    </tr>
+                                    <tr *ngIf="!(isLocked | async)">
+                                        <td colspan=1 class="fixed-side">
+                                            <a class="btn m-btn--icon m-btn--icon-only m--font-primary" title="Add"
+                                                (click)="addCharge()">
+                                                <i class="fa fa-plus-circle fa-2x"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="m-portlet">
+                <div class="alert-block__heading">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="alert-block__title">
+                            Header
+                        </h3>
+                        <div *ngIf="!(isLocked | async)">
+                            <button type="button" class="btn btn-info  m-btn--icon m-btn--uppercase"
+                                (click)="setDefaultHeadeFooter()">
+                                <span><i class="la la-save"></i>
+                                    <span> Set Default </span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="m-portlet__body">
+                    <div class="row">
+                        <div [froalaEditor]="optionEditor" [(froalaModel)]="hblArrivalNote.arrivalHeader">
+                            {{ hblArrivalNote.arrivalHeader }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="m-portlet">
+                <div class="alert-block__heading">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="alert-block__title">
+                            Footer
+                        </h3>
+                        <div *ngIf="!(isLocked | async)">
+                            <button type="button" class="btn btn-info  m-btn--icon m-btn--uppercase"
+                                (click)="setDefaultHeadeFooter()">
+                                <span><i class="la la-save"></i>
+                                    <span> Set Default </span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="m-portlet__body">
+                    <div class="row">
+                        <div [froalaEditor]="optionEditor" [(froalaModel)]="hblArrivalNote.arrivalFooter">
+                            {{ hblArrivalNote.arrivalFooter }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<confirm-popup [body]="'Are you sure you want to delete this Charge'" [title]="'Delete Charge'" [labelConfirm]="'Yes'"
+    (onSubmit)="onDeleteFreightCharge()"></confirm-popup>

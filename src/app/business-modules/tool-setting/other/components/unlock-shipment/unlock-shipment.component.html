@@ -1,0 +1,97 @@
+<div class="unlock-shipment-wp bg-secondary p-4">
+    <div class="form-group m-form__group">
+        <h4 class="text-center text-info">Unlock Shipment </h4>
+        <div class="m-radio-list">
+            <div class="row">
+                <div class="col-md-4 d-flex align-items-center">
+                    <label class="m-radio m-radio--bold m-radio--state-success">
+                        <input name="example_5_1" type="radio" [checked]="isSelectOption"
+                            (change)="onSelectOptionChange($event)">
+                        Options
+                        <span></span>
+                    </label>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <ng-select class="custom" [items]="options" [(ngModel)]="selectedOption" bindLabel="text"
+                            bindValue="id"></ng-select>
+                    </div>
+                </div>
+
+                <ng-container *ngIf="isSelectOption">
+                    <div class="col-md-12 m-animate-fade-in">
+                        <div class="form-group">
+                            <label for="">Reference No</label>
+                            <textarea class="form-control" rows="10" [(ngModel)]="keyword"></textarea>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+            <div class="row">
+                <div class="col-md-4 d-flex align-items-center">
+                    <label class="m-radio m-radio--bold m-radio--state-success">
+                        <input name="example_5_1" type="radio" (change)="onSelectServiceDate($event)">
+                        Service Date
+                        <span></span>
+                    </label>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <div class="form-group">
+                            <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                <input type="text" class="form-control m-input m-input--square po-rel"
+                                    ngxDaterangepickerMd [locale]="{format: 'DD/MM/YYYY'}" [autoApply]="true"
+                                    [alwaysShowCalendars]="true" name="daterange" placeholder="/ / - / /" readonly
+                                    [attr.disabled]="isDisabled" [(ngModel)]="selectedRange" [ranges]="ranges" />
+                                <span class="m-input-icon__icon m-input-icon__icon--right">
+                                    <span>
+                                        <i class="la la-calendar"></i>
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 d-flex align-items-center">
+                    <label>Service: </label>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <ng-select class="custom" [items]="services" [(ngModel)]="selectedService"
+                            [disabled]="isSelectOption" bindLabel="text" bindValue="id">
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-md-4 d-flex align-items-center">
+                    <label>Office: </label>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <ng-select [(ngModel)]="selectedOffice" [items]="offices | async" [virtualScroll]="true"
+                            [multiple]="true" [clearable]="true" class="custom" bindLabel="shortName" bindValue="id">
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-md-8 m--margin-top-20">
+                    <button (click)="confirmPopup.show()" type="button"
+                        class="btn btn-primary  m-btn--icon m-btn--uppercase">
+                        <span>
+                            <i class="fa fa-unlock"></i>
+                            <span>
+                                Unlock Shipment
+                            </span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<unlock-history-popup [body]="lockHistory" (onUnlock)="onUnlockShipment($event)"></unlock-history-popup>
+
+<confirm-popup #confirmPopup body="Are you sure to unlock ?" (onSubmit)="confirmPopup.hide(); unlock(true)">
+</confirm-popup>

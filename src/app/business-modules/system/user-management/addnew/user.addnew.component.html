@@ -1,0 +1,30 @@
+<!--begin:: subheader-->
+<div class="m-subheader">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <app-breadcrumb></app-breadcrumb>
+        </div>
+    </div>
+</div>
+<!--end:: subheader-->
+<app-form-add-user>
+    <div class="row m--padding-top-10">
+        <div class="col-12">
+            <div class="m--align-right">
+
+                <app-default-button class="m--margin-right-10" [buttonSetting]="saveButtonSetting" (onClick)="create()">
+                </app-default-button>
+                <button routerLink="/home/system/user-management" type="button"
+                    class="btn btn-default  m-btn--icon m-btn--uppercase m--margin-right-10">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span> Cancel </span>
+                    </span>
+                </button>
+
+            </div>
+        </div>
+
+    </div>
+
+</app-form-add-user>

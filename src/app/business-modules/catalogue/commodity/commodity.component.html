@@ -1,0 +1,143 @@
+<!--begin:: subheader-->
+<div class="m-subheader">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <app-breadcrumb></app-breadcrumb>
+        </div>
+    </div>
+</div>
+<!--end:: subheader-->
+
+<div class="m-content">
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <tabset>
+                <tab heading="Commodity list" [active]="selectedTab === 'Commodity list'"
+                    (selectTab)="onSelectTabCommodity('Commodity list')">
+                    <ng-container *ngIf="selectedTab === 'Commodity list'">
+                        <!--begin:: Search-form-->
+                        <div class="m-form m--margin-bottom-15">
+                            <div class="clearfix m--margin-bottom-15">
+                                <div class="c-button-actions m--align-right">
+                                    <button type="button" class="btn btn-success  m-btn--icon m-btn--uppercase"
+                                        (click)="openPopupAddCommodity()">
+                                        <span>
+                                            <i class="la la-plus"></i>
+                                            <span>
+                                                add new
+                                            </span>
+                                        </span>
+                                    </button>
+                                    <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase"
+                                        [routerLink]="['/home/catalogue/commodity/commodity-import']">
+                                        <span>
+                                            <i class="la la-upload"></i>
+                                            <span>
+                                                import
+                                            </span>
+                                        </span>
+                                    </button>
+                                    <button type="button" class="btn btn-danger  m-btn--icon m-btn--uppercase"
+                                        (click)="exportCom()">
+                                        <span>
+                                            <i class="la la-download"></i>
+                                            <span>
+                                                export
+                                            </span>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="m--padding-10">
+                                <app-search-options [configSearch]="configSearch" (search)="onSearch($event)"
+                                    (reset_search)="resetSearch($event)">
+                                </app-search-options>
+                            </div>
+                        </div>
+                        <!--end:: Search-form-->
+                        <div class="table-wrapper">
+                            <table class="table table-brand table-striped dataTable table-hover">
+                                <thead app-table-header [headers]="headers" (onClick)="sortBy($event)">
+                                    <th class="m--w-50 first table-actions-col">
+                                        Actions
+                                    </th>
+                                </thead>
+                                <tbody class="tbody-group">
+                                    <ng-container *ngIf="!!commodities.length">
+                                        <tr *ngFor="let commodity of commodities; let i = index; trackBy: trackByFn">
+                                            <td class="table-actions-col">
+                                                <div class="table-actions">
+                                                    <button class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only"
+                                                        title="Edit" (click)="showDetailCommodity(commodity)">
+                                                        <i class="la la-edit"></i>
+                                                    </button>
+                                                    <button (click)="showConfirmDelete(commodity)"
+                                                        class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only">
+                                                        <i class="la la-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td>{{commodity.code}}</td>
+                                            <td>{{commodity.commodityNameEn}}</td>
+                                            <td>
+                                                {{commodity.commodityNameVn}}
+                                            </td>
+                                            <td>
+                                                {{commodity.commodityGroupNameVn}}
+                                            </td>
+                                            <td [ngClass]="commodity.active ? 'text-success' : 'text-danger'">
+                                                {{commodity.active ? 'Active' : 'Inactive'}}</td>
+                                        </tr>
+                                    </ng-container>
+                                    <tr *ngIf="!isLoading && !commodities.length" app-table-none-record
+                                        [colspan]="headers.length + 1"></tr>
+                                    <tr *ngIf="isLoading" app-table-row-loading></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="pagination-nav ">
+                            <div class="row">
+                                <div *ngIf="!!commodities.length" class="col-sm-6">
+                                    <div class="tatable__pager-size">
+                                        <div class="select-box">
+                                            <select class="form-control" id="" aria-label="" [(ngModel)]="pageSize"
+                                                (change)="selectPageSize(pageSize, dataSearch)" name="pagesize">
+                                                <ng-container
+                                                    *ngFor="let item of numberToShow; let i = index; trackBy: trackByFn">
+                                                    <option [ngValue]="item">{{item}} line / screen</option>
+                                                </ng-container>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6" *ngIf="totalItems > pageSize">
+                                    <div class="float-right">
+                                        <pagination [boundaryLinks]="true" [totalItems]="totalItems"
+                                            [itemsPerPage]="pageSize" (pageChanged)="pageChanged($event)"
+                                            [(ngModel)]="page" [maxSize]="5">
+                                        </pagination>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <app-pagination [total]="totalItems" [pageNum]="page" [itemPerPage]="pageSize"
+                            (onChange)="updatePagingData($event)"></app-pagination>
+
+                    </ng-container>
+                </tab>
+                <tab heading="Commodity group" [active]="selectedTab === 'Commodity group'"
+                    (selectTab)="onSelectTabCommodity('Commodity group')">
+                    <ng-container *ngIf="selectedTab === 'Commodity group'">
+                        <commodity-group-list></commodity-group-list>
+                    </ng-container>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+
+</div>
+
+<form-create-commodity-popup (onRequestCommodity)="onRequestCommodity()"></form-create-commodity-popup>
+
+<confirm-popup [body]="'You want to delete this Commodity'" [labelConfirm]="'Yes'" (onSubmit)="onDelete()">
+</confirm-popup>

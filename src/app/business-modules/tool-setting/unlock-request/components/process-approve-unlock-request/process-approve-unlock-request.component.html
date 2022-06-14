@@ -1,0 +1,84 @@
+<ng-container *ngIf="!!processApprove && processApprove.statusApproval !== 'New'">
+    <div class="m-portlet__head alert-block__heading">
+        <div class="m-portlet__head-caption">
+            <div class="m-portlet__head-title w-100">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h3 class="m-portlet__head-text collapse-toggle pointer" data-toggle="collapse"
+                            data-target="#approval-process">
+                            <i class="la la-angle-up m--margin-right-5"></i>Approval Process
+                        </h3>
+                    </div>
+                    <div class="col-lg-6 m--align-right">
+                        <a class="text-underline pointer" (click)="showInfoDenied()">Denied Comments:
+                            {{processApprove.numOfDeny}}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="collapse list-progress-wp collapsed show m--margin-top-20 m--margin-bottom-20" id="approval-process">
+        <div class="col-12">
+            <ul class="list-unstyled list-progress d-flex justify-content-around">
+                <li *ngIf="processApprove.isShowLeader">
+                    <div class="progress-content text-center">
+                        <div class="font-weight-bolder">Leader</div>
+                        <div class="icon-check">
+                            <i class="la la-check-circle-o" *ngIf="!!processApprove.leaderAprDate"></i>
+                        </div>
+                        <div class="font-weight-bold">
+                            {{processApprove.leaderName}}
+                        </div>
+                        <div class="font-weight-bold">
+                            {{!!processApprove.leaderAprDate ? (processApprove.leaderAprDate | date: 'dd/MM/yyyy HH:mm') : '/.../'}}
+                        </div>
+                    </div>
+                </li>
+                <li *ngIf="processApprove.isShowManager">
+                    <div class="progress-content text-center">
+                        <div class="font-weight-bolder">Manager</div>
+                        <div class="icon-check">
+                            <i class="la la-check-circle-o" *ngIf="!!processApprove.managerAprDate"></i>
+                        </div>
+                        <div class="font-weight-bold">
+                            {{processApprove.managerName}}
+                        </div>
+                        <div class="font-weight-bold">
+                            {{!!processApprove.managerAprDate ? (processApprove.managerAprDate | date: 'dd/MM/yyyy HH:mm') : '/.../'}}
+                        </div>
+                    </div>
+                </li>
+                <li *ngIf="processApprove.isShowAccountant">
+                    <div class="progress-content text-center">
+                        <div class="font-weight-bolder">Accountant</div>
+                        <div class="icon-check">
+                            <i class="la la-check-circle-o" *ngIf="!!processApprove.accountantAprDate"></i>
+                        </div>
+                        <div class="font-weight-bold">
+                            {{processApprove.accountantName}}
+                        </div>
+                        <div class="font-weight-bold">
+                            {{!!processApprove.accountantAprDate ? (processApprove.accountantAprDate | date: 'dd/MM/yyyy HH:mm') : '/.../'}}
+                        </div>
+                    </div>
+                </li>
+                <li *ngIf="processApprove.isShowBuHead">
+                    <div class="progress-content text-center">
+                        <div class="font-weight-bolder">BU HEAD</div>
+                        <div class="icon-check">
+                            <i class="la la-check-circle-o" *ngIf="!!processApprove.buheadAprDate"></i>
+                        </div>
+                        <div class="font-weight-bold">
+                            {{processApprove.buHeadName}}
+                        </div>
+                        <div class="font-weight-bold">
+                            {{!!processApprove.buheadAprDate ? (processApprove.buheadAprDate | date: 'dd/MM/yyyy HH:mm') : '/.../'}}
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</ng-container>
+<info-denied-comment-popup></info-denied-comment-popup>

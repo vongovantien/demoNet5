@@ -1,0 +1,8 @@
+<ng-container *ngFor="let item of data; let i = index; trackBy: trackByFn">
+    <tr>
+        <td *ngFor="let header of headers">
+            <app-table-cell [item]="item" [type]="header.dataType" [field]="header.field"></app-table-cell>
+        </td>
+    </tr>
+</ng-container>
+<tr app-table-none-record *ngIf="!data.length"></tr>

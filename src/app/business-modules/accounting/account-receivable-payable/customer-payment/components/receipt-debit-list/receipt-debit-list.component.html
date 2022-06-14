@@ -1,0 +1,228 @@
+<div class="m-portlet">
+    <div class="m-portlet__head alert-block__heading pointer bg-secondary">
+        <div class="m-portlet__head-caption">
+            <div class="m-portlet__head-title w-100">
+                <h3 class="m-portlet__head-text collapse-toggle" data-toggle="collapse" data-target="#debit-list">
+                    <i class="la la-angle-up m--margin-right-5"></i> DEBIT
+                    <ng-container *ngIf="!!(debitList$ | async)?.length">
+                        <span class="badge badge-success">{{(debitList$ | async)?.length}}</span>
+                    </ng-container>
+                </h3>
+            </div>
+        </div>
+    </div>
+    <div class="m-portlet__body">
+        <div class="collapse show" id="debit-list">
+            <div class="table-horizontal">
+                <table class="table table-brand table-bordered">
+                    <thead app-table-header [headers]="(receiptType$ | async) ==='CUSTOMER' ? headers : agencyHeaders"
+                        [align]="'center'">
+                        <th class="m--w-50 first">
+                        </th>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngIf="!!(debitList$ | async)?.length">
+                            <tr *ngFor="let item of (this.debitList$ | async); let i = index; trackBy: trackByFn"
+                                [class.bg-warning]="item.paymentType === 'OTHER'"
+                                [ngClass]="{'bg-secondary font-italic': item.negative}"
+                                [ngClass]="{ 'invalid-row': item.isValid === false }">
+                                <td>
+                                    <ng-container *ngIf="!isReadonly">
+                                        <app-permission-button type="delete"
+                                            (onClick)="confirmDeleteInvoiceItem(item,i);" class="icon"
+                                            icon="la la-trash text-danger">
+                                        </app-permission-button>
+                                    </ng-container>
+                                </td>
+                                <td class="text-primary">{{item.refNo}}</td>
+                                <td ALIGN="center" class="font-weight-bold">
+                                    <ng-container *ngIf="item.type === 'ADV' && !isReadonly; else paymentOtherTypeTpl">
+                                        <a [dpToggle]="dropdownMenuAdvance" class="text-underline text-primary"
+                                            (click)="selectPaymentItem(i)" position="bottomCenter">ADV</a>
+                                    </ng-container>
+                                    <ng-template #paymentOtherTypeTpl>
+                                        {{item.type}}
+                                    </ng-template>
+                                </td>
+                                <td class="text-primary" [class.text-right]="item.paymentType === 'OBH'">
+                                    {{item.invoiceNo}}
+                                    <ng-container *ngIf="item.paymentType !== 'OTHER' ">
+                                        <ng-container [ngSwitch]="item.paymentStatus">
+                                            <span class="m-badge m-badge--success m-badge--wide" *ngSwitchCase="'Paid'">
+                                                {{item.paymentStatus}}
+                                            </span>
+                                            <span class="m-badge m-badge--warning m-badge--wide text-white"
+                                                *ngSwitchCase="'Paid A Part'">
+                                                {{item.paymentStatus}}
+                                            </span>
+                                            <span class="m-badge m-badge--danger m-badge--wide" *ngSwitchDefault>
+                                                {{item.paymentStatus}}
+                                            </span>
+                                        </ng-container>
+                                    </ng-container>
+                                </td>
+                                <td ALIGN="right">
+                                    <ng-container *ngIf="item.paymentType !== 'OTHER' ">
+                                        {{item.unpaidAmountUsd | number:'1.2-2'}}
+                                    </ng-container>
+                                </td>
+                                <td ALIGN="right">
+                                    <ng-container *ngIf="item.paymentType !== 'OTHER' ">
+                                        {{item.unpaidAmountVnd | number:'1.0-2'}}
+                                    </ng-container>
+                                </td>
+
+                                <td ALIGN="right">
+                                    <input type="text" class="form-control text-right text-success font-15"
+                                        [(ngModel)]="item.paidAmountUsd" name="paidAmountUsd" autoFormatCurrency
+                                        [disabled]="isReadonly"
+                                        (ngModelChange)="calculateTotalPaidAmount(item,'paidUsd')">
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control text-right text-success font-15"
+                                        [(ngModel)]="item.paidAmountVnd" name="paidAmountVnd" numeric autoFormatCurrency
+                                        [disabled]="isReadonly"
+                                        (ngModelChange)="calculateTotalPaidAmount(item,'paidVnd')">
+                                </td>
+                                <td ALIGN="right">
+                                    <ng-container
+                                        *ngIf="item.paymentType !== 'OTHER' && item.type !== 'OBH' && (receiptType$ | async) !== 'CUSTOMER'">
+                                        <input type="text" class="form-control text-right text-success font-15"
+                                            [(ngModel)]="item.netOffUsd" name="paidAmountUsd" autoFormatCurrency
+                                            [disabled]="isReadonly"
+                                            (ngModelChange)="calculateTotalPaidAmount(item,'netOffUsd')">
+                                    </ng-container>
+                                </td>
+                                <td>
+                                    <ng-container
+                                        *ngIf="item.paymentType !== 'OTHER' && item.type !== 'OBH' && (receiptType$ | async) !== 'CUSTOMER'">
+                                        <input type="text" class="form-control text-right text-success font-15"
+                                            [(ngModel)]="item.netOffVnd" name="paidAmountVnd" numeric autoFormatCurrency
+                                            [disabled]="isReadonly"
+                                            (ngModelChange)="calculateTotalPaidAmount(item,'netOffVnd')">
+                                    </ng-container>
+                                </td>
+
+                                <td ALIGN="right">
+                                    <ng-container *ngIf="item.paymentType !== 'OTHER' ">
+                                        {{item.totalPaidUsd | number:'1.2-2'}}
+                                    </ng-container>
+                                </td>
+                                <td ALIGN="right">
+                                    <ng-container *ngIf="item.paymentType !== 'OTHER' ">
+                                        {{item.totalPaidVnd | number:'1.0-2'}}
+                                    </ng-container>
+                                </td>
+                                <td class="text-center"
+                                    *ngIf="item.paymentType === 'DEBIT' && (receiptType$ | async) !=='CUSTOMER'">
+                                    <app-switch size="sm" class="danger"
+                                        (toggleChange)="onToggleNetOfOnly($event, item)" [ngModel]="item.netOff"
+                                        [disabled]="isReadonly">
+                                    </app-switch>
+                                </td>
+                                <td ALIGN="right">
+                                    <div *ngIf="item.paymentType !== 'OTHER'">
+                                        {{(item.unpaidAmountUsd - item.totalPaidUsd) | negativeNumber: '.2-2'}}
+                                    </div>
+                                </td>
+                                <td ALIGN="right">
+                                    <div *ngIf="item.paymentType !== 'OTHER'">
+                                        {{(item.unpaidAmountVnd - item.totalPaidVnd) | negativeNumber: '1.0-2'}}
+                                    </div>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" [(ngModel)]="item.notes"
+                                        [disabled]="isReadonly">
+                                </td>
+                                <td class="text-success">{{item.departmentName}}</td>
+                                <td class="text-success">{{item.officeName}}</td>
+
+
+                                <td *ngIf="(receiptType$ | async) !=='CUSTOMER'" ALIGN="center">{{item.jobNo}}</td>
+                                <td *ngIf="(receiptType$ | async) !=='CUSTOMER'" ALIGN="center">{{item.mbl}}</td>
+                                <td *ngIf="(receiptType$ | async) !=='CUSTOMER'" ALIGN="center">{{item.hbl}}</td>
+                            </tr>
+                        </ng-container>
+                        <tr app-table-none-record *ngIf="!(debitList$ | async)?.length">
+                        </tr>
+                        <!-- <tr class="loading-wrapper" *ngIf="(isLoading | async) " app-table-row-loading>
+                        </tr> -->
+                    </tbody>
+                    <tfoot *ngIf="!!(debitList$ | async)?.length">
+                        <tr class="font-weight-bold font-15 bg-locked">
+                            <td colspan="4" rowspan="4" ALIGN="center">Total</td>
+                            <td rowspan="4" ALIGN="center" class="text-right">
+                                {{sumTotalObj.totalUnpaidAmountUsd | number:'.2-2'}} USD
+                            </td>
+                            <td rowspan="4" ALIGN="center" class="text-right">
+                                {{sumTotalObj.totalUnpaidAmountVnd | number: '1.0-2'}} VND
+                            </td>
+                            <td rowspan="4" ALIGN="center" class="text-right">
+                                {{sumTotalObj.totalPaidAmountUsd | number:'.2-2'}} USD
+                            </td>
+                            <td rowspan="4" ALIGN="center" class="text-right">
+                                {{sumTotalObj.totalPaidAmountVnd | number: '1.0-2'}} VND
+                            </td>
+                            <td rowspan="4" ALIGN="center" class="text-right">
+                                {{sumTotalObj.totalNetOffUsd | number:'.2-2'}} USD
+                            </td>
+                            <td rowspan="4" ALIGN="center" class="text-right">
+                                {{sumTotalObj.totalNetOffVnd | number: '1.0-2'}} VND
+                            </td>
+                            <td rowspan="4" ALIGN="center" class="text-right">
+                                {{sumTotalObj.totalPaidUsd | number:'.2-2'}} USD
+                            </td>
+                            <td rowspan="4" ALIGN="center" class="text-right">
+                                {{sumTotalObj.totalPaidVnd | number: '1.0-2'}} VND
+                            </td>
+                            <td *ngIf="(receiptType$ | async) !=='CUSTOMER'"></td>
+                            <td ALIGN="right">
+                                <ng-container *ngIf="sumTotalObj.totalRemainUsd > 0; else TplnegativeRemainUsd">
+                                    {{sumTotalObj.totalRemainUsd | number:'.2-2'}} USD
+                                </ng-container>
+                            </td>
+                            <td ALIGN="right">
+                                <ng-container *ngIf="sumTotalObj.totalRemainVnd > 0; else TplnegativeRemainVnd">
+                                    {{sumTotalObj.totalRemainVnd | number:'1.0-2'}} VND
+
+                                </ng-container>
+                            </td>
+
+                            <td colspan="7"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<ng-template inject></ng-template>
+
+
+<ng-template #TplnegativeRemainUsd>
+    {{sumTotalObj.totalRemainUsd | negativeNumber:'1.0-2'}}
+</ng-template>
+
+
+<ng-template #TplnegativeRemainVnd>
+    {{sumTotalObj.totalRemainVnd | negativeNumber:'1.3-3'}}
+</ng-template>
+
+<app-dropdown #dropdownMenuAdvance>
+    <a class="dropdown-item pointer" (click)="changePaymentTypeADV('COLL_OTH')">
+        <span> Change To Collect Other </span>
+    </a>
+    <a class="dropdown-item pointer" (click)="changePaymentTypeADV('PAY_OTH')">
+        <span> Change To Pay Other </span>
+    </a>
+</app-dropdown>
+
+<app-dropdown #dropdownMenuCreditList>
+    <ng-container *ngFor="let item of (creditList$ | async)">
+        <a class="dropdown-item pointer" (click)="selectCreditPaymentItem(item)">
+            {{item.refNo}}
+        </a>
+    </ng-container>
+</app-dropdown>

@@ -1,0 +1,36 @@
+<div class="modal fade" id="confirm-delete-modal" role="dialog" bsModal #popup="bs-modal">
+    <div class="modal-dialog modal-sm " role="document" [class.modal-dialog-centered]="center">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{title}}</h5>
+                <button type="button" class="close" aria-label="Close" (click)=close()>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="confirm-text-block">
+                    <span [innerHTML]="body" class="d-inline-block text-{{align}}"></span>
+                </div>
+            </div>
+            <div class="modal-footer m--align-center c-button-actions">
+                <button type="button" class="btn {{classConfirmButton}}  m-btn--icon m-btn--uppercase"
+                    (click)="onConfirm()">
+                    <span>
+                        <i class="{{iconConfirm}}"></i>
+                        <span>
+                            {{labelConfirm}}
+                        </span>
+                    </span>
+                </button>
+                <button type="button" class="btn {{classCancelButton}}  m-btn--icon m-btn--uppercase" (click)="close()">
+                    <span>
+                        <i class="{{iconCancel}}"></i>
+                        <span>
+                            {{labelCancel}}
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

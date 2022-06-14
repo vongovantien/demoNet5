@@ -1,0 +1,41 @@
+<div class="modal fade" id="search-custom-modal" bsModal #popup="bs-modal" role="dialog" (onHide)="onHide($event)"
+    (onShow)="onShow($event)">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Search Mutilpe</h5>
+                <button type="button" class="close" aria-label="Close" (click)="close()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="m-form m-form--state">
+                    <div class="col-12">
+                        <textarea rows="6" [(ngModel)]='customNoSearch' class="form-control m-input m-input--square"
+                            name="customNoSearch"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer m--align-center c-button-actions">
+                <button type="button" (click)='applyToList()' class="btn btn-brand  m-btn--icon m-btn--uppercase"
+                    data-toggle="modal">
+                    <span>
+                        <i class="la la-download"></i>
+                        <span>
+                            Apply
+                        </span>
+                    </span>
+                </button>
+                <button type="button" (click)='clear()' class="btn btn-cancel  m-btn--icon m-btn--uppercase"
+                    data-toggle="modal">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span>
+                            Clear
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

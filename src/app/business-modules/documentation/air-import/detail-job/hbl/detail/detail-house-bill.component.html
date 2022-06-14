@@ -1,0 +1,84 @@
+<div class="sea-fcl-create-hbl-page">
+    <app-sub-header>
+        <div class="c-button-actions">
+            <div class="btn-group" [autoClose]="!isClickSubMenu" dropdown container="body">
+                <button id="button-nested" dropdownToggle type="button" class="btn btn-success dropdown-toggle"
+                    aria-controls="dropdown-nested">
+                    <i class="la la-print"></i>Preview<span class="caret"></span>
+                </button>
+                <ul id="dropdown-nested" *dropdownMenu class="dropdown-menu" role="menu"
+                    aria-labelledby="button-nested">
+                    <li role="menuitem" dropdown placement="right" container="body">
+                        <a dropdownToggle class="dropdown-item dropdown-toggle pointer"
+                            (click)="isClickSubMenu = true">Arrival Notice
+                            <span class="caret"></span>
+                        </a>
+                        <ul *dropdownMenu class="dropdown-menu dropdown-sub-menu" role="menu">
+                            <li role="menuitem"><a class="dropdown-item pointer"
+                                    (click)="onPreview('ARRIVAL_ORIGINAL')">Original Currency</a></li>
+                            <li role="menuitem"><a class="dropdown-item pointer"
+                                    (click)="onPreview('ARRIVAL_VND')">VND</a></li>
+                        </ul>
+                    </li>
+                    <li role="menuitem" dropdown placement="top-left" container="body">
+                        <a dropdownToggle class="dropdown-item dropdown-toggle pointer"
+                            (click)="isClickSubMenu = true">Authorize Letter
+                            <span class="caret"></span>
+                        </a>
+                        <ul *dropdownMenu class="dropdown-menu dropdown-sub-menu" role="menu">
+                            <li role="menuitem"><a class="dropdown-item pointer"
+                                    (click)="showPreviewSignature('AUTHORIZE_LETTER1', false)">A.L (Form
+                                    1)</a></li>
+                            <li role="menuitem"><a class="dropdown-item pointer"
+                                    (click)="showPreviewSignature('AUTHORIZE_LETTER1', true)">A.L (Form
+                                    1) with Signature</a></li>
+                            <li role="menuitem"><a class="dropdown-item pointer"
+                                    (click)="showPreviewSignature('AUTHORIZE_LETTER2', false)">A.L (Form
+                                    2)</a></li>
+                            <li role="menuitem"><a class="dropdown-item pointer"
+                                    (click)="showPreviewSignature('AUTHORIZE_LETTER2', true)">A.L (Form
+                                    2) with Signature</a></li>
+                        </ul>
+                    </li>
+                    <li role="menuitem"><a class="dropdown-item pointer" (click)="onPreview('PROOF_OF_DELIVERY')">Proof
+                            of Delivery</a></li>
+                    <li role="menuitem"><a class="dropdown-item pointer"
+                            (click)="onPreview('DOCUMENT_RELEASE_FORM')">Document Release Form</a></li>
+                </ul>
+            </div>
+
+            <app-default-button *ngIf="(permissionHblDetail | async)?.allowUpdate" [buttonSetting]="saveButtonSetting"
+                (onClick)="showCreatepoup()">
+            </app-default-button>
+
+            <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="gotoList()"></app-default-button>
+        </div>
+    </app-sub-header>
+</div>
+
+<div class="m-content">
+    <div class="m-portlet__body">
+        <tabset class="custom-class-tab">
+            <tab heading="HAWB Detail" (selectTab)="onSelectTab('DETAIL')">
+                <air-import-hbl-form-create [isUpdate]="true"> </air-import-hbl-form-create>
+            </tab>
+            <tab heading="Arrival Notice" (selectTab)="onSelectTab('ARRIVAL')" [active]="selectedTab === 'ARRIVAL'">
+                <arrival-note-air></arrival-note-air>
+            </tab>
+            <tab heading="Authorize Letter" (selectTab)="onSelectTab('AUTHORIZE')">
+                <hbl-delivery-order [isAir]="true"></hbl-delivery-order>
+            </tab>
+            <tab heading="Proof Of Delivery" (selectTab)="onSelectTab('PROOF')">
+                <hbl-proof-of-delivery></hbl-proof-of-delivery>
+            </tab>
+        </tabset>
+    </div>
+</div>
+
+<ng-template inject></ng-template>
+
+<ul class="m-nav-sticky fms-shipment-sidebar">
+    <li class="m-nav-sticky__item">
+        <a title="Send Arrival Notice" [routerLink]="['./arrivalnotice']">Send A.N</a>
+    </li>
+</ul>

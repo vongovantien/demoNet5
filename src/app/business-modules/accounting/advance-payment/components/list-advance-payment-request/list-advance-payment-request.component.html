@@ -1,0 +1,139 @@
+<div class="list-request-advance-payment m--margin-top-20">
+    <div class="row" *ngIf="state === 'update'">
+        <div class="col-lg-12 m--align-left">
+            <button type="button" class="btn btn-success   m-btn--icon m-btn--uppercase m--margin-right-10"
+                (click)="openPopupAdd()">
+                <span>
+                    <i class="la la-plus"></i>
+                    <span>
+                        Add
+                    </span>
+                </span>
+            </button>
+            <button type="button" class="btn btn-danger   m-btn--icon m-btn--uppercase"
+                (click)="deleteItemRequestAdvancePayment()">
+                <span>
+                    <i class="la la-trash"></i>
+                    <span>
+                        Delete
+                    </span>
+                </span>
+            </button>
+        </div>
+    </div>
+
+    <div class="row m--margin-top-20">
+        <perfect-scrollbar>
+            <div class="table-horizontal" style="max-height: 600px">
+                <table class="table table-brand table-hover dataTable">
+                    <thead>
+                        <tr class="text-center">
+                            <th class="m--w-50" *ngIf="state === 'update'">
+                                <label class="m-checkbox">
+                                    <input type="checkbox" [(ngModel)]="isCheckAll" (change)="checkUncheckAllRequest()">
+                                    <span></span>
+                                </label>
+                            </th>
+                            <th *ngFor="let header of headers; let i = index; trackBy: trackByFn"
+                                [class]="sortClass(header.sortable ? header.field : '')"
+                                (click)="sortBy(header.sortable ? header.field : '')">
+                                <span>{{header.title}}</span>
+                                <span class="sort-indicator"></span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="tbody-group">
+                        <tr *ngIf="!isLoading && !listRequestAdvancePayment.length">
+                            <td colspan="100">
+                                <div class="no-data">
+                                    <i class="flaticon-coins"></i>
+                                    <span class="no-data-text">No records found</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <ng-container
+                            *ngFor="let request of listRequestAdvancePayment; let i = index; trackBy: trackByFn">
+                            <tr class="text-center">
+                                <td *ngIf="state === 'update'">
+                                    <div class="m-checkbox-list d-flex">
+                                        <label class="m-checkbox">
+                                            <input type="checkbox"
+                                                (change)="onChangeCheckBoxRequestAdvancePayent($event)"
+                                                [(ngModel)]="request.isSelected">
+                                            <span></span>
+                                        </label>
+                                        <span>
+                                            <a (click)="copyRequestPayment(request)" title="Copy request advance"
+                                                class="pointer">
+                                                <i class="la la-copy"></i>
+                                            </a>
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="text-primary pointer">
+                                    <a class="text-underline " (click)="updateRequestPayment(request, i)"
+                                        title="Copy request advance" *ngIf="state === 'update' else notedit">
+                                        {{request.description}}
+                                    </a>
+                                    <ng-template #notedit>{{request.description}}</ng-template>
+                                </td>
+                                <td>{{request.customNo}}</td>
+                                <td>{{request.jobId}}</td>
+                                <!-- <td *ngIf="request.statusPayment==='Settled'")>{{request.statusPayment}}</td> -->
+                                <td>{{request.hbl}}</td>
+                                <td>{{request.amount | number : '.0-3'}}</td>
+                                <td>{{request.requestCurrency}}</td>
+                                <td>{{request.advanceType | titlecase}}</td>
+                                <td [ngSwitch]="request.statusPayment">
+                                    <ng-container *ngIf="this.statusApproval === '' else empty">
+                                        <div class="text-success" *ngSwitchCase="'Settled'">
+                                            {{request.statusPayment}}
+                                        </div>
+                                        <div class="text-danger" *ngSwitchCase="'NotSettled'">
+                                            Not Settled
+                                        </div>
+                                        <div class="text-warning" *ngSwitchCase="'PartialSettlement'">
+                                            Partial Settlement
+                                        </div>
+                                        <div *ngSwitchCase="''">
+                                            -
+                                        </div>
+                                    </ng-container>
+                                    <ng-template #empty>-</ng-template>
+                                </td>
+                                <td>{{request.requestNote}}</td>
+                            </tr>
+                        </ng-container>
+
+                        <tr class="text-center text-black" *ngIf="!!listRequestAdvancePayment.length">
+                            <td *ngIf="state === 'update'"></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <span class="font-weight-bold m--margin-top-10">Total Amount:</span>
+                            </td>
+                            <td>
+                                <span class="p-1 font-weight-bold">{{totalAmount | number: '.0-3'}}</span>
+                            </td>
+                            <td>
+                                <span class="p-1 font-weight-bold">{{currency | uppercase}}</span>
+                            </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </perfect-scrollbar>
+    </div>
+</div>
+
+<ng-container *ngIf="state === 'update'">
+    <adv-payment-add-popup (onRequest)="onRequestAdvancePaymentChange($event)"
+        (onUpdate)="onUpdateRequestAdvancePayment($event)"></adv-payment-add-popup>
+</ng-container>
+
+
+<ng-template inject></ng-template>

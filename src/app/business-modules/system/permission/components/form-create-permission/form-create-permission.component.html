@@ -1,0 +1,72 @@
+<div class="m-content form-add-permission">
+    <div class="m-portlet form-search-permission-wrapper">
+        <div class="m-portlet__body">
+            <div class="row">
+                <div class="col-md-6 d-flex align-items-center">
+                    <ng-content select="div.title"></ng-content>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-actions m--align-right">
+                        <app-default-button [buttonSetting]="saveButtonSetting" (onClick)="showConfirm(formCreate)">
+                        </app-default-button>
+                        <app-default-button [buttonSetting]="cancelButtonSetting" class="m--margin-left-10"
+                            (onClick)="gotoList()">
+                        </app-default-button>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="m-form m-form--state">
+                <form [formGroup]="formCreate">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': (permissionName.dirty && !permissionName.valid) || (isSubmitted && !permissionName.valid)}">
+                                <label required>Permission Name</label>
+                                <input type="text" class="form-control" formControlName="permissionName"
+                                    placeholder="Permission Name">
+                                <div class="form-control-feedback" *ngIf="isSubmitted && !permissionName.valid">
+                                    Permission Name is required!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSubmitted && !role.value}">
+                                <label required>Role</label>
+                                <select class="form-control" formControlName="role">
+                                    <option *ngFor="let role of roles" [ngValue]="role">{{role.name}}</option>
+                                    <option [ngValue]="null" disabled>Select Role</option>
+                                </select>
+                                <div class="form-control-feedback" *ngIf="isSubmitted && !role.value">
+                                    Role is required!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Type</label>
+                                <select class="form-control" formControlName="type">
+                                    <option *ngFor="let type of types" [ngValue]="type">{{type.displayName}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select class="form-control" formControlName="status">
+                                    <option *ngFor="let item of statuss" [ngValue]="item">{{item.displayName}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <ng-content select="div.date-time">
+            </ng-content>
+        </div>
+    </div>
+</div>
+
+<confirm-popup [body]="'Do you want to save this permission ?'" [labelConfirm]="'Yes'"
+    (onSubmit)="onSaveSubmitForm(formCreate)"></confirm-popup>

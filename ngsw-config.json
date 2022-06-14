@@ -1,0 +1,42 @@
+{
+    "index": "/index.html",
+    "assetGroups": [
+        {
+            "name": "app",
+            "installMode": "prefetch",
+            "resources": {
+                "files": [
+                    "/favicon.ico",
+                    "/*.css",
+                    "/*.js",
+                    "/*.woff",
+                    "/*.woff2",
+                    "index.html"
+                ]
+            }
+        },
+        {
+            "name": "assets",
+            "installMode": "lazy",
+            "updateMode": "prefetch",
+            "resources": {
+                "files": [
+                    "/assets/**"
+                ]
+            }
+        }
+    ],
+    "dataGroups": [
+        {
+            "name": "api-performance",
+            "urls": [
+                "**/api/v1/en-US/CatCurrency/getAllByQuery"
+            ],
+            "cacheConfig": {
+                "strategy": "performance",
+                "maxSize": 500,
+                "maxAge": "1d"
+            }
+        }
+    ]
+}

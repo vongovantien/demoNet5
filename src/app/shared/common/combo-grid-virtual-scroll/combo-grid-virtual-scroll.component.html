@@ -1,0 +1,116 @@
+<div class="dropdown e--combogrid" [class.show]="!showAngledownIcon" dropdown #dropdown="bs-dropdown"
+    (clickOutside)="keyword = ''; showAngledownIcon = false" [insideClick]="true" [isDisabled]="disabled">
+    <ng-container *ngIf="allowEditing;else readOnlyTpl">
+        <input #clkSearch class="form-control m-input m-input--square dropdown-toggle pos-rel" [disabled]="Disabled"
+            type="text" [tooltip]="isTooltip ? (displayStringValue == '' ? null : displayStringValue) : ''"
+            [placeholder]="loading ? '' : placeholder" [attr.aria-expanded]="!showAngledownIcon"
+            (focus)="onFocusInputPlaceholder($event)" [(ngModel)]="displayStringValue">
+    </ng-container>
+    <ng-template #readOnlyTpl>
+        <input #clkSearch (click)="clickSearch()" class="form-control m-input m-input--square dropdown-toggle pos-rel"
+            [disabled]="Disabled" type="text" readonly [value]="displayStringValue == '' ? null : displayStringValue"
+            [tooltip]="isTooltip ? (displayStringValue == '' ? null : displayStringValue) : ''"
+            [placeholder]="loading ? '' : placeholder" [attr.aria-expanded]="!showAngledownIcon"
+            (focus)="onFocusInputPlaceholder($event)" dropdownToggle>
+    </ng-template>
+    <ng-container *ngIf="!disabled">
+        <div class="e--combogrid_icon">
+            <ng-container *ngIf="allowEditing;else readOnlyIconDropdownTpl">
+                <span
+                    (click)="isFocusSearch = true;dropdown.show();clickSearch(); showAngledownIcon = !showAngledownIcon"
+                    class="e--combogrid_icon__dropdown" dropdownToggle>
+                    <i class="fa fa-angle-down" aria-hidden="true"></i>
+                </span>
+            </ng-container>
+            <ng-template #readOnlyIconDropdownTpl>
+                <span class="e--combogrid_icon__dropdown"
+                    (click)="isFocusSearch = true;dropdown.show();clickSearch(); showAngledownIcon = !showAngledownIcon">
+                    <i class="fa fa-angle-down" aria-hidden="true"></i>
+                </span>
+            </ng-template>
+            <ng-container *ngIf="clearable">
+                <span class="e--combogrid_icon__clear" (click)="removeCurrenActiveItem()"
+                    *ngIf="!!displayStringValue && !Disabled">
+                    <i class="la la-times" aria-hidden="true"></i>
+                </span>
+            </ng-container>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="loading">
+        <div class="on-loading text-center">
+            <div class="m-loader m-loader--brand">
+            </div><span>Loading</span>
+        </div>
+    </ng-container>
+
+    <div class="dropdown-menu  dropdown-menu-right e--combogrid-content" [class.show]="showAngledownIcon" *dropdownMenu>
+        <div class="tabel-wrapper table-fixed">
+            <div class="table-head-fixed">
+                <div class="table-filter-block">
+                    <div class="search-field" (keydown)="onKeydownSearchInput($event)">
+                        <input #inputSearch class="form-control m-input m-input--square cbgr-input-search" type="text"
+                            placeholder="Search..." autoFocus [(ngModel)]="keyword">
+                        <i class="icon-search"></i>
+                    </div>
+                </div>
+                <div class="table-header">
+                    <table class="table table-hover" *ngIf="!!DisplayFields.length">
+                        <thead>
+                            <tr>
+                                <th *ngFor="let item of DisplayFields; trackBy: trackByFn">{{item.label}}</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <div *ngIf="!loading && !!DataSources.length">
+                <cdk-virtual-scroll-viewport [ngStyle]="{'height.px': height}" [itemSize]="size">
+
+                    <!-- <table class="table table-hover">
+                        <tbody>
+                            <ng-container>
+                                <tr class="data-row pointer" #listItem
+                                    *cdkVirtualFor="let item of DataSources | filter :keyword: searchKeys; let i= index;trackBy: trackByFn"
+                                    data-id="{{(i+1)}}" (click)="emitSelected(item,i); showAngledownIcon = false"
+                                    [class.data-selected]="indexSelected !== -1 && i === indexSelected">
+                                    <td *ngFor="let display of DisplayFields; trackBy: trackByFn">
+                                        <span [innerHTML]="item[display.field] | highlight : keyword"></span>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table> -->
+
+                    <table class="table table-hover">
+                        <tbody (keydown)="onKeydown($event)">
+                            <ng-container>
+                                <tr class="data-row pointer" combogrid-item [headers]="DisplayFields" [data]="item"
+                                    [keyword]="keyword"
+                                    *cdkVirtualFor="let item of DataSources | filter :keyword: searchKeys; let i= index;trackBy: trackByFn"
+                                    data-id="{{(i+1)}}"
+                                    (click)="emitSelected(item,i); showAngledownIcon = false; dropdown.hide()"
+                                    [class.data-selected]="indexSelected !== -1 && i === indexSelected">
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+
+                </cdk-virtual-scroll-viewport>
+            </div>
+            <ng-container *ngIf="!loading && !DataSources.length">
+                <div>
+                    <div class="no-data">
+                        <i class="flaticon-coins"></i>
+                        <span class="no-data-text">No records found</span>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="loading">
+                <div class="on-loading text-center">
+                    <div class="m-loader m-loader--brand">
+                    </div><span>Loading</span>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>

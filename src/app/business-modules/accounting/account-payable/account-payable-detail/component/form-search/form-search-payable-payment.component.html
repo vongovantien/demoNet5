@@ -1,0 +1,90 @@
+<div class="m-portlet">
+    <div class="m-portlet__body">
+        <div class="m-form m-form--state" [formGroup]="formSearch">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Reference No</label>
+                        <ng-select formControlName="searchType" [items]="referenceTypes" class="custom"
+                            bindLabel="title" bindValue="value" [clearable]="false">
+                        </ng-select>
+                        <textarea [rows]="8" class="form-control" formControlName="referenceNo"></textarea>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label for="">Partner</label>
+                                <app-combo-grid-virtual-scroll
+                                    [currentActiveItemId]="{ field: 'id', value: partnerId.value}"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'partner')"
+                                    [selectedDisplayFields]="['shortName']" [dataSources]="partners | async"
+                                    [displayFields]="displayFieldsPartner" (remove)="resetFormControl(partnerId)"
+                                    placeholder="Select Partner">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="">Date</label>
+                                <!-- [allowRemove]="!!paymentDate.value && !!paymentDate.value.startDate" -->
+                                <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                    <input type="text" ngxDaterangepickerMd class="form-control"
+                                        [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" name="daterange"
+                                        placeholder="Select date" [autoApply]="true"
+                                        formControlName="paymentDate" [alwaysShowCalendars]="true" [ranges]="ranges"
+                                        readonly calendar
+                                        [allowRemove]="false"
+                                        (remove)="resetFormControl(paymentDate)" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label" for="">
+                                    Office
+                                </label>
+                                <ng-select [items]="offices" formControlName="office" class="custom" [multiple]="true"
+                                    bindLabel="shortName" bindValue="id">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="">Payment Status</label>
+                                <ng-select [items]="paymentStatusList" formControlName="paymentStatus" class="custom"
+                                    (add)="selelectedSelect($event, 'status')" [multiple]="true"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'paymentStatus')">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="">Transaction Type</label>
+                                <ng-select [items]="transactionTypes" formControlName="transactionType" class="custom"
+                                    (add)="selelectedSelect($event, 'transaction')" [multiple]="true"
+                                    (itemSelected)="onSelectDataFormInfo($event, 'transactionType')">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions">
+                <div class="row">
+                    <div class="col-lg-6"></div>
+                    <div class="col-lg-6 m--align-right c-button-actions">
+                        <app-default-button [buttonSetting]="searchlButtonSetting" (click)="submitSearch()">
+                        </app-default-button>
+                        <app-default-button [buttonSetting]="resetButtonSetting" (click)="resetSearch()">
+                        </app-default-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

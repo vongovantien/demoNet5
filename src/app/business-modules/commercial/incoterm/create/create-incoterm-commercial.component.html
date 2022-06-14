@@ -1,0 +1,42 @@
+<div class="create-commercial-page">
+    <app-sub-header> </app-sub-header>
+
+    <div class="m-content">
+        <div class="m-portlet">
+            <div class="m-portlet__body">
+                <div class="d-flex align-items-center justify-content-between p-1">
+                    <h3>Create Incoterm</h3>
+                    <div>
+                        <div class="c-button-actions">
+                            <app-default-button [buttonSetting]="saveButtonSetting" (onClick)="onSubmit()">
+                            </app-default-button>
+                            <app-default-button [buttonSetting]="cancelButtonSetting"
+                                (onClick)="confirmCancelPopup.show()">
+                            </app-default-button>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <form-incoterm></form-incoterm>
+            </div>
+            <div class="m-portlet charge-incoterm-wrapper m-animate-fade-in">
+                <div class="m-portlet__body">
+                    <tabset class="custom-class-tab">
+                        <tab heading="Selling" [active]="activeTab === 'SELL'" (selectTab)="activeTab = 'SELL'">
+                            <list-charge-incoterm type="SELL" #selling></list-charge-incoterm>
+                        </tab>
+                        <tab heading="Buying" [active]="activeTab === 'BUY'" (selectTab)="activeTab = 'BUY'">
+                            <list-charge-incoterm type="BUY" #buying></list-charge-incoterm>
+                        </tab>
+                    </tabset>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<info-popup [body]="invalidFormText"></info-popup>
+
+<confirm-popup #confirmCancelPopup [body]="'Do you want to cancel without saving?'"
+    (onSubmit)="confirmCancelPopup.hide(); gotoList()">
+</confirm-popup>

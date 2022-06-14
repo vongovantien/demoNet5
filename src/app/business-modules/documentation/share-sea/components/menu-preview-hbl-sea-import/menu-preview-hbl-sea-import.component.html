@@ -1,0 +1,40 @@
+<div class="btn-group" [autoClose]="!isClickSubMenu" dropdown container="body">
+    <button id="button-nested" dropdownToggle type="button" class="btn btn-success dropdown-toggle"
+        aria-controls="dropdown-nested">
+        <i class="la la-print"></i>Preview<span class="caret"></span>
+    </button>
+    <ul id="dropdown-nested" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-nested">
+        <li role="menuitem" dropdown triggers="mouseover" placement="right" container="body">
+            <a dropdownToggle class="dropdown-item dropdown-toggle pointer" (click)="isClickSubMenu = true">Arrival
+                Notice
+                <span class="caret"></span>
+            </a>
+            <ul *dropdownMenu class="dropdown-menu dropdown-sub-menu" role="menu">
+                <li role="menuitem"><a class="dropdown-item pointer" (click)="onPreview('ARRIVAL_ORIGINAL')">Original
+                        Currency</a></li>
+                <li role="menuitem"><a class="dropdown-item pointer" (click)="onPreview('ARRIVAL_VND')">VND</a></li>
+            </ul>
+        </li>
+        <li role="menuitem"><a class="dropdown-item pointer" (click)="onPreview('DELIVERY_ORDER')">Delivery
+                Order</a></li>
+        <li role="menuitem"><a class="dropdown-item pointer" (click)="onPreview('PROOF_OF_DELIVERY')">Proof
+                of
+                Delivery</a></li>
+        <li role="menuitem" dropdown triggers="mouseover" placement="right" container="body">
+            <a dropdownToggle class="dropdown-item dropdown-toggle pointer" (click)="isClickSubMenu = true">Export
+                Manifest
+                <span class="caret"></span>
+            </a>
+            <ul *dropdownMenu class="dropdown-menu dropdown-sub-menu" role="menu">
+                <li role="menuitem"><a class="dropdown-item pointer" (click)="onPreview('E_MANIFEST')">E-Manifest</a>
+                </li>
+                <li role="menuitem"><a class="dropdown-item pointer" (click)="onPreview('GOODS_DECLARE')">Goods
+                        Declare</a></li>
+                <li role="menuitem"><a class="dropdown-item pointer" (click)="onPreview('DANGEROUS_GOODS')">Dangerous
+                        Goods</a></li>
+            </ul>
+        </li>
+    </ul>
+</div>
+
+<ng-template inject></ng-template>

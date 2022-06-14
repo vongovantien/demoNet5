@@ -1,0 +1,37 @@
+<div class="sea-fcl-create-hbl-page">
+    <app-sub-header>
+        <div class="c-button-actions">
+            <app-default-button *ngIf="(permissionShipments | async)?.allowUpdate" [buttonSetting]="importButtonSetting"
+                (click)="showImportPopup()">
+            </app-default-button>
+            <app-default-button *ngIf="(permissionShipments | async)?.allowUpdate" [buttonSetting]="saveButtonSetting"
+                (onClick)="showCreatepoup()">
+            </app-default-button>
+            <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="gotoList()"></app-default-button>
+        </div>
+    </app-sub-header>
+</div>
+
+<div class="m-content">
+    <div class="m-portlet__body">
+        <tabset class="custom-class-tab">
+            <tab heading="HAWB Detail" [active]="activeTab === 'hawb'">
+                <air-import-hbl-form-create></air-import-hbl-form-create>
+            </tab>
+            <tab heading="Arrival Notice" [active]="activeTab === 'arrival'">
+                <arrival-note-air></arrival-note-air>
+            </tab>
+            <tab heading="Authorize Letter" [active]="activeTab === 'authorize'">
+                <hbl-delivery-order [isAir]="true"> </hbl-delivery-order>
+            </tab>
+            <tab heading="Proof Of Delivery" [active]="activeTab === 'proof'">
+                <hbl-proof-of-delivery></hbl-proof-of-delivery>
+            </tab>
+        </tabset>
+    </div>
+</div>
+
+<import-house-bill-detail (onImport)="onImport($event)" [jobId]="jobId" [typeTransaction]="3">
+</import-house-bill-detail>
+
+<ng-template inject></ng-template>

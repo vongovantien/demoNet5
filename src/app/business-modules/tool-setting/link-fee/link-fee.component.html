@@ -1,0 +1,77 @@
+    <div class="m-subheader">
+        <div class="d-flex align-items-center">
+            <div class="mr-auto">
+                <app-breadcrumb></app-breadcrumb>
+            </div>
+            <div class="c-button-actions">
+                <app-permission-button title="Create Rule Link" (onClick)="showCreateRule()"></app-permission-button>
+                <div class="dropdown m-dropdown m-dropdown--inline no-arrow">
+                    <app-permission-button [routerLink]="['/home/tool/link-fee/import']" type="import" title="Import">
+                    </app-permission-button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="m-content">
+        <div class="m-portlet">
+            <app-form-search-rule (onSearch)="onSearchRule($event)"></app-form-search-rule>
+            </div>
+
+                <div class="m-portlet">
+                    <div class="m-form">
+                        <div class="m-portlet__body">
+                            <div class="table-wrapper table-scrollable">
+                                <table class="table table-hover table-brand dataTable">
+                                    <thead app-table-header [headers]="headers"
+                                        (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                                        <th class="first table-actions-col">Action</th>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container *ngIf="!!rules.length">
+                                            <tr class="collapse-toggle-row"
+                                                *ngFor="let rule of rules | filter : keyword : ['ruleName','ruleType','customerID','supplierID','serviceMode','status']; let i = index; trackBy: trackByFn">
+
+                                                <td class="table-actions-col">
+                                                    <div class="table-actions" style="width: 70px">
+                                                        <app-permission-button type="detail"
+                                                            (onClick)="getRuleDetail(rule.id)">
+                                                        </app-permission-button>
+                                                        <ng-container>
+                                                            <app-permission-button type="delete"
+                                                                (onClick)="onDeleteRule(rule)">
+                                                            </app-permission-button>
+                                                        </ng-container>
+                                                    </div>
+                                                </td>
+
+                                                <td>{{rule.ruleName}}</td>
+                                                <td>{{rule.serviceBuying}}</td>
+                                                <td style="min-width: 250px;max-width: 250px; white-space:initial">{{rule.chargeNameBuying }}</td>
+                                                <td style="min-width: 200px;max-width: 200px; white-space:initial">{{rule.partnerNameBuying}}</td>
+                                                <td>{{rule.serviceSelling}}</td>
+                                                <td style="min-width: 250px;max-width: 250px; white-space:initial">{{rule.chargeNameSelling}}</td>
+                                                <td style="min-width: 200px;max-width: 200px; white-space:initial">{{rule.partnerNameSelling}}</td>
+                                                <td>{{rule.userNameCreated}}</td>
+                                                <td>{{rule.datetimeModified | date: 'dd/MM/yyyy'}}</td>
+                                                <td [ngClass]="rule.status ? 'text-success' : 'text-danger'">
+                                                    {{rule.status ? 'Active' : 'Inactive'}}</td>
+                                                <td>{{rule.effectiveDate | date: 'dd/MM/yyyy'}}</td>
+                                                <td>{{rule.expiredDate | date: 'dd/MM/yyyy'}}</td>
+
+                                            </tr>
+                                        </ng-container>
+                                        <tr app-table-none-record *ngIf="!isLoading && !rules.length"
+                                            [colspan]="headers.length + 1">
+                                        </tr>
+                                        <tr app-table-row-loading *ngIf="isLoading"></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <app-pagination (onChange)="updatePagingData($event)" [total]="totalItems"
+                                [pageNum]="page" [itemPerPage]="pageSize"></app-pagination>
+                        </div>
+                    </div>
+                </div>
+
+                <confirm-popup body="Do you want to delete?" (onSubmit)="deleteRule()"></confirm-popup>
+                <form-rule #formAddRule (onUpdate)="resetSearch()"></form-rule>

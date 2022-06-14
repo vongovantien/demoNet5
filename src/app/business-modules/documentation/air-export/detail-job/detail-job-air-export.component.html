@@ -1,0 +1,89 @@
+<div class="sea-fcl-export-detail-job-page">
+    <app-sub-header>
+        <job-detail-button-list [shipmentDetail]="shipmentDetail" [isDuplicate]="isDuplicate"
+            [selectedTab]="selectedTab" (onCancel)="handleCancelForm()" (onDelete)="prepareDeleteJob()"
+            (onDuplicate)="showDuplicateConfirm()" (onSave)="onSaveJob()" (onPreviewPL)="previewPLsheet($event)"
+            (onLock)="lockShipment()">
+        </job-detail-button-list>
+    </app-sub-header>
+</div>
+
+<div class="m-content">
+    <div class="m-portlet__body">
+        <tabset class="custom-class-tab">
+            <tab heading="Shipment Detail" (selectTab)="onSelectTab('shipment')"
+                [active]="selectedTab === 'SHIPMENT' || !selectedTab">
+                <app-form-create-air type="export">
+                    <div class="row m--margin-top-20" *ngIf="!!shipmentDetail">
+                        <div class="col-md-4">
+                            <span>Created: {{shipmentDetail.datetimeCreated | date: 'dd/MM/yyyy HH:mm'}} by </span>
+                            <span class="text-success">{{shipmentDetail.userNameCreated}}</span>
+                        </div>
+                        <div class="col-md-4">
+                            <span>Modified: {{shipmentDetail.datetimeModified | date: 'dd/MM/yyyy HH:mm'}} by
+                            </span> <span class="text-success">{{shipmentDetail.userNameModified}}</span>
+                        </div>
+                        <ng-container *ngIf="!shipmentDetail.isLocked">
+                            <div class="col-md-4 text-right" *ngIf="shipmentDetail.permission.allowUpdate">
+                                <button class="btn btn-info  m-btn--icon m-btn--uppercase" type="button"
+                                    (click)="showSyncHBL()">
+                                    <span><i class="la la-refresh"></i>
+                                        <span> Sync HAWB </span>
+                                    </span>
+                                </button>
+                            </div>
+                        </ng-container>
+                    </div>
+                </app-form-create-air>
+                <grant-total-profit></grant-total-profit>
+            </tab>
+            <tab heading="HAWB List" (selectTab)="onSelectTab('hbl')" [active]="selectedTab === 'HBL'"
+                [disabled]="ACTION === 'COPY'">
+                <ng-container *ngIf="selectedTab === 'HBL'">
+                </ng-container>
+            </tab>
+            <tab heading="Debit Note & Credit Note" (selectTab)="onSelectTab('cdNote')" [disabled]="ACTION === 'COPY'"
+                [active]="selectedTab === 'CDNOTE'">
+                <ng-container *ngIf="selectedTab === 'CDNOTE'" loadModule="AirExport_cdNote">
+                </ng-container>
+            </tab>
+            <tab heading="Assignment" (selectTab)="onSelectTab('assignment')" [active]="selectedTab === 'ASSIGNMENT'"
+                [disabled]="ACTION === 'COPY'">
+                <ng-container *ngIf="selectedTab === 'ASSIGNMENT'" loadModule="AirExport_assignment">
+                </ng-container>
+            </tab>
+            <tab heading="Attach Files" (selectTab)="onSelectTab('files')" [active]="selectedTab === 'FILES'"
+                [disabled]="ACTION === 'COPY'">
+                <ng-container *ngIf="selectedTab === 'FILES'" loadModule="AirExport_attachFile">
+                </ng-container>
+            </tab>
+            <tab heading="Advance/Settlement" (selectTab)="onSelectTab('advance-settle')"
+                [active]="selectedTab === 'ADVANCE-SETTLE'" [disabled]="isDuplicate">
+                <ng-container *ngIf="selectedTab === 'ADVANCE-SETTLE'" loadModule="Share_advanceSettle">
+                </ng-container>
+            </tab>
+        </tabset>
+    </div>
+    <ul class="m-nav-sticky fms-shipment-sidebar" *ngIf="ACTION !== 'COPY'">
+        <li class="m-nav-sticky__item">
+            <a title="Preview Manifest" [routerLink]="['./manifest']">MNF</a>
+        </li>
+        <li class="m-nav-sticky__item">
+            <a title="Open MAWB Detail Form" [routerLink]="['./mawb']">MAWB</a>
+        </li>
+        <li class="m-nav-sticky__item">
+            <a title="Preview Shipment Cover Page" style="cursor: pointer;" (click)="previewShipmentCoverPage()">CP</a>
+        </li>
+    </ul>
+</div>
+
+<ng-container *ngIf="dataReport">
+    <app-report-preview [data]="dataReport"></app-report-preview>
+</ng-container>
+
+<info-popup [body]="'Opps, It looks like you missed something, Please recheck the highlighted field below.'"
+    [title]="'Cannot Update Job'"></info-popup>
+
+<permission-403-popup></permission-403-popup>
+
+<ng-template inject></ng-template>

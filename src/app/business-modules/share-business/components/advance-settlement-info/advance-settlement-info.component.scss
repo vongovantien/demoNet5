@@ -1,0 +1,57 @@
+.adv-settle-wrapper {
+    .adv-info,
+    .settle-info {
+        margin-bottom: 20px;
+    }
+    .title {
+        font-size: 16px;
+        font-weight: bold;
+    }
+    .description {
+        font-size: 14px;
+        margin: 4px 10px 0 0;
+    }
+    .balance {
+        text-align: left;
+        background: #35bdd0;
+        padding: 4px 10px;
+        max-width: 200px;
+        margin: 0px auto;
+        border-radius: 20px;
+    }
+    .m-portlet {
+        // background: #f4ceb3;
+    }
+}
+
+.hr {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: 0;
+    border-top: 5px solid rgba(37, 36, 36, 0.1);
+}
+
+.stamp-div {
+    display: inline-block;
+    border-radius: 15px;
+    border-width: 2px;
+    border-style: solid;
+    text-transform: uppercase;
+    margin: 0 auto;
+    font-family: "source-sans-pro", sans-serif;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 600;
+    letter-spacing: 0px;
+    padding: 0 17px;
+    opacity: 0.8;
+    &.success {
+        border-color: #4dd637;
+        border-style: solid;
+        color: #4dd637;
+    }
+    &.danger {
+        border-color: #e21717;
+        color: #e21717;
+    }
+}

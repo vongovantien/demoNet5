@@ -1,0 +1,103 @@
+<div class="modal fade" role="dialog" bsModal #popup="bs-modal" aria-hidden="true">
+    <div class="modal-dialog c-modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add HBL</h5>
+                <button type="button" (click)="onCancel()" class="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="m-portlet">
+                <div class="row">
+                    <div class="col-6">
+                        <h3 class="c-block-title m--margin-left-10">Remaining HBL</h3>
+                    </div>
+                </div>
+                <div class="modal-body">
+
+                    <div class="table-wrapper table-scrollable" id="masterbill-list-table">
+                        <table class="table table-hover table-brand dataTable">
+                            <thead app-table-header [headers]="headers" (onClick)="sortHouseBills($event)">
+                                <th class="m--w-50 first table-actions-col">
+                                    <label class="m-checkbox">
+                                        <input type="checkbox" name="" [checked]="checkAll"
+                                            (change)="checkAll=!checkAll; checkAllChange()">
+                                        <span></span>
+                                    </label>
+                                </th>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngIf="!!houseBills.length">
+                                    <tr
+                                        *ngFor="let housebill of houseBills | filter : keyword : ['hwbno','packages','gw','cbm','podName','shipperName','consigneeName','desOfGoods']; let j = index; trackBy: trackByFn">
+                                        <td class="table-actions-col">
+                                            <label class="m-checkbox">
+                                                <input type="checkbox" name="" [checked]="housebill.isChecked"
+                                                    (change)="housebill.isChecked=!housebill.isChecked; removeAllChecked()">
+                                                <span></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <span>{{housebill.hwbno}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{housebill.packageQty}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{housebill.gw}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{housebill.cbm}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{housebill.podName}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{housebill.shipperName}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{housebill.consigneeName}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{housebill.desOfGoods}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{housebill.freightPayment}}</span>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                                <tr *ngIf="!isLoading && !houseBills.length" app-table-none-record
+                                    [colspan]="headers.length">
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer m--align-center">
+                <button (click)="OnAdd()" type="button" style="float:right"
+                    class="btn btn-brand  m-btn--icon m-btn--uppercase">
+                    <span>
+                        <i class="la la-save"></i>
+                        <span>
+                            Add HBL
+                        </span>
+                    </span>
+                </button>
+                <button (click)="onCancel()" type="button" class="btn btn-danger  m-btn--icon m-btn--uppercase">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span>
+                            Cancel
+                        </span>
+                    </span>
+                </button>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>

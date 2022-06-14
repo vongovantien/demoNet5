@@ -1,0 +1,236 @@
+<div class="modal payment-management-popup m-animate-fade-in" role="dialog" bsModal #popup="bs-modal"
+    aria-hidden="true">
+    <div class="modal-dialog c-modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Payment Management</h5>
+                <button type="button" (click)="hide()" class="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <tabset class="custom-class-tab">
+                    <!-- start tab requester -->
+                    <tab heading="Requester" [active]="true">
+                        <div class="m-portlet">
+                            <div class="m-portlet__body">
+                                <div class="row">
+                                    <div class="col text-center">
+                                        <span class="font-weight-bold">Job ID:</span>
+                                        {{data.jobId}}
+                                    </div>
+                                    <div class="col text-center">
+                                        <span class="font-weight-bold">HBL:</span>
+                                        {{data.hbl}}
+                                    </div>
+                                    <div class="col text-center">
+                                        <span class="font-weight-bold">MBL:</span>
+                                        {{data.mbl}}
+                                    </div>
+                                </div>
+                                <div class="row m--margin-top-20">
+                                    <div class="col-12">
+                                        <div class="m--align-right m--margin-bottom-10" *ngIf="!!data.advancePayment.length">
+                                            <span class="font-weight-bold align-middle">Total Advance: </span>
+                                            <span class="m-badge m-badge--info m-badge--wide font-13">
+                                                {{data.totalAdvance}}
+                                            </span>
+                                        </div>
+                                        <ul class="list-unstyled list-group">
+                                            <div class="row p-2 bg-primary m-0 text-white">
+                                                <div
+                                                    class="col text-center font-weight-bold  border border-top-0 border-bottom-0 border-left-0">
+                                                    Advance No
+                                                </div>
+                                                <div
+                                                    class="col text-center font-weight-bold border border-top-0 border-bottom-0 border-left-0">
+                                                    Description
+                                                </div>
+                                                <div
+                                                    class="col text-center font-weight-bold border border-top-0 border-bottom-0 border-left-0">
+                                                    Total Amount
+                                                </div>
+                                                <div
+                                                    class="col text-center font-weight-bold border border-top-0 border-bottom-0 border-left-0">
+                                                    Currency
+                                                </div>
+                                                <div class="col text-center font-weight-bold">
+                                                    Advance Date
+                                                </div>
+                                            </div>
+                                            <ng-container *ngIf="!isLoading && !!data.advancePayment.length">
+                                                <li *ngFor="let advance of data.advancePayment; trackBy: trackByFn"
+                                                    class="text-center list-group-item-primary">
+                                                    <div class="row p-3">
+                                                        <div class="col text-center font-weight-bold">{{advance.advanceNo}}</div>
+                                                        <div class="col text-center">{{advance.description}}</div>
+                                                        <div class="col text-center" *ngIf="advance.advanceCurrency === 'VND'">
+                                                            {{advance.totalAmount | number: '.0-3'}}
+                                                        </div>
+                                                        <div class="col text-center" *ngIf="advance.advanceCurrency !== 'VND'">
+                                                            {{advance.totalAmount | number: '.2-2'}}
+                                                        </div>
+                                                        <div class="col text-center">{{advance.advanceCurrency}}</div>
+                                                        <div class="col text-center">{{advance.advanceDate | date: 'dd/MM/yyyy'}}
+                                                        </div>
+                                                    </div>
+                                                    <ul class="list-group">
+                                                        <li *ngFor="let request of advance.chargeAdvancePaymentMngts"
+                                                            class="list-group-item">
+                                                            <div class="row">
+                                                                <div class="col text-center"></div>
+                                                                <div class="col text-center">{{request.description}}</div>
+                                                                <div class="col text-center" *ngIf="request.advanceCurrency === 'VND'">
+                                                                    {{request.totalAmount | number: '.0-3'}}
+                                                                </div>
+                                                                <div class="col text-center" *ngIf="request.advanceCurrency !== 'VND'">
+                                                                    {{request.totalAmount | number: '.2-2'}}
+                                                                </div>
+                                                                <div class="col text-center">{{request.advanceCurrency}}</div>
+                                                                <div class="col text-center"></div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ng-container>
+                                        </ul>
+                                        <div *ngIf="!isLoading && !data.advancePayment.length" class="table">
+                                            <div class="no-data">
+                                                <i class="flaticon-coins"></i>
+                                                <span class="no-data-text">No records
+                                                    found</span>
+                                            </div>
+                                        </div>
+                                        <div class="loading-wrapper text-center" *ngIf="isLoading">
+                                            <div class="on-loading">
+                                                <div class="m-loader m-loader--brand">
+                                                </div><span>Loading</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 m--margin-top-50">
+                                        <div class="m--align-right m--margin-bottom-10" *ngIf="!!data.settlementPayment.length">
+                                            <span class="font-weight-bold align-middle">Total Settlement: </span>
+                                            <span class="m-badge m-badge--info m-badge--wide font-13">
+                                                {{data.totalSettlement}}
+                                            </span>
+                                        </div>
+                                        <ul class="list-unstyled list-group">
+                                            <div class="row p-2 bg-primary m-0 text-white">
+                                                <div
+                                                    class="col text-center font-weight-bold  border border-top-0 border-bottom-0 border-left-0">
+                                                    Settlement No
+                                                </div>
+                                                <div
+                                                    class="col text-center font-weight-bold border border-top-0 border-bottom-0 border-left-0">
+                                                    Charge Name
+                                                </div>
+                                                <div
+                                                    class="col text-center font-weight-bold border border-top-0 border-bottom-0 border-left-0">
+                                                    Total Amount
+                                                </div>
+                                                <div
+                                                    class="col text-center font-weight-bold border border-top-0 border-bottom-0 border-left-0">
+                                                    Currency
+                                                </div>
+                                                <div
+                                                    class="col text-center font-weight-bold border border-top-0 border-bottom-0 border-left-0">
+                                                    Settlement Date
+                                                </div>
+                                                <div
+                                                    class="col text-center font-weight-bold border border-top-0 border-bottom-0 border-left-0">
+                                                    Payer
+                                                </div>
+                                                <div class="col text-center font-weight-bold">
+                                                    OBH Partner
+                                                </div>
+                                            </div>
+                                            <ng-container *ngIf="!!data.settlementPayment.length">
+                                                <li *ngFor="let settlement of data.settlementPayment; trackBy: trackByFn"
+                                                    class="text-center list-group-item-primary">
+                                                    <div class="row p-3">
+                                                        <div class="col text-center font-weight-bold">{{settlement.settlementNo}}</div>
+                                                        <div class="col text-center">{{settlement.chargeName}}</div>
+                                                        <div class="col text-center" *ngIf="settlement.settlementCurrency === 'VND'">
+                                                            {{settlement.totalAmount | number: '.0-3'}}
+                                                        </div>
+                                                        <div class="col text-center" *ngIf="settlement.settlementCurrency !== 'VND'">
+                                                            {{settlement.totalAmount | number: '.2-2'}}
+                                                        </div>
+                                                        <div class="col text-center">{{settlement.settlementCurrency}}</div>
+                                                        <div class="col text-center">{{settlement.settlementDate | date: 'dd/MM/yyyy'}}
+                                                        </div>
+                                                        <div class="col text-center">{{settlement.payer}}
+                                                        </div>
+                                                        <div class="col text-center">{{settlement.obhPartner}}</div>
+                                                    </div>
+                                                    <ul class="list-group">
+                                                        <li *ngFor="let charge of settlement.chargeSettlementPaymentMngts"
+                                                            class="list-group-item">
+                                                            <div class="row">
+                                                                <div class="col text-center">{{charge.advanceNo}}</div>
+                                                                <div class="col text-center">{{charge.chargeName}}</div>
+                                                                <div class="col text-center" *ngIf="charge.settlementCurrency === 'VND'">
+                                                                    {{charge.totalAmount | number: '.0-3'}}
+                                                                </div>
+                                                                <div class="col text-center" *ngIf="charge.settlementCurrency !== 'VND'">
+                                                                    {{charge.totalAmount | number: '.2-2'}}
+                                                                </div>
+                                                                <div class="col text-center">{{charge.settlementCurrency}}</div>
+                                                                <div class="col text-center"></div>
+                                                                <div class="col text-center">{{charge.payer}}</div>
+                                                                <div class="col text-center">{{charge.obhPartner}}</div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ng-container>
+                    
+                                        </ul>
+                                        <div *ngIf="!data.settlementPayment.length" class="table">
+                                            <div class="no-data">
+                                                <i class="flaticon-coins"></i>
+                                                <span class="no-data-text">No records
+                                                    found</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer m--align-right" *ngIf="!!data.balance">
+                                    <span class="font-weight-bold align-middle"> Balance: </span>
+                                    <span class="m-badge m-badge--info m-badge--wide font-13">
+                                        {{data.balance}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </tab>
+                    <!-- end tab requester -->
+            
+                    <!-- start tab detail -->
+                    <tab heading="Detail" (selectTab)="viewTabDetail()">
+                        <detail-charges-payment></detail-charges-payment>
+                    </tab>
+                    <!-- end tab detail -->
+                </tabset>
+            </div>
+            <div class="modal-footer m--align-center">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="m--align-center">
+                            <button class="btn btn-default  m-btn--icon m-btn--uppercase" title="Cancel"
+                                (click)="closePopup()">
+                                <span>
+                                    <i class="la la-ban"></i>
+                                    <span>
+                                        Cancel
+                                    </span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,256 @@
+<div class="m-subheader">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <app-breadcrumb></app-breadcrumb>
+        </div>
+        <div class="c-button-actions">
+            <button class="btn btn-info dropdown-toggle" [dpToggle]="dropdownMenuLinkOps" position="bottomCenter">
+                <i class="la la-refresh"></i>
+                More..
+                <span class="caret"></span>
+            </button>
+
+            <app-permission-button title="create new job" (onClick)="gotoCreateJob()"></app-permission-button>
+            <div class="dropdown m-dropdown m-dropdown--inline no-arrow">
+                <app-permission-button data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Import"
+                    type="import">
+                </app-permission-button>
+                <div class="dropdown-menu" aria-labelledby="">
+                    <a routerLink="/home/operation/job-management/import-charge" class="dropdown-item"
+                        href="javascript:void(0)">Import
+                        Charge</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="m-content">
+    <div class="row">
+        <div class="col-xl-12">
+            <job-management-form-search (onSearch)="onSearchShipment($event)" (onReset)="onResetSearchShipment($event)"
+                [isSearchLinkFee]="isSearchLinkFeea">
+            </job-management-form-search>
+            <!-- <div class="m-portlet">
+                <div class="alert-block alert-block-red">
+                    <div class="alert-block__heading">
+                        <h3 class="alert-block__title">Job Summary</h3>
+                    </div>
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr class="text-center">
+                                <td class="m--font-brand m--font-bolder">
+                                    <i class="la la-spinner"></i> In Progress: {{ totalInProcess }}
+                                </td>
+                                <td class="m--font-success m--font-bolder">
+                                    <i class="la la-check-circle"></i> Complete: {{ totalComplete }}
+                                </td>
+                                <td class="m--font-danger m--font-bolder">
+                                    <i class="la la-clock-o"></i> Over due: {{ totalOverdued }}
+                                </td>
+                                <td class="m--font-bolder">
+                                    <i class="la la-ban"></i> Cancel: {{ totalCanceled }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div> -->
+        </div>
+        <div class="col-12">
+            <div class="m-portlet__body">
+                <tabset class="custom-class-tab">
+                    <tab heading="List Job" (selectTab)="onSelectTab('JOB')">
+                        <div class="bg-white p-4">
+                            <div class="table-wrapper table-scrollable" id="ops-job-list-table">
+                                <table class="table table-hover table-brand dataTable">
+                                    <thead app-table-header [headers]="headers" (onClick)="sortBy($event.sortField)">
+                                        <th class="table-actions-col no-sorting first"></th>
+                                    </thead>
+                                    <tbody class="tbody-group">
+                                        <ng-container *ngFor="let item of shipments; let i = index; trackBy: trackByFn">
+                                            <tr class="collapse-toggle-row" [contextMenu]="opsListContextMenu"
+                                                (onTouch)="onSelectOps(item)"
+                                                [disableMenuContext]="item.userCreated !== (currentUser$ | async)?.id"
+                                                [class.touch-row]="selectedShipment?.id === item.id">
+                                                <td class="table-actions-col">
+                                                    <div class="table-actions" style="width: 100px">
+                                                        <button type="button"
+                                                            class="btn btn-sm  m-btn--icon m-btn--icon-only collapsed"
+                                                            data-toggle="collapse"
+                                                            [attr.data-target]="'#ops-shipment-00' + (item.id+1)"
+                                                            title="Collapse"
+                                                            (click)="showCustomClearance(item.jobNo, i)">
+                                                            <i class="la la-angle-up"></i>
+                                                        </button>
+
+                                                        <app-permission-button (onClick)="showDetail(item.id)"
+                                                            type="detail" [user]="item.userCreated">
+                                                        </app-permission-button>
+
+                                                        <button type="button" *ngIf="item.isLocked"
+                                                            class="btn btn-fault btn-sm  m-btn--icon m-btn--icon-only">
+                                                            <i class="fa fa-lock"></i>
+                                                        </button>
+
+                                                        <ng-container
+                                                            *ngIf="!item.isLocked && !item.replicatedId && !item.isLinkFee">
+                                                            <app-permission-button (onClick)="deleteSipment(item)"
+                                                                type="delete" [user]="item.userCreated">
+                                                            </app-permission-button>
+                                                        </ng-container>
+
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a href="javascript:void(0)" (click)="showDetail(item.id)">{{
+                                                        item.jobNo }}
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <span>{{ item.clearanceNo }}</span>
+                                                </td>
+                                                <td class="text-primary">
+                                                    {{ item.replicateJobNo }}
+                                                </td>
+                                                <td>
+                                                    <span>{{ item.hwbno }}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{ item.customerName }}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="text-info">{{ item.productService }}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{ item.serviceDate | date:'dd/MM/yyyy' }}</span>
+                                                </td>
+                                                <td>
+                                                    <span *ngIf="item.serviceMode == 'Import'">{{ item.podName }}</span>
+                                                    <span *ngIf="item.serviceMode == 'Export'">{{ item.polName }}</span>
+                                                </td>                                       
+                                                <td>
+                                                    <span>{{ item.sumContainers }}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{ item.sumPackages }}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{ item.sumGrossWeight }}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{ item.sumCbm }}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="text-success">{{ item.userCreatedName }}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{ item.departmentName }}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{ item.groupName }}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{ item.datetimeModified | date:'dd/MM/yyyy' }}</span>
+                                                </td>
+                                            </tr>
+                                            <tr class="collapse-panel-row" app-table-collapse-row
+                                                [id]="'ops-shipment-00' + item.id + 1"
+                                                [parentId]="'#ops-job-list-table'">
+                                                <table class="table table-secondary dataTable">
+                                                    <thead app-table-header [headers]="headerCustomClearance"
+                                                        (onClick)="sortClassCustomClearance($event.sortField)">
+                                                    </thead>
+                                                    <tbody>
+                                                        <ng-container *ngIf="!!customClearances.length">
+                                                            <tr
+                                                                *ngFor="let clearance of customClearances; let j = index; trackBy: trackByFn">
+                                                                <td>
+                                                                    <span>{{ clearance.clearanceNo }}</span>
+                                                                </td>
+                                                                <td>
+                                                                    <span>{{ clearance.clearanceDate | date:'dd/MM/yyyy'
+                                                                        }}</span>
+                                                                </td>
+                                                                <td>
+                                                                    <span>{{ clearance.hblid }}</span>
+                                                                </td>
+                                                                <td>
+                                                                    <span>{{ clearance.exportCountryCode }}</span>
+                                                                </td>
+                                                                <td>
+                                                                    <span>{{ clearance.importCountryCode }}</span>
+                                                                </td>
+                                                                <td>
+                                                                    <span>{{ clearance.commodityCode }}</span>
+                                                                </td>
+                                                                <td>
+                                                                    <span>{{ clearance.qtyCont }}</span>
+                                                                </td>
+                                                                <td>
+                                                                    <span>{{ clearance.source }}</span>
+                                                                </td>
+                                                                <td>
+                                                                    <span>{{ clearance.note }}</span>
+                                                                </td>
+                                                            </tr>
+                                                        </ng-container>
+                                                        <tr *ngIf="!customClearances.length" app-table-none-record
+                                                            [colspan]="headerCustomClearance.length">
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </tr>
+                                        </ng-container>
+
+                                        <tr app-table-none-record *ngIf="!(isLoading | async) && !shipments.length">
+                                        </tr>
+                                        <tr app-table-row-loading *ngIf="isLoading | async"></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <app-pagination [itemPerPage]="pageSize" [pageNum]="page" [total]="totalItems"
+                                (onChange)="updatePagingData($event)"></app-pagination>
+                        </div>
+                    </tab>
+                    <tab heading="List Link Fee" (selectTab)="onSelectTab('LINKFEE')">
+                        <app-job-mangement-link-fee></app-job-mangement-link-fee>
+                    </tab>
+                </tabset>
+            </div>
+        </div>
+    </div>
+</div>
+
+<confirm-popup (onSubmit)="onDeleteShipment()" [body]="deleteMessage" [labelConfirm]="'Ok'"></confirm-popup>
+
+<permission-403-popup></permission-403-popup>
+
+<loading-popup></loading-popup>
+
+<app-context-menu #opsListContextMenu (clickOutside)="selectedShipment = null">
+    <ng-container
+        *ngIf="!selectedShipment?.replicatedId && !selectedShipment?.isLocked && !selectedShipment?.linkSource">
+        <div class="menu-context__item" (click)="confirmReplicateJob()">
+            <span><i class="la la-copy"></i><span> Replicate job</span></span>
+        </div>
+    </ng-container>
+
+    <div class="menu-context__item" (click)="printPLSheet('VND')">
+        <span><i class="la la-print"></i><span> P/L Sheet (VND)</span></span>
+    </div>
+    <div class="menu-context__item" (click)="printPLSheet('USD')">
+        <span><i class="la la-print"></i><span> P/L Sheet (USD)</span></span>
+    </div>
+</app-context-menu>
+
+<ng-template inject></ng-template>
+
+<app-dropdown #dropdownMenuLinkOps>
+    <a class="dropdown-item pointer" (click)="chargeFromRep()">Charge From Replicate</a>
+    <a class="dropdown-item pointer" *ngIf="menuSpecialPermission | async | specialPermission:'LinkChargeFormRep'"
+        (click)="chargeFromJobRep()">Option Link Charge From Job List</a>
+</app-dropdown>
+
+<link-charge-from-job-rep></link-charge-from-job-rep>

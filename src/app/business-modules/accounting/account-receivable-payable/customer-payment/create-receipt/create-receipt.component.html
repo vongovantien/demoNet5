@@ -1,0 +1,38 @@
+<div class="customer-payment-wrapper m-animate-fade-in">
+
+    <app-sub-header> </app-sub-header>
+
+    <div class="m-content">
+        <div class="m-portlet">
+            <div class="m-portlet__body">
+                <div class="d-flex align-items-center justify-content-between p-1">
+                    <h3>
+                        <span>
+                            <i class="la la-edit"></i>
+                        </span>
+                        {{titleReceipt}}
+                    </h3>
+                    <div class="c-button-actions">
+                        <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="confirmCancel()">
+                        </app-default-button>
+                    </div>
+                </div>
+                <customer-payment-form-create-receipt></customer-payment-form-create-receipt>
+
+                <customer-payment-list-receipt></customer-payment-list-receipt>
+
+                <div class="c-button-actions text-center">
+                    <app-permission-button title="Save Draft" class="outline-primary" [icon]="'la la-sticky-note'"
+                        (onClick)="submitClick('draft')">
+                    </app-permission-button>
+                    <app-permission-button type="save" title="Done" class="outline-success"
+                        (onClick)="confirmDoneReceipt()">
+                    </app-permission-button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<ng-template inject></ng-template>

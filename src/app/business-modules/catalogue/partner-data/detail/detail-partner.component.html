@@ -1,0 +1,120 @@
+<form name="formAddEdit" #formAddEdit="ngForm" novalidate (ngSubmit)="formAddEdit.form.valid">
+
+    <!--begin:: subheader-->
+    <div class="m-subheader">
+        <div class="d-flex align-items-center">
+            <div class="mr-auto">
+                <app-breadcrumb></app-breadcrumb>
+            </div>
+            <div class="c-button-actions">
+                <button *ngIf="allowDelete && !partner.active && !isAddSubPartner" type="button"
+                    class="btn btn-danger   m-btn--icon  m-btn--uppercase" (click)="showConfirmDelete()">
+                    <span>
+                        <i class="la la-trash"></i>
+                        <span>
+                            Delete
+                        </span>
+                    </span>
+                </button>
+                <button
+                    *ngIf="(menuSpecialPermission | async | specialPermission: 'ActivePartner') === true && !partner.active && !isAddSubPartner"
+                    type="button" class="btn btn-warning   m-btn--icon  m-btn--uppercase"
+                    (click)="showRejectCommentPopup()">
+                    <span>
+                        <span>
+                            Reject
+                        </span>
+                    </span>
+                </button>
+                <div class="dropdown m-dropdown m-dropdown--inline" *ngIf="(menuSpecialPermission | async | specialPermission: 'ChangeInfo') === true && !isAddSubPartner">
+                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+                            <i class="la la-exchange"></i>
+                            Change Info
+                            <span class="caret"></span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item pointer" (click)="onChangeCreator()">
+                            Change Creator</a>
+                        <a class="dropdown-item pointer">
+                            Change to Customer/Agent</a>
+                    </div>
+                </div>
+                <button (click)="onRequestApproval()"
+                    *ngIf="(menuSpecialPermission | async | specialPermission: 'ActivePartner') === false && !partner.active && !isAddSubPartner"
+                    class="btn btn-brand m-btn--square m-btn--icon m-btn--uppercase">
+                    <span>
+                        <i class="la la-send"></i>
+                        <span> Request Approval </span>
+                    </span>
+                </button>
+                <button *ngIf="allowUpdate" type="" class="btn btn-brand  m-btn--icon m-btn--uppercase"
+                    (click)="onSubmit()">
+                    <span>
+                        <i class="la la la-save"></i>
+                        <span>
+                            Save
+                        </span>
+                    </span>
+                </button>
+                <button type="button" class="btn  m-btn--icon m-btn--uppercase" (click)="gotoList()">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span>
+                            cancel
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!--end:: subheader-->
+    <!--begin::m-content of Partner-data-addnew-->
+    <div class="m-content">
+        <!--begin::Form-->
+        <form-add-partner (requireSaleman)="isShowSaleMan=$event" [isUpdate]="true"></form-add-partner>
+        <div class="row" *ngIf="!!partner && !isAddSubPartner">
+            <div class="col-6">
+                <div class="m--align-left">
+                    Created: {{partner.datetimeCreated | date: 'dd/MM/yyyy HH:mm'}}
+                    &nbsp;
+                    By <span class="text-success">{{partner.userCreatedName}}</span>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="m--align-left">
+                    Modified: {{partner.datetimeModified | date: 'dd/MM/yyyy HH:mm'}}
+                    &nbsp;
+                    By <span class="text-success">{{partner.userModifiedName}}</span>
+                </div>
+            </div>
+        </div>
+        <!--end::Form-->
+
+    </div>
+    <div class="m-content">
+        <div class="m-portlet__body">
+            <tabset class="custom-class-tab">
+                <tab heading="Agreement">
+                    <commercial-contract-list [openOnPartner]="true"></commercial-contract-list>
+                </tab>
+                <tab heading="Branch/Sub">
+                    <app-commercial-branch-sub-list [openOnPartner]="true"></app-commercial-branch-sub-list>
+                </tab>
+                <tab heading="Email">
+                    <app-commercial-email-list></app-commercial-email-list>
+                </tab>
+
+            </tabset>
+        </div>
+    </div>
+    <!--end::m-content of Partner-data-addnew-->
+</form>
+<popup-form-contract-commercial-catalogue (onRequest)="onRequestContract($event)">
+</popup-form-contract-commercial-catalogue>
+<confirm-popup #popupDeletePartner (onSubmit)="onDelete()" [body]="deleteMessage" [labelConfirm]="'Ok'">
+</confirm-popup>
+<confirm-popup #internalReferenceConfirmPopup (onSubmit)="onFocusInternalReference()" [body]="deleteMessage"
+    [labelConfirm]="'Ok'" [labelCancel]="'Cancel'" [align]="'left'"></confirm-popup>
+<info-popup #duplicatePartnerPopup [body]="deleteMessage"></info-popup>
+<partner-reject-popup (onSave)="onSaveReject($event)"></partner-reject-popup>
+<app-user-create-popup *ngIf="(menuSpecialPermission | async | specialPermission: 'ChangeInfo') === true && !isAddSubPartner"></app-user-create-popup>

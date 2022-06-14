@@ -1,0 +1,402 @@
+<div id="detail-cd-note-modal" class="modal fade" role="dialog" bsModal #popup="bs-modal" aria-hidden="true"
+    (onHide)="onHide($event)" (onShow)="onShow($event)">
+    <div class="modal-dialog c-modal-fullscreen" role="document">
+        <div class="modal-content" *ngIf="CdNoteDetail">
+            <div class="modal-header">
+                <h5 class="modal-title">Detail
+                    <b><span class="text-warning">{{CdNoteDetail.cdNote.type === 'CREDIT' ? 'Credit Note':
+                            CdNoteDetail.cdNote.type === 'DEBIT' ? 'Debit Note' : 'Invoice'}}</span></b>
+                    No: <b class="text-warning">{{CdNoteDetail.cdNote.code}}</b>
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closePopup()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="modal-actions c-button-actions">
+                    <div class="dropdown m-dropdown m-dropdown--inline">
+                        <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">
+                            <i class="la la-print"></i>Preview<span class="caret"></span>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item pointer" (click)="previewCdNote('ORIGIN')">Preview with Original</a>
+                            <a class="dropdown-item pointer" (click)="previewCdNote('USD')">Preview with USD</a>
+                            <a class="dropdown-item pointer" (click)="previewCdNote('VND')">Preview with Local</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <!--begin::Form-->
+                <div class="m-form m-form--state">
+                    <div class="div-inside bg-secondary m--margin-bottom-15">
+                        <div class="row">
+                            <div class="col-xl-4">
+                                <div class="m--margin-bottom-10">
+                                    <div class="m--margin-top-5">
+                                        <span class="m--font-bolder">
+                                            {{labelDetail.subjectTo}}:
+                                        </span>
+                                        <span>{{CdNoteDetail.partnerNameEn}}</span>
+                                    </div>
+                                    <div class="m--margin-top-5">
+                                        <span class="m--font-bolder">
+                                            {{labelDetail.address}}:
+                                        </span>
+                                        <span>{{CdNoteDetail.partnerShippingAddress}}</span>
+                                    </div>
+                                    <div class="m--margin-top-5">
+                                        <span class="m--font-bolder">
+                                            {{labelDetail.tel}}:
+                                        </span>
+                                        <span>{{CdNoteDetail.partnerTel}}</span>
+                                    </div>
+                                    <div class="m--margin-top-5">
+                                        <span class="m--font-bolder">
+                                            {{labelDetail.taxCode}}:
+                                        </span>
+                                        <span>{{CdNoteDetail.partnerTaxcode}}</span>
+                                    </div>
+                                </div>
+                                <div class="m--margin-bottom-10">
+                                    <span class="m--font-bolder">
+                                        {{labelDetail.hbl}}:
+                                    </span>
+                                    <span>{{CdNoteDetail.hbLadingNo}}</span>
+                                </div>
+                                <div class="m--margin-bottom-10">
+                                    <span class="m--font-bolder">
+                                        {{labelDetail.syncStatus}}:
+                                    </span>
+                                    <span [ngSwitch]="CdNoteDetail.syncStatus">
+                                        <span *ngSwitchCase="'Synced'"
+                                            class="m--margin-left-5 m-badge m-badge--success m-badge--wide">{{CdNoteDetail.syncStatus}}</span>
+                                        <span *ngSwitchCase="'Rejected'"
+                                            class="m--margin-left-5 m-badge m-badge--danger m-badge--wide">{{CdNoteDetail.syncStatus}}</span>
+                                        <span *ngSwitchCase="'Removed Inv'"
+                                            class="m--margin-left-5 m-badge m-badge--danger m-badge--wide">{{CdNoteDetail.syncStatus}}</span>
+                                        <span *ngSwitchDefault
+                                            class="m--margin-left-5 m-badge m-badge--wide">{{CdNoteDetail.syncStatus}}</span>
+                                    </span>
+                                </div>
+                                <div class="m--margin-bottom-10">
+                                    <span class="m--font-bolder">
+                                        {{labelDetail.lastSync}}:
+                                    </span>
+                                    <span>{{CdNoteDetail.lastSyncDate | date:'dd/MM/yyyy HH:mm:ss'}}</span>
+                                </div>
+                                <div class="m--margin-bottom-10">
+                                    <span class="m--font-bolder">
+                                        {{labelDetail.reasonReject}}:
+                                    </span>
+                                    <span class="text-danger">{{CdNoteDetail.reasonReject}}</span>
+                                </div>
+                            </div>
+                            <div class="col-xl-8">
+                                <div class="row">
+                                    <div class="col-xl-6">
+                                        <div class="m--margin-bottom-10">
+                                            <span class="m--font-bolder">
+                                                {{labelDetail.jobId}}:
+                                            </span>
+                                            <span>{{CdNoteDetail.jobNo}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6">
+                                        <div class="m--margin-bottom-10">
+                                            <span class="m--font-bolder">
+                                                {{labelDetail.mbl}}:
+                                            </span>
+                                            <span>{{CdNoteDetail.mbLadingNo}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xl-6">
+                                        <div class="m--margin-bottom-10">
+                                            <span class="m--font-bolder">
+                                                {{labelDetail.pol}}:
+                                            </span>
+                                            <span>{{CdNoteDetail.pol}} {{CdNoteDetail.polCountry ? ',' : ''}}
+                                                {{CdNoteDetail.polCountry}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6">
+                                        <div class="m--margin-bottom-10">
+                                            <span class="m--font-bolder">
+                                                {{labelDetail.pod}}:
+                                            </span>
+                                            <span>{{CdNoteDetail.pod}} {{CdNoteDetail.podCountry ? ',' : ''}}
+                                                {{CdNoteDetail.podCountry}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xl-6">
+                                        <div class="m--margin-bottom-10">
+                                            <span class="m--font-bolder">
+                                                {{labelDetail.etd}}:
+                                            </span>
+                                            <span>{{CdNoteDetail.etd | date : 'dd/MM/yyyy'}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6">
+                                        <div class="m--margin-bottom-10">
+                                            <span class="m--font-bolder">
+                                                {{labelDetail.eta}}:
+                                            </span>
+                                            <span>{{CdNoteDetail.eta | date : 'dd/MM/yyyy'}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xl-6">
+                                        <div class="m--margin-bottom-10">
+                                            <span class="m--font-bolder">
+                                                {{labelDetail.vessel}}:
+                                            </span>
+                                            <span>{{CdNoteDetail.vessel}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6">
+                                        <div class="m--margin-bottom-10">
+                                            <span class="m--font-bolder">
+                                                {{labelDetail.volume}}:
+                                            </span>
+                                            <span>{{CdNoteDetail.volum}} CBM</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xl-6">
+                                        <div class="m--margin-bottom-10">
+                                            <span class="m--font-bolder">
+                                                {{labelDetail.packageQty}}:
+                                            </span>
+                                            <span>{{CdNoteDetail.hbPackages}}</span>
+                                        </div>
+                                        <div class="m--margin-bottom-10">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <span class="m--font-bolder">
+                                                        {{labelDetail.currency}}:
+                                                    </span>
+                                                    <span class="text-info">{{ CdNoteDetail.currency }}</span>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <span class="m--font-bolder">
+                                                        {{labelDetail.exchangeRate}}:
+                                                    </span>
+                                                    <span>{{CdNoteDetail.exchangeRate | number:'1.0-3'}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="m--margin-bottom-10" *ngIf="CdNoteDetail.cdNote.type !== 'CREDIT'">
+                                            <span class="m--font-bolder">
+                                                {{labelDetail.saleman}}:
+                                            </span>
+                                            <span>{{CdNoteDetail.salemanName}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6">
+                                        <div class="m--margin-bottom-10">
+                                            <span class="m--font-bolder">
+                                                {{labelDetail.soa}}:
+                                            </span>
+                                            <span>{{CdNoteDetail.soaNo}}</span>
+                                        </div>
+                                        <div class="m--margin-bottom-10">
+                                            <span class="m--font-bolder">
+                                                {{labelDetail.note}}:
+                                            </span>
+                                            <span>{{CdNoteDetail.note}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <ng-container *ngIf="!!CdNoteDetail
+                    &&CdNoteDetail.cdNote.type === 'DEBIT'
+                    &&CdNoteDetail.cdNote.syncStatus !== 'Synced'
+                    &&CdNoteDetail.cdNote.currencyId ==='VND'
+                    &&CdNoteDetail.listSurcharges.length > 0">
+                        <div class="div-inside">
+                            <div class="m--align-right foat-right">
+                                <button class="btn btn-success m-btn--icon m-btn--uppercase"
+                                    (click)="adjustDebitValue()" title=" Adjust Debit Value">
+                                    <span><i class="la la-edit"></i><span>Adjust Debit Value</span></span>
+                                </button>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <!--begin: Datatable-->
+                    <div class="table-wrapper fit-height-div">
+                        <table class="table table-striped table-brand dataTable">
+                            <thead app-table-header [headers]="headers" (onClick)="sortBy($event.sortField)"></thead>
+                            <tbody class="tbody-group">
+                                <tr class="" *ngFor="let item of CdNoteDetail.listSurcharges;let i = index;"
+                                    [class.synced-row]="item.isSynced">
+                                    <td>
+                                        <span>{{item.hwbno}}</span>
+                                    </td>
+                                    <td>
+                                        <span>{{item.chargeCode}}</span>
+                                    </td>
+                                    <td>
+                                        <span>{{item.nameEn}}</span>
+                                    </td>
+                                    <td class='m--align-right'>
+                                        <span>{{item.quantity}}</span>
+                                    </td>
+                                    <td>
+                                        <span>{{item.unit}}</span>
+                                    </td>
+                                    <td class='m--align-right'>
+                                        <span>{{item.unitPrice | number:'1.0-3'}}</span>
+                                    </td>
+                                    <td>
+                                        <span>{{item.currencyId}}</span>
+                                    </td>
+                                    <td class='m--align-right'>
+                                        <span>{{item.vatrate}}</span>
+                                    </td>
+                                    <td class='m--align-right'>
+                                        <span>{{ item.currencyId ==='USD'? (item.credit | number:'1.2-2'):(item.credit |
+                                            number:'1.0-0')}}</span>
+                                    </td>
+                                    <td class='m--align-right'>
+                                        <span>{{ item.currencyId ==='USD'? (item.debit | number:'1.2-2'):(item.debit |
+                                            number:'1.0-0')}}</span>
+                                    </td>
+                                    <ng-container *ngIf="CdNoteDetail.cdNote.type === 'DEBIT'">
+                                        <td>
+                                            <span>{{item.amountVnd+item.vatAmountVnd | number:'1.2-2'}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{item.amountUsd+item.vatAmountUsd | number:'1.2-2'}}</span>
+                                        </td>
+                                    </ng-container>
+                                    <td>
+                                        <span>{{item.notes}}</span>
+                                    </td>
+                                    <td class='m--align-right'>
+                                        <span>{{item.exchangeRate | number:'1.0-3'}}</span>
+                                    </td>
+                                    <td>
+                                        <span class="text-danger">{{item.syncedFromBy}}</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!--end: Datatable-->
+                    <div class="m--margin-top-10">
+                        <div class="m-alert m-alert--square alert alert-info m--align-right m--marginless">
+                            <div class="row">
+                                <div class="col">
+                                    <strong>Total Credit:</strong><span class="m--margin-left-5">{{totalCredit}}</span>
+                                </div>
+                                <div class="col-md-auto">
+                                    <strong>Total Dedit:</strong> <span class="m--margin-left-5">{{totalDebit}}</span>
+                                </div>
+                                <ng-container *ngIf="!!CdNoteDetail
+                                &&CdNoteDetail.cdNote.type === 'DEBIT'
+                                &&CdNoteDetail.cdNote.currencyId ==='VND'
+                                &&CdNoteDetail.listSurcharges.length > 0">
+                                <!-- &&CdNoteDetail.cdNote.syncStatus !== 'Synced' -->
+                                    <div class="col-md-auto">
+                                        <strong>Total Adjust:</strong> <span
+                                            class="m--margin-left-5">{{totalAdjustVND}}</span>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
+                        <div class="m-alert m-alert--square alert alert-brand m--align-right m--marginless">
+                            <strong>Balance Amount:</strong><span class="m--margin-left-5">{{balanceAmount}}</span>
+                        </div>
+                    </div>
+                    <!--end::m-portlet -->
+                </div>
+                <!--end::Form-->
+            </div>
+            <div class="modal-footer m--align-center">
+                <button class="btn btn-danger  m-btn--icon m-btn--uppercase"
+                    *ngIf="CdNoteDetail.syncStatus !== 'Synced'" (click)="checkDeleteCdNote(CdNoteDetail.cdNote.id)">
+                    <span>
+                        <i class="la la-trash"></i>
+                        <span>
+                            Delete note
+                        </span>
+                    </span>
+                </button>
+                <button class="btn btn-success  m-btn--icon m-btn--uppercase"
+                    *ngIf="CdNoteDetail.syncStatus !== 'Synced' && CdNoteDetail.syncStatus !== 'Removed Inv'"
+                    (click)="openPopupEdit()">
+                    <span>
+                        <i class="la la-edit"></i>
+                        <span>
+                            Edit detail
+                        </span>
+                    </span>
+                </button>
+                <button class="btn btn-info  m-btn--icon m-btn--uppercase" (click)="showConfirmed()"
+                    *ngIf="CdNoteDetail.syncStatus !== 'Synced' && CdNoteDetail.syncStatus !== 'Removed Inv'"
+                    title="Send to Accountant">
+                    <span>
+                        <i class="la la-cloud-upload"></i>
+                        <span>
+                            Send to Acc
+                        </span>
+                    </span>
+                </button>
+                <button type="button" class="btn btn-default  m-btn--icon m-btn--uppercase" data-dismiss="modal"
+                    (click)="closePopup()">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span>
+                            Return
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<cd-note-add-air-popup (onUpdate)="onUpdateCdNote()"></cd-note-add-air-popup>
+
+<!-- <div class="modal fade" role="dialog" bsModal #popupReport="bs-modal" (onHide)="onHide($event)">
+    <div class="modal-dialog modal-report" role="document">
+        <div class="modal-content" [ngClass]="!!dataReport && dataReport.isLandscape === true ? '' : 'modal-lg__width'">
+            <div class="modal-header">
+                <h5 class="modal-title">Preview</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="hidePreview()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form #formPreviewCdNote method="POST" [action]="scr" (onsubmit)="onSubmitForm($event)"
+                    (ngSubmit)="onSubmitForm($event)" target="reportFrame">
+                    <input name="crystal" [value]="dataReport" type="hidden">
+                </form>
+                <iframe name="reportFrame" src="" type="application/pdf" height="1080px" width="100%" allowfullscreen
+                    frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer m--align-center" (click)="hidePreview()">
+                <button type="button" class="btn  m-btn--icon m-btn--uppercase" data-dismiss="modal">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span>
+                            cancel
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+<payment-method-popup (onApply)="onApplyPaymentMethod($event)"></payment-method-popup>
+
+<ng-template inject></ng-template>
+
+<adjust-debit-value-popup (onSave)="onSaveAdjustDebit()"></adjust-debit-value-popup>

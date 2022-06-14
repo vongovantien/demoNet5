@@ -1,0 +1,311 @@
+<div class="modal add-new-charge-popup m-animate-fade-in" role="dialog" bsModal #popup="bs-modal" aria-hidden="true">
+    <div class="modal-dialog c-modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{state === 'create' ? 'Add New Charge' : 'Duplicate Charge'}}</h5>
+                <button type="button" (click)="closePopup()" class="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <form class="col-lg-12" [formGroup]="form">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label for="">Charge Name
+                                        <span class="text-danger">(*)</span>
+                                        <span class="text-primary m--margin-left-10"
+                                            *ngIf="!!selectedCharge">{{selectedCharge.code}}</span>
+                                    </label>
+                                    <div (clickOutside)="onClickOutsideChargeName()">
+                                        <input name="keyword"
+                                            class="form-control m-input m-input--square dropdown-toggle" type="text"
+                                            placeholder="Input keyword" (click)="isShow = !isShow"
+                                            formControlName="chargeName"
+                                            [attr.disabled]="(isFromshipment || isLocked || isSynced) ? '' : null">
+                                        <div class="dropdown e--combogrid combogrid-autocomplete" *ngIf="isShow">
+                                            <div class="dropdown-menu e--combogrid-content d-block">
+                                                <div class="tabel-wrapper table-fixed">
+                                                    <div class="table-head-fixed">
+                                                        <div class="table-header">
+                                                            <table class="table table-hover">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Charge Code</th>
+                                                                        <th>Charge Name EN </th>
+                                                                        <th>Charge Name VN</th>
+                                                                    </tr>
+                                                                </thead>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="table-body-scroll">
+                                                        <div>
+                                                            <table class="table table-hover">
+                                                                <tbody>
+                                                                    <ng-container
+                                                                        *ngFor="let charge of charges; let i = index; trackBy: trackByFn">
+                                                                        <tr class="data-row "
+                                                                            (click)="selectCharge(charge)"
+                                                                            [class.data-selected]="!!selectedCharge && charge.id === selectedCharge.id">
+                                                                            <td>{{charge.code}}</td>
+                                                                            <td>{{charge.chargeNameEn}}</td>
+                                                                            <td>{{charge.chargeNameVn}}</td>
+                                                                        </tr>
+                                                                    </ng-container>
+                                                                    <tr *ngIf="!charges.length" app-table-none-record
+                                                                        [colspan]="3"> </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label for="">Shipment <span class="text-danger">(*)</span></label>
+                                    <app-combo-grid-virtual-scroll [currentActiveItemId]="selectedShipment"
+                                        (itemSelected)="onSelectDataFormInfo($event, 'shipment')"
+                                        [dataSources]="configShipment.dataSource"
+                                        [displayFields]="configShipment.displayFields"
+                                        [selectedDisplayFields]="configShipment.selectedDisplayFields"
+                                        [disabled]="(isFromshipment || isLocked || isSynced || (selectedSurcharge && selectedSurcharge.hadIssued))">
+                                    </app-combo-grid-virtual-scroll>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label for="">Payer <span class="text-danger">(*)</span></label>
+                                    <app-combo-grid-virtual-scroll [currentActiveItemId]="selectedPayer"
+                                        (itemSelected)="onSelectDataFormInfo($event, 'payer')"
+                                        [selectedDisplayFields]="configPartner.selectedDisplayFields"
+                                        [dataSources]="configPartner.dataSource"
+                                        [displayFields]="configPartner.displayFields"
+                                        [disabled]="(isFromshipment || isLocked || isSynced || (selectedSurcharge && selectedSurcharge.payeeIssued))">
+                                    </app-combo-grid-virtual-scroll>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="">Qty <span class="text-danger">(*)</span></label>
+                                            <input type="number" class="form-control" formControlName="qty"
+                                                placeholder="Quantity" (ngModelChange)="calculateTotalAmount()"
+                                                [attr.disabled]="(isFromshipment || isLocked || isSynced || (selectedSurcharge && selectedSurcharge.hadIssued)) ? '' : null">
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="">Unit <span class="text-danger">(*)</span></label>
+                                            <select class="form-control" formControlName="unit"
+                                                [attr.disabled]="(isFromshipment || isLocked || isSynced || (selectedSurcharge && selectedSurcharge.hadIssued)) ? '' : null">
+                                                <option [ngValue]="null" disabled>Select Unit</option>
+                                                <option *ngFor="let unit of units; trackBy: trackByFn" [ngValue]="unit">
+                                                    {{unit.code}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label for="">Unit Price <span class="text-danger">(*)</span></label>
+                                    <input class="form-control" formControlName="price" placeholder="Unit Price"
+                                        (ngModelChange)="calculateTotalAmount()"
+                                        [attr.disabled]="(isFromshipment || isLocked || isSynced || (selectedSurcharge && selectedSurcharge.hadIssued)) ? '' : null">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="">Currency</label>
+                                            <input type="text" class="form-control" value="VND" disabled
+                                                formControlName="currency"
+                                                [attr.disabled]="(isFromshipment || isLocked || isSynced || (selectedSurcharge && selectedSurcharge.hadIssued)) ? '' : null">
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="">VAT </label>
+                                            <input type="number" class="form-control" formControlName="vat"
+                                                placeholder="VAT" (ngModelChange)="calculateTotalAmount()"
+                                                [attr.disabled]="(isFromshipment || isLocked || isSynced || (selectedSurcharge && selectedSurcharge.hadIssued)) ? '' : null">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label for="">Amount</label>
+                                    <input currencyMask [options]="configAmountCurrency" type="text"
+                                        class="form-control" formControlName="amount" placeholder="Amount" disabled>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 d-flex justify-content-center align-items-end">
+                                <div class="d-flex">
+                                    <label class="m-checkbox m-checkbox--bold "
+                                        [class.m-checkbox--disabled]="isDisabledOBH">
+                                        <input type="checkbox" formControlName="isOBH"
+                                            [attr.disabled]="(isFromshipment || isLocked || isSynced || (selectedSurcharge && selectedSurcharge.obhPartnerIssued)) ? '' : null"
+                                            (change)="onChangeOBHPartnerCheckBox()">
+                                        OBH for Customer
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label for="">OBH Partner
+                                        <span class="text-danger"
+                                            *ngIf="!!selectedCharge && selectedCharge.type === 'OBH'">(*)</span>
+                                    </label>
+                                    <app-combo-grid-virtual-scroll [currentActiveItemId]="selectedOBHPartner"
+                                        #OBHPartnerComponent (itemSelected)="onSelectDataFormInfo($event, 'obh')"
+                                        [selectedDisplayFields]="configPartner.selectedDisplayFields"
+                                        [dataSources]="configPartner.dataSource"
+                                        [displayFields]="configPartner.displayFields"
+                                        [disabled]="isDisabledOBHPartner || (isFromshipment || isLocked || isSynced || (selectedSurcharge && selectedSurcharge.obhPartnerIssued))"
+                                        placeholder="OBH Partner">
+                                    </app-combo-grid-virtual-scroll>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="">Type</label>
+                                            <select class="form-control" formControlName="type"
+                                                [attr.disabled]="(isFromshipment || isLocked || isSynced || (selectedSurcharge && selectedSurcharge.hadIssued)) ? '' : null">
+                                                <option *ngFor="let type of types; trackBy: trackByFn" [ngValue]="type">
+                                                    {{type.title}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="">Invoice No</label>
+                                            <input type="text" class="form-control" formControlName="invoiceNo"
+                                                placeholder="Invoice No">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="">Series No</label>
+                                            <input type="text" class="form-control" formControlName="serieNo"
+                                                placeholder="Serie No">
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="">Invoice Date</label>
+                                            <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                                <input type="text" class="form-control m-input m-input--square"
+                                                    ngxDaterangepickerMd
+                                                    [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}"
+                                                    name="daterange" readonly [autoApply]="true"
+                                                    [singleDatePicker]="true" formControlName="invoiceDate"
+                                                    [placeholder]="'Select Invoice Date'"/>
+                                                <span class="m-input-icon_clear" (click)="resetFormControl(invoiceDate)"
+                                                    *ngIf="!!invoiceDate.value && !!invoiceDate.value.startDate">
+                                                    <i class="la la-times"></i>
+                                                </span>
+                                                <span class="m-input-icon__icon m-input-icon__icon--right">
+                                                    <span>
+                                                        <i class="la la-calendar"></i>
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label for="">Custom No</label>
+                                    <select class="form-control" name="type" formControlName="customNo"
+                                        [attr.disabled]="(isFromshipment || isLocked || isSynced || (selectedSurcharge && selectedSurcharge.hadIssued)) ? '' : null">
+                                        <option [ngValue]="null" disabled>Choose CustomNo</option>
+                                        <option
+                                            *ngFor="let customDeclaration of customDeclarations; let i = index; trackBy: trackByFn"
+                                            [ngValue]="customDeclaration">{{customDeclaration.clearanceNo}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label for="">Cont No</label>
+                                    <input type="text" class="form-control" formControlName="contNo"
+                                        placeholder="Cont No"
+                                        [attr.disabled]="(isFromshipment || isLocked || isSynced) ? '' : null">
+                                </div>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <label for="">Note</label>
+                                    <input type="text" class="form-control" formControlName="note" placeholder="Note">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer m--align-center">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="m--align-center m--margin-top-20">
+                            <button class="btn btn-primary  m-btn--icon m-btn--uppercase m--margin-right-10"
+                                title="Save" (click)="saveCharge()"
+                                [disabled]="!form.valid || !selectedShipment.value || !selectedPayer.value || (!!selectedCharge && selectedCharge.type === 'OBH' && !selectedOBHPartner.value)">
+                                <span>
+                                    <i class="la la-save"></i>
+                                    <span>
+                                        {{state === 'update' ? 'Save' : 'Add'}}
+                                    </span>
+                                </span>
+                            </button>
+                            <!-- <button class="btn btn-success  m-btn--icon m-btn--uppercase m--margin-right-10"
+                                title="Update & Continue" (click)="updateToContinue()"
+                                [disabled]="!form.valid || !selectedShipment.value || !selectedPayer.value || (!!selectedCharge && selectedCharge.type === 'OBH' && !selectedOBHPartner.value)">
+                                <span>
+                                    <i class="la la-download"></i>
+                                    <span>
+                                        {{state === 'update' ? 'Update & Continue' : 'Add & Continue'}}
+                                    </span>
+                                </span>
+                            </button> -->
+                            <button class="btn btn-default  m-btn--icon m-btn--uppercase" title="Cancel"
+                                (click)="closePopup()">
+                                <span>
+                                    <i class="la la-ban"></i>
+                                    <span>
+                                        Cancel
+                                    </span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

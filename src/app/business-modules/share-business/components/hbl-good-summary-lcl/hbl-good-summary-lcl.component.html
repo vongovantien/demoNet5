@@ -1,0 +1,97 @@
+<div class="m-portlet">
+    <div class="alert-block__heading">
+        <div class="d-flex justify-content-between align-items-center">
+            <h3 class="alert-block__title">
+                <ng-content></ng-content>
+            </h3>
+            <div>
+                <ng-container *ngIf="(isLocked | async) === false">
+                    <button type="button" class="btn btn-default  m-btn--icon m-btn--uppercase" (click)="refresh()"
+                        title="Refresh">
+                        <span><i class="la la-refresh"></i>
+                            <span> Refresh </span>
+                        </span>
+                    </button>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+    <div class="m-portlet__body">
+        <div class="shipment-good-summary-wrapper">
+            <div class="form m-form m-form--state">
+                <div class="row m--margin-bottom-10">
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="">Commodities:</label>
+                                <textarea name="" id="" cols="30" rows="5" class="form-control" name="commodities"
+                                    [(ngModel)]="commodities"></textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="">Commodities Qty:</label>
+                                <textarea name="" id="" cols="30" rows="5" class="form-control" name="containerDetail"
+                                    [(ngModel)]="containerDetail"></textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="">Description of Goods:</label>
+                                <textarea name="" id="" cols="30" rows="5" class="form-control" name="description"
+                                    [(ngModel)]="description"></textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="">Container No/ Cont Type/ Seal No:</label>
+                                <textarea name="" id="" cols="30" rows="5" class="form-control" name="v"
+                                    [(ngModel)]="containerDescription"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group"
+                            [ngClass]="{'m-form__group has-danger': isSubmitted && (!packageQty || !packageQty)}">
+                            <label required>Package Qty: </label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="number" class="form-control" [(ngModel)]="packageQty"
+                                        (ngModelChange)="onChangePackge()" min="0" integer autoFormatCurrency>
+                                </div>
+                                <div class="col-md-6">
+                                    <select class="form-control" [(ngModel)]="selectedPackage"
+                                        (ngModelChange)="onChangePackge()" name="selectedPackage">
+                                        <option *ngFor="let unit of packages" [value]="unit.id">
+                                            {{unit.code}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{'m-form__group has-danger': isSubmitted && !grossWeight}">
+                            <label required>Total Gross Weight (GW): </label>
+                            <input type="number" class="form-control" [(ngModel)]="grossWeight" min="0" numeric
+                                [decimals]="digitDecimal" autoFormatCurrency>
+                        </div>
+                        <div class="form-group" [ngClass]="{'m-form__group has-danger': isSubmitted && !totalCBM }">
+                            <label required>Total CBM: </label>
+                            <input type="number" class="form-control" [(ngModel)]="totalCBM" min="0" numeric
+                                [decimals]="digitDecimal" autoFormatCurrency>
+                        </div>
+                        <ng-container *ngIf="(isLocked | async) === false">
+                            <button type="button" class="btn btn-success  m-btn--icon m-btn--uppercase"
+                                (click)="openContainerListPopup()">
+                                <span>
+                                    <i class="la la-list"></i>
+                                    <span>
+                                        List of Goods
+                                    </span>
+                                </span>
+                            </button>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<goods-list-popup (onChange)="onChangeContainer($event)"></goods-list-popup>
+
+<confirm-popup [body]="'All manually entered data will be refresh, are you sure you want to perform this action ?'"
+    [labelConfirm]="'Yes'" [labelConfirm]="'No'" (onSubmit)="onRefresh()" [title]="'Alert'"
+    [iconConfirm]="'la la-refresh'"></confirm-popup>

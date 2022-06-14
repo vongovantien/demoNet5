@@ -1,0 +1,57 @@
+<div class="modal fade" role="dialog" bsModal #popup="bs-modal">
+    <div class="modal-dialog modal-lg" role="document" *ngIf="exchangeRatesOfDay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Exchange Rate Date:
+                    {{ exchangeRatesOfDay.datetimeCreated | date: 'MMMM dd. yyyy' }}</h5>
+                <button type="button" class="close" aria-label="Close" (click)="hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row m--margin-bottom-15">
+                    <div class="col-lg-4">
+                        <span class="m--font-bolder">Update at:</span>&nbsp;
+                        <span>{{ exchangeRatesOfDay.datetimeModified | date: 'MMMM dd. yyyy' }}</span>
+                    </div>
+                    <div class="col-lg-4">
+                        <span class="m--font-bolder">Update by:</span>&nbsp;
+                        <span class="sorting text-success">{{ exchangeRatesOfDay.userModifield }}</span>
+                    </div>
+                    <div class="col-lg-4">
+                        <span class="m--font-bolder">Local currency:</span>&nbsp;
+                        <span>{{ exchangeRatesOfDay.localCurrency }}</span>
+                    </div>
+                </div>
+                <div class="table-wrapper" id="">
+                    <table class="table table-striped table-secondary">
+                        <thead>
+                            <tr>
+                                <th style="width: 50%">
+                                    <span>Currency</span>
+                                </th>
+                                <th style="width: 50%">
+                                    <span>Local (VND)</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody *ngIf="exchangeRatesOfDay.exchangeRates">
+                            <tr *ngFor="let item of exchangeRatesOfDay.exchangeRates; let i = index">
+                                <td style="width: 50%">
+                                    <span>{{ item.currencyFromID }}</span>
+                                </td>
+                                <td style="width: 50%">
+                                    <span>{{ item.rate | currency : "" : '' }}</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer m--align-center c-button-actions">
+                <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="hide()">
+                </app-default-button>
+            </div>
+        </div>
+    </div>
+</div>

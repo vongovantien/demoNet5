@@ -1,0 +1,31 @@
+<app-sub-header></app-sub-header>
+<div class="m-content">
+    <div class="m-portlet">
+        <div class="m-form">
+            <div class="m-portlet__body">
+                <settle-payment-form-create (onChangeCurrency)="onChangeCurrency($event)"></settle-payment-form-create>
+            </div>
+        </div>
+    </div>
+    <div class="m-portlet">
+        <div class="m-form">
+            <div class="m-portlet__body">
+                <settle-payment-list-charge (onChange)="getPayeeInfo($event)"></settle-payment-list-charge>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="m--align-center m--margin-top-20">
+                            <div class="c-button-actions">
+                                <app-permission-button type="save" title="Save" (onClick)="saveSettlement()">
+                                </app-permission-button>
+                                <app-permission-button type="save-and-send" title="Save & Send Request"
+                                    (onClick)="saveAndSendRequest()"></app-permission-button>
+                                <app-default-button [buttonSetting]="cancelButtonSetting" (onClick)="back()">
+                                </app-default-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

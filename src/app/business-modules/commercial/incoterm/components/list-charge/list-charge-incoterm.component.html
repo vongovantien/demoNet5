@@ -1,0 +1,109 @@
+<div class="charge-incoterm-wrapper m-animate-fade-in">
+    <div class="table-wrapper table-editable m--margin-top-20">
+        <table class="table table-bordered dataTable-edit">
+            <thead app-table-header [headers]="headers" (onClick)="sortBy($event.sortField ? $event.sortField : '')">
+                <th class="m--w-90 first table-actions-col fixed-side"> </th>
+            </thead>
+            <tbody>
+                <ng-container *ngIf="!!incotermCharges.length">
+                    <tr *ngFor="let charge of incotermCharges; let i = index; trackBy: trackByFn">
+                        <td class="table-actions-col fixed-side">
+                            <div class="table-actions">
+                                <button type="button" (click)="copyCharge(i)"
+                                    class="btn btn-success btn-sm  m-btn--icon m-btn--icon-only" title="Remove">
+                                    <i class="la la-copy"></i>
+                                </button>
+                                <button type="button" (click)="deleteCharge(i, charge)"
+                                    class="btn btn-danger btn-sm  m-btn--icon m-btn--icon-only" title="Remove">
+                                    <i class="la la-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSubmitted && (!charge.chargeId || charge.isDuplicate)}">
+                                <app-combo-grid-virtual-scroll
+                                    [currentActiveItemId]="{field:'id', value:charge.chargeId}"
+                                    (itemSelected)="onSelectDataTableInfo($event, charge, 'charge')"
+                                    [selectedDisplayFields]="['chargeNameEn']" [dataSources]="listCharges"
+                                    [displayFields]="configChargeDisplayFields" [height]="150"
+                                    placeholder="Please Select" (remove)="charge.chargeId = null">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </td>
+
+                        <td>
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSubmitted && !charge.quantityType }">
+                                <select class="form-control border" [(ngModel)]="charge.quantityType">
+                                    <option *ngFor="let hint of quantityHints" [ngValue]="hint.value">
+                                        {{hint.displayName}}</option>
+                                </select>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSubmitted && charge.unit === null}">
+                                <div class="list-master-unit">
+                                    <app-combo-grid-virtual-scroll
+                                        [currentActiveItemId]="{field: 'id', value: charge.unit}"
+                                        (itemSelected)="onSelectDataTableInfo($event, charge, 'unit')"
+                                        (itemSelected)="charge.unit = $event.id" [selectedDisplayFields]="['code']"
+                                        [dataSources]="listUnits | async"
+                                        [displayFields]="[{'field':'code','label':'Code'},{'field':'unitNameEn','label':'Name En'}]"
+                                        size="15" (remove)="charge.unit = null" placeholder="Unit">
+                                    </app-combo-grid-virtual-scroll>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSubmitted && !charge.chargeTo}">
+                                <select class="form-control border" [(ngModel)]="charge.chargeTo">
+                                    <option *ngFor="let item of chargeTo" [ngValue]="item.value">
+                                        {{item.displayName}}</option>
+                                </select>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSubmitted && !charge.currency  }">
+                                <select [(ngModel)]="charge.currency" class="form-control">
+                                    <option *ngFor="let currency of (listCurrency | async)" [ngValue]="currency.id">
+                                        {{currency.id}}</option>
+                                </select>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': isSubmitted && (!charge.feeType ) }">
+                                <select class="form-control border" [(ngModel)]="charge.feeType">
+                                    <option *ngFor="let item of feeTypes" [ngValue]="item.value">
+                                        {{item.displayName}}</option>
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-container>
+                <tr app-table-none-record [colspan]="headers.length  + 1"
+                    *ngIf="!isLoading && !incotermCharges.length && !!serviceTypeId">
+                </tr>
+                <tr app-table-none-record [colspan]="headers.length  + 1"
+                    *ngIf="!isLoading && !incotermCharges.length && !serviceTypeId" [title]="'Please select service'">
+                </tr>
+                <tr app-table-row-loading *ngIf="isLoading">
+                </tr>
+                <ng-container *ngIf="!!serviceTypeId">
+                    <tr>
+                        <td colspan=1 class="fixed-side">
+                            <a class="btn m-btn--icon m-btn--icon-only m--font-primary" title="Add"
+                                (click)="addCharge()">
+                                <i class="fa fa-plus-circle fa-2x"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </div>
+</div>

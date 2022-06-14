@@ -1,0 +1,229 @@
+<div class="modal existing-charge-popup m-animate-fade-in" role="dialog" bsModal #popup="bs-modal" aria-hidden="true">
+    <div class="modal-dialog c-modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Copy Charges</h5>
+                <button type="button" (click)="closePopup()" class="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="">Settlement ID: <span class="text-danger">(*)</span> </label>
+                            <div class="form-inline row">
+                                <div class="col-4">
+                                    <input type="text" class="form-control w-100" [(ngModel)]="settlementNo"
+                                        name="settlementNo" placeholder="Settlement Id">
+                                </div>
+                                <div class="col-8">
+                                    <button title="Search Shipment" (click)="searchCharge()"
+                                        class="btn btn-primary  m-btn--icon m-btn--uppercase m--margin-left-10">
+                                        <span class="mx-auto">
+                                            <i class="la la-search"></i>
+                                            <span class="">
+                                                Apply
+                                            </span>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <input type="text" class="form-control border-radius-20" placeholder="Search charge"
+                                [(ngModel)]="keyword" name="keyword">
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <perfect-scrollbar style="max-height: 300px">
+                            <div class="table-wrapper h-50" [class.scrollable]="!!charges.length">
+                                <table class="table table-striped table-brand dataTable">
+                                    <thead app-table-header [headers]="headersCharge" (onClick)="sortSurcharge($event)">
+                                        <th class="first">
+                                            <label class="m-checkbox">
+                                                <input type="checkbox" [(ngModel)]="isCheckAll"
+                                                    (change)="checkUncheckAllCharge()">
+                                                <span></span>
+                                            </label>
+                                        </th>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container *ngIf="!isLoading && !!charges.length">
+                                            <tr class="text-center"
+                                                *ngFor="let charge of charges | filter: keyword : ['jobId', 'hbl', 'mbl', 'chargeName', 'payer', 'obhPartnerName']; let i = index; trackBy: trackByFn">
+                                                <td class="table-actions-col">
+                                                    <div class="m-checkbox-list d-flex justify-content-center">
+                                                        <label class="m-checkbox">
+                                                            <input type="checkbox" (change)="onChangeCheckBoxCharge()"
+                                                                value="{{charge}}" [(ngModel)]="charge.isSelected">
+                                                            <span></span>
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span>{{charge.chargeName}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{charge.jobId}} - {{charge.hbl}} -
+                                                        {{charge.mbl}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{charge.quantity}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{charge.unitName}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{charge.unitPrice | number: '.0-3'}}</span>
+                                                </td>
+                                                <td>{{charge.currencyId}}</td>
+                                                <td>
+                                                    <span>{{charge.vatrate | number: '.0-3'}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{charge.total | number: '.0-3'}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{charge.payer}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{charge.obhPartnerName}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{charge.clearanceNo}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{charge.chargeCode}}</span>
+                                                </td>
+                                            </tr>
+                                        </ng-container>
+                                        <tr app-table-none-record *ngIf="!isLoading && !charges.length"
+                                            [colspan]="headersCharge.length + 1"></tr>
+                                        <tr app-table-row-loading *ngIf="isLoading"></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </perfect-scrollbar>
+                    </div>
+                </div>
+                <div class="row  m--margin-top-20">
+                    <div class="col-3">
+                        <div>
+                            <i class="la la-search align-middle text-success font-30"></i>
+                            <span class="text-underline font-weight-bold">Search Option</span>
+                        </div>
+
+                        <div class="form-group">
+                            <select class="form-control" [(ngModel)]="selectedOption" name="selectedOption">
+                                <option [ngValue]="option" *ngFor="let option of searchOptions">{{option.title}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="d-flex justify-content-around flex-column" style="height: 90%">
+                            <textarea name="keywordSearchShipment" id="" cols="30" rows="12" class="form-control"
+                                [(ngModel)]="keywordSearchShipment"></textarea>
+                            <button class="btn btn-info  m-btn--icon m-btn--uppercase" title="Add to copy list"
+                                (click)="searchShipment()">
+                                <span class="mx-auto">
+                                    <i class="la la-mail-forward"></i>
+                                    <span class="">
+                                        Add to copy list
+                                    </span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-9">
+                        <div>
+                            <i class="la la-list-alt align-middle text-primary font-30"></i>
+                            <span class="text-underline font-weight-bold">Copy Shipment List</span>
+                        </div>
+                        <perfect-scrollbar style="max-height: 300px; background:#f4f5f8;" class="m--margin-top-5">
+                            <div class="table-wrapper h-75">
+                                <table class="table table-striped table-brand dataTable">
+                                    <thead app-table-header [headers]="headerShipment" class="text-center"
+                                        (onClick)="sortShipment($event)">
+                                        <th class="first">
+                                            <label class="m-checkbox">
+                                                <input type="checkbox" [(ngModel)]="isCheckAllShipment"
+                                                    (change)="checkUncheckAllShipment()">
+                                                <span></span>
+                                            </label>
+                                        </th>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container
+                                            *ngFor="let shipment of shipments; let i = index; trackBy: trackByFn">
+                                            <tr class="text-center" *ngIf="!!shipments.length">
+                                                <td class="table-actions-col">
+                                                    <div class="m-checkbox-list d-flex justify-content-center">
+                                                        <label class="m-checkbox">
+                                                            <input type="checkbox" (change)="onChangeCheckBoxShipment()"
+                                                                value="{{shipment}}" [(ngModel)]="shipment.isSelected">
+                                                            <span></span>
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span> {{i + 1}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{shipment.jobId}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{shipment.customer}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{shipment.hbl}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{shipment.mbl}}</span>
+                                                </td>
+                                                <td>{{shipment.customNo}}</td>
+                                                <td class="text-primary">{{shipment.service}}</td>
+                                            </tr>
+                                        </ng-container>
+                                        <tr app-table-none-record *ngIf="!shipments.length"
+                                            [colspan]="headerShipment.length + 1"></tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </perfect-scrollbar>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer m--align-center m--margin-top-10">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="m--align-center m--margin-top-20">
+                            <button class="btn btn-primary  m-btn--icon m-btn--uppercase m--margin-right-10"
+                                title="Save" (click)="submitCopyCharge()">
+                                <span>
+                                    <i class="la la-save"></i>
+                                    <span>
+                                        Copy Charge
+                                    </span>
+                                </span>
+                            </button>
+                            <button class="btn btn-default  m-btn--icon m-btn--uppercase" title="Cancel"
+                                (click)="closePopup()">
+                                <span>
+                                    <i class="la la-ban"></i>
+                                    <span>
+                                        Cancel
+                                    </span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,91 @@
+<app-sub-header></app-sub-header>
+<div class="m-content">
+    <share-report-form-search [isGeneralReport]="true" (onGeneralSearch)="onSearchGeneralReport($event)">
+    </share-report-form-search>
+    <div class="m-portlet">
+        <div class="m-portlet__body">
+            <div class="form-actions">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="btn-group" [autoClose]="!isClickSubMenu" dropdown container="body">
+                            <button id="button-nested" dropdownToggle type="button"
+                                class="btn btn-danger dropdown-toggle" aria-controls="dropdown-nested">
+                                <i class="la la-upload"></i>Export<span class="caret"></span>
+                            </button>
+                            <ul id="dropdown-nested" *dropdownMenu class="dropdown-menu" role="menu"
+                                aria-labelledby="button-nested">
+                                <li role="menuitem"><a (click)="exportStandard()" class="dropdown-item pointer">Standard
+                                        Report</a></li>
+                                <li role="menuitem"><a (click)="exportShipmentOverview()"
+                                        class="dropdown-item pointer">Shipment Overview</a></li>
+                                <li role="menuitem"><a (click)="exportShipmentOverviewWithType('FCL')"
+                                        class="dropdown-item pointer">Shipment Overview FCL</a></li>
+                                <li role="menuitem"><a (click)="exportShipmentOverviewWithType('LCL')"
+                                        class="dropdown-item pointer">Shipment Overview LCL</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="m-portlet__body">
+            <div class="table-wrapper table-inside-block" id="sea-fcl-export-table">
+                <table class="table table-striped table-brand dataTable">
+                    <thead app-table-header [headers]="headers" (onClick)="sortBy($event.sortField)"></thead>
+                    <tbody>
+                        <ng-container *ngIf="!!dataList.length">
+                            <ng-container *ngFor="let data of dataList; let i = index; trackBy: trackByFn">
+                                <tr class="collapse-toggle-row">
+                                    <td class="text-center">{{data.no}}</td>
+                                    <td>{{data.jobId}}</td>
+                                    <td>{{data.mawb}}</td>
+                                    <td>{{data.hawb}}</td>
+                                    <td>{{data.customerName}}</td>
+                                    <td>{{data.carrierName}}</td>
+                                    <td>{{data.agentName}}</td>
+                                    <td>{{data.serviceDate | date: 'dd/MM/yyyy'}}</td>
+                                    <td>{{data.route}}</td>
+                                    <td class="text-right">{{data.qty | number: '.0-3'}}</td>
+                                    <td class="text-right">{{data.chargeWeight | number: '.0-3'}}</td>
+                                    <td class="text-right">{{data.revenue | number: '.0-3'}}</td>
+                                    <td class="text-right">{{data.cost | number: '.0-3'}}</td>
+                                    <td class="text-right">{{data.profit | number: '.0-3'}}</td>
+                                    <td class="text-right">{{data.obh | number: '.0-3'}}</td>
+                                    <td class="text-info">{{data.personInCharge}}</td>
+                                    <td class="text-success">{{data.salesman}}</td>
+                                    <td>{{data.serviceName}}</td>
+                                </tr>
+                            </ng-container>
+                        </ng-container>
+                        <tr app-table-none-record *ngIf="!(isLoading | async) && !dataList.length"></tr>
+                        <tr app-table-row-loading *ngIf="isLoading | async"></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination-nav ">
+                <div class="row">
+                    <div *ngIf="!!dataList.length" class="col-sm-6">
+                        <div class="tatable__pager-size">
+                            <div class="select-box">
+                                <select class="form-control" id="" aria-label="" [(ngModel)]="pageSize"
+                                    (change)="selectPageSize(pageSize, dataSearch)" name="pagesize">
+                                    <ng-container *ngFor="let item of numberToShow; let i = index; trackBy: trackByFn">
+                                        <option [ngValue]="item">{{item}} line / screen</option>
+                                    </ng-container>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6" *ngIf="totalItems > pageSize">
+                        <div class="float-right">
+                            <pagination [boundaryLinks]="true" [totalItems]="totalItems" [itemsPerPage]="pageSize"
+                                (pageChanged)="pageChanged($event)" [(ngModel)]="page" [maxSize]=10>
+                            </pagination>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<loading-popup></loading-popup>

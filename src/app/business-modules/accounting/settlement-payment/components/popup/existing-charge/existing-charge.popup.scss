@@ -1,0 +1,69 @@
+:host /deep/ {
+    .existing-charge-popup {
+        .item-shipment-wrapper {
+            max-height: 500px;
+            overflow-y: scroll;
+        }
+        .table-scrollable {
+            .table {
+                tr {
+                    th,
+                    td {
+                        &.table-actions-col {
+                            min-width: 50px;
+                        }
+                    }
+                }
+            }
+        }
+        .list-master-charge {
+            .e--combogrid-content {
+                min-width: 270px;
+            }
+        }
+        .dropdown-partner {
+            .dropdown-partner__content {
+                width: 450px;
+                
+                .dropdown-partner__header {
+                    padding: 10px 0px;
+                    border-bottom: 1px solid #dfdfdf;
+                }
+                // * Combo grid
+                .e--combogrid-content {
+                    .table-header {
+                        th:first-child {
+                            min-width: 121px;
+                        }
+                    }
+                }
+            }
+        }
+        .e--combogrid {
+            .e--combogrid_icon {
+                right: 7px;
+            }
+            table {
+                white-space: pre-wrap;
+            }
+            .form-control {
+                background: inherit;
+                padding: 4px 8px;
+            }
+            tr {
+                th:not(:first-child) {
+                    min-width: 130px;
+                }
+                td:not(:first-child) {
+                    min-width: 130px;
+                }
+                th:first-child {
+                    min-width: 130px;
+                }
+                td:first-child {
+                    min-width: 130px;
+                }
+            }
+        }
+    }
+}

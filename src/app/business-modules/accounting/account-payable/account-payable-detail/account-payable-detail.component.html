@@ -1,0 +1,182 @@
+<div class="acct-payable-detail-wrapper  m-animate-fade-in">
+    <app-sub-header> </app-sub-header>
+    <div class="m-content">
+        <div class="m-portlet__body">
+            <tabset class="custom-class-tab">
+                <tab heading="AP Detail" [active]="true">
+                    <form-search-payable-payment (onSearch)="onSearchPayment($event)">                       
+                    </form-search-payable-payment>
+                    <div class="m-portlet">
+                        <div class="m-portlet__body">
+                            <div class="m-form m--margin-bottom-10">
+                                <div class="row">
+                                    <div class="dropdown m-dropdown m-dropdown--inline w-100">
+                                    <div class="col-lg-12 c-button-actions">
+                                        <button type="button" class="btn btn-danger dropdown-toggle"
+                                        [dpToggle]="dropdownMenu">
+                                        <i class="la la-download"></i>Export<span class="caret"></span>
+                                        </button>
+                                        <app-dropdown #dropdownMenu>
+                                            <a class="dropdown-item pointer" (click)="exportStandart()">
+                                                <span>AP Standard Report</span>
+                                            </a>
+                                            <a class="dropdown-item pointer" (click)="exportAccountingTemplate()">
+                                                <span>AP Acct Template</span>
+                                            </a>
+                                        </app-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 m--margin-top-20">
+                                    <div class="table-wrapper" id="payment-table">
+                                        <table class="table table-hover table-brand dataTable">
+                                            <thead app-table-header [headers]="headers" (onClick)="sortBy($event.sortField)">
+                                                <th class="first table-actions-col">
+                                                    Action
+                                                </th>
+                                            </thead>
+                                            <tbody>
+                                                <ng-container *ngIf="!!payables">
+                                                    <ng-container *ngFor="let item of payables; let i = index; trackBy: trackByFn">
+                                                        <tr class="collapse-toggle-row">
+                                                            <td class="table-actions-col">
+                                                                <div class="table-actions">
+                                                                    <button type="button"
+                                                                        class="btn btn-sm  m-btn--icon m-btn--icon-only collapsed"
+                                                                        data-toggle="collapse"
+                                                                        [attr.data-target]="'#id-00' + item.refId"
+                                                                        title="Collapse" (click)="getPayments(item)">
+                                                                        <i class="la la-angle-up"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </td>
+                                                            <td class="text-primary">{{ item.referenceNo }}</td>
+                                                            <td class="text-right">{{ item.voucherDate | date: 'dd/MM/yyyy' }}</td>
+                                                            <td class="text-info">{{ item.accountNo }} - {{item.partnerName }}</td>
+                                                            <td>{{ item.transactionType }} </td>
+                                                            <td>{{ item.invoiceNo }} </td>
+                                                            <td>{{ item.invoiceDate | date: 'dd/MM/yyyy' }}</td>
+                                                            <td>{{ item.billingNo }} </td>
+                                                            <td class='m--align-right'>
+                                                                <span *ngIf="item.totalAmount >= 0 ">{{ item.currency === 'USD' ? (item.totalAmount | number:'1.2-2') :
+                                                                    (item.totalAmount | number:'1.0-0')}}</span>
+                                                                <span *ngIf="item.totalAmount < 0">
+                                                                    ({{ item.currency === 'USD' ? (item.totalAmount | abs | number:'1.2-2') :
+                                                                    (item.totalAmount | abs | number:'1.0-0')}})
+                                                                </span>
+                                                            </td>
+                                                            <td class='m--align-right'>
+                                                                <span *ngIf="item.paymentAmount >= 0 ">{{ item.currency === 'USD' ? (item.paymentAmount | number:'1.2-2') :
+                                                                    (item.paymentAmount | number:'1.0-0')}}</span>
+                                                                <span *ngIf="item.paymentAmount < 0 ">
+                                                                    ({{ item.currency === 'USD' ? (item.paymentAmount | abs | number:'1.2-2') :
+                                                                    (item.paymentAmount | abs | number:'1.0-0')}})</span>
+                                                            </td>
+                                                            <td class='m--align-right'>
+                                                                <span *ngIf="item.remainAmount >= 0 ">{{ item.currency === 'USD' ? (item.remainAmount | number:'1.2-2') :
+                                                                    (item.remainAmount | number:'1.0-0')}}</span>
+                                                                <span *ngIf="item.remainAmount < 0 ">
+                                                                    ({{ item.currency === 'USD' ? (item.remainAmount | abs | number:'1.2-2') :
+                                                                    (item.remainAmount | abs | number:'1.0-0')}})</span>
+                                                            </td>
+                                                            <td class="text-right">
+                                                                <span *ngIf="item.totalAmountVnd >= 0 ">{{ item.totalAmountVnd | number: '.0-3'}}</span>
+                                                                <span *ngIf="item.totalAmountVnd < 0 ">
+                                                                    ({{ item.totalAmountVnd | abs | number: '.0-3'}})</span>
+                                                            </td>
+                                                            <td class="text-right">
+                                                                <span *ngIf="item.paymentAmountVnd >= 0 ">{{ item.paymentAmountVnd | number: '.0-3'}}</span>
+                                                                <span *ngIf="item.paymentAmountVnd < 0 ">
+                                                                    ({{ item.paymentAmountVnd | abs | number: '.0-3'}})</span>
+                                                            </td>
+                                                            <td class="text-right">
+                                                                <span *ngIf="item.remainAmountVnd >= 0 ">{{ item.remainAmountVnd | number: '.0-3'}}</span>
+                                                                <span *ngIf="item.remainAmountVnd < 0 ">
+                                                                    ({{ item.remainAmountVnd | abs | number: '.0-3'}})</span>
+                                                            </td>
+                                                            <td class="text-right">{{ item.currency}}</td>
+                                                            <td class="text-right">{{ item.paymentTerm | number: '.0-0'}}</td>
+                                                            <td>{{ item.paymentDueDate | date: 'dd/MM/yyyy'}}</td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr class="collapse-panel-row" app-table-collapse-row
+                                                            [id]="'id-00' + item.refId" [parentId]="'#payment-table'">
+                                                            <table class="table table-secondary dataTable">
+                                                                <thead app-table-header [headers]="paymentHeaders"
+                                                                    (onClick)="sortPayment($event.sortField, $event.order)">
+                                                                </thead>
+                                                                <tbody>
+                                                                    <ng-container *ngIf="!!payments.length">
+                                                                        <tr
+                                                                            *ngFor="let payment of payments; let j = index; trackBy: trackByFn">
+                                                                            <td>{{j+1}}</td>
+                                                                            <td>{{ payment.refNo }}</td>
+                                                                            <td>{{ payment.paymentDate | date: 'dd/MM/yyyy'}}</td>
+                                                                            <td>{{ payment.invoiceNo }}</td>
+                                                                            <td>{{ payment.invoiceDate | date: 'dd/MM/yyyy'}}</td>
+                                                                            <td>{{ payment.docNo }}</td>
+                                                                            <td class='m--align-right'>
+                                                                                <span *ngIf="payment.paymentAmount >= 0">{{ payment.currency === 'USD' ? (payment.paymentAmount | number:'1.2-2') : (payment.paymentAmount |
+                                                                                    number:'1.0-0')}}</span>
+                                                                                <span *ngIf="payment.paymentAmount < 0">
+                                                                                    ({{ payment.currency === 'USD' ? (payment.paymentAmount | abs | number:'1.2-2') : (payment.paymentAmount | abs | number:'1.0-0')}})</span>
+                                                                            </td>
+                                                                            <td class='m--align-right'>
+                                                                                <span *ngIf="payment.remainAmount >= 0">{{ payment.currency === 'USD' ? (payment.remainAmount | number:'1.2-2') : (payment.remainAmount |
+                                                                                    number:'1.0-0')}}</span>
+                                                                                <span *ngIf="payment.remainAmount < 0">
+                                                                                    ({{ payment.currency === 'USD' ? (payment.remainAmount | abs | number:'1.2-2') : (payment.remainAmount | abs |
+                                                                                        number:'1.0-0')}})</span>
+                                                                            </td>
+
+                                                                            <td class="text-right">
+                                                                                <span *ngIf="payment.paymentAmountVnd >= 0">{{ payment.paymentAmountVnd| number:'.0-0' }}</span>
+                                                                                <span *ngIf="payment.paymentAmountVnd < 0">
+                                                                                    ({{ payment.paymentAmountVnd | abs | number:'.0-0' }})</span>
+                                                                            </td>
+                                                                            <td class="text-right">
+                                                                                <span *ngIf="payment.remainAmountVnd >= 0">{{ payment.remainAmountVnd| number:'.0-0' }}</span>
+                                                                                <span *ngIf="payment.remainAmountVnd < 0">
+                                                                                    ({{ payment.remainAmountVnd | abs | number:'.0-0' }})</span>
+                                                                            </td>
+                                                                            <td class="">{{item.currency}}</td>
+                                                                        </tr>
+                                                                    </ng-container>
+                                                                    <tr app-table-none-record *ngIf="!payments.length">
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </tr>
+                                                    </ng-container>
+                                                </ng-container>
+                                                <tr app-table-none-record *ngIf="!(isLoading | async) && !payables.length">
+                                                </tr>
+                                                <tr app-table-row-loading *ngIf="isLoading | async"></tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <app-pagination [total]="totalItems" [pageNum]="page" [itemPerPage]="pageSize"
+                                        (onChange)="updatePagingData($event)"></app-pagination>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </tab>
+                
+                <tab (selectTab)="changeTabAccount('SUMMARY')">
+                    <ng-template tabHeading>
+                        <a routerLink=""
+                            style="color:#6f727d">
+                            AP Summary
+                        </a>
+                    </ng-template>
+                </tab>
+
+            </tabset>
+        </div>
+    </div>
+</div>
+
+<loading-popup></loading-popup>

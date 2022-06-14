@@ -1,0 +1,53 @@
+<div class="modal fade" id="confirm-delete-modal" role="dialog" bsModal #popup="bs-modal">
+    <div class="modal-dialog modal-xs modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Unlock History</h5>
+                <button type="button" class="close" aria-label="Close" (click)=hide()>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ng-container *ngIf="!!body.length; else norecord">
+                    <div class="confirm-text-block">
+                        <ng-container *ngFor="let log of body; trackBy: trackByFn">
+                            <span class="text-danger">{{log}}</span>
+                            <br />
+                        </ng-container>
+                    </div>
+                </ng-container>
+                <ng-container>
+                    <ng-template #norecord>
+                        <div class="no-data">
+                            <i class="flaticon-coins"></i>
+                            <span class="no-data-text">No history found</span>
+                        </div>
+                    </ng-template>
+                </ng-container>
+            </div>
+            <div class="modal-footer m--align-center c-button-actions">
+                <div>
+                    Do you want to open it again?
+                </div>
+                <div>
+                    <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="onSubmit()">
+                        <span>
+                            <i class=" fa fa-unlock"></i>
+                            <span>
+                                Yes
+                            </span>
+                        </span>
+                    </button>
+                    <button type="button" class="btn btn-cancel  m-btn--icon m-btn--uppercase" (click)="hide()">
+                        <span>
+                            <i class="fa fa-ban"></i>
+                            <span>
+                                No
+                            </span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

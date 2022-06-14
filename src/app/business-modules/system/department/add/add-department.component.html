@@ -1,0 +1,170 @@
+<app-sub-header></app-sub-header>
+<div class="m-content form-department">
+    <div class="m-portlet">
+        <div class="m-form m-form--state">
+            <div class="m-portlet__body">
+                <form [formGroup]="formAdd">
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': (departmentCode.dirty && !departmentCode.valid) || (isSubmited && !departmentCode.valid)}">
+                                <label class="form-control-label">
+                                    Department Code:
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control m-input m-input--square"
+                                    placeholder="Department code" formControlName="departmentCode">
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmited && (departmentCode.errors | equalError: 'required') || (departmentCode.errors | equalError: 'required') && departmentCode.dirty">
+                                    Department code is required!
+                                </div>
+                                <div class="form-control-feedback"
+                                    *ngIf="departmentCode.errors | equalError: 'maxlength'">
+                                    Max length must be less than or equal 50
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': (nameEn.dirty && !nameEn.valid) || (isSubmited && !nameEn.valid)}">
+                                <label class="form-control-label">
+                                    Name EN:
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control m-input m-input--square" placeholder="Name EN"
+                                    formControlName="nameEn">
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmited && (nameEn.errors | equalError: 'required') || (nameEn.errors | equalError: 'required') && nameEn.dirty">
+                                    Name EN is required!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': (nameLocal.dirty && !nameLocal.valid) || (isSubmited && !nameLocal.valid)}">
+                                <label class="form-control-label">
+                                    Name Local:
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control m-input m-input--square" placeholder="Name Local"
+                                    formControlName="nameLocal">
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmited && (nameLocal.errors | equalError: 'required') || (nameLocal.errors | equalError: 'required') && nameLocal.dirty">
+                                    Name Local is required!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': (nameAbbr.dirty && !nameAbbr.valid) || (isSubmited && !nameAbbr.valid)}">
+                                <label class="form-control-label">
+                                    Name Abbr:
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control m-input m-input--square" placeholder="Name Abbr"
+                                    formControlName="nameAbbr">
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmited && (nameAbbr.errors | equalError: 'required') || (nameAbbr.errors | equalError: 'required') && nameAbbr.dirty">
+                                    Name Abbr is required!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': (office.dirty && !office.valid) || (isSubmited && !office.valid)}">
+                                <label class="form-control-label">
+                                    Office:
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <ng-select class="custom" formControlName="office" [items]="officeList" bindValue="id"
+                                    bindLabel="text">
+                                </ng-select>
+                                <div class="form-control-feedback"
+                                    *ngIf="isSubmited && (office.errors | equalError: 'required') || (office.errors | equalError: 'required') && office.dirty">
+                                    Office is required!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Department Type:
+                                </label>
+                                <ng-select class="custom" formControlName="departmentType" [items]="departmentTypeList"
+                                    bindValue="id" bindLabel="text">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="form-group"
+                                [ngClass]="{'m-form__group has-danger': (email.dirty && !email.valid) || (isSubmited && !email.valid) }">
+                                <label class="form-control-label">
+                                    Email:
+                                </label>
+                                <input type="text" class="form-control m-input m-input--square" placeholder="Email"
+                                    formControlName="email">
+                                <div class="form-control-feedback" *ngIf="email.errors | equalError: 'maxlength'">
+                                    Max length must be less than or equal 150
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Status:
+                                </label>
+                                <div>
+                                    <app-switch formControlName="status">
+                                    </app-switch>
+                                </div>
+                            </div>
+                        </div>
+            
+                        <div class="col-4">
+                            <div class="form-group">
+                                <div class="mx-auto text-center upload-image-wp">
+                                    <div class="image-upload-content">
+                                        <div class="image-upload-content">
+                                            <img #image [src]="photoUrl" alt="" class="img-responsive img-inputImage"
+                                                id="imageUpload" onerror="this.src = 'assets/app/media/img/emptydata.png'">
+                                        </div>
+                                        <div class="text-primary pointer">
+                                            {{!!photoUrl ? 'Click to change image' : 'Upload Signature Image'}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="m--align-right">
+                <button type="button" class="btn btn-success  m-btn--icon m-btn--uppercase m--margin-right-10"
+                    (click)="saveDepartment()">
+                    <span>
+                        <i class="la la-save"></i>
+                        <span>
+                            Save
+                        </span>
+                    </span>
+                </button>
+                <button type="button" class="btn btn-default  m-btn--icon m-btn--uppercase m--margin-right-10"
+                    (click)="back()">
+                    <span>
+                        <i class="la la-ban"></i>
+                        <span>
+                            Cancel
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

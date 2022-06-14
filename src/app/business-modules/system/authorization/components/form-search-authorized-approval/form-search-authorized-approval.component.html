@@ -1,0 +1,114 @@
+<div class="m-portlet">
+    <div class="m-form">
+        <div class="m-portlet__body">
+            <form class="row" action="" [formGroup]="formSearch">
+                <div class="col-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label>Authorizer</label>
+                                <app-combo-grid-virtual-scroll (itemSelected)="onSelectDataFormInfo($event, null)"
+                                    [currentActiveItemId]="{ field: 'id', value: authorizer.value}"
+                                    [selectedDisplayFields]="['username']" [dataSources]="users | async"
+                                    [displayFields]="[{field: 'username', label: 'User Name'}, { field: 'employeeNameVn', label: 'Full Name' }]"
+                                    placeholder="" [height]="200" (remove)="resetFormControl(authorizer)" size="15">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="">Effective Date</label>
+                                <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                    <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                        [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" [singleDatePicker]="true"
+                                        name="daterange" [autoApply]="true" formControlName="effectiveDate" readonly
+                                        [minDate]="minDateEffective" placeholder="" />
+                                    <span class="m-input-icon__icon m-input-icon__icon--right">
+                                        <span>
+                                            <i class="la la-calendar"></i>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label>Commissioner</label>
+                                <app-combo-grid-virtual-scroll
+                                    (itemSelected)="onSelectDataFormInfo($event,'commissioner')"
+                                    [currentActiveItemId]="{ field: 'id', value: commissioner.value}"
+                                    [selectedDisplayFields]="['username']" [dataSources]="users | async"
+                                    [displayFields]="[{field: 'username', label: 'User Name'}, { field: 'employeeNameVn', label: 'Full Name' }]"
+                                    placeholder="" [height]="200" (remove)="resetFormControl(commissioner)" size="15">
+                                </app-combo-grid-virtual-scroll>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="">Expiration Date</label>
+                                <div class="m-input-icon m-input-icon--right down daterange-rtl">
+                                    <input type="text" class="form-control m-input m-input--square" ngxDaterangepickerMd
+                                        [locale]="{applyLabel: 'apply', format: 'DD/MM/YYYY'}" [singleDatePicker]="true"
+                                        name="daterange" [autoApply]="true" formControlName="expirationDate" readonly
+                                        [minDate]="minDateExpired" placeholder="" />
+                                    <span class="m-input-icon__icon m-input-icon__icon--right">
+                                        <span>
+                                            <i class="la la-calendar"></i>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="">Type</label>
+                                <ng-select class="custom" formControlName="type" [items]="typeList">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="">Status</label>
+                                <ng-select class="custom" formControlName="status" [items]="statusList" bindValue="id"
+                                    bindLabel="text">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="form-actions">
+                <div class="row">
+                    <div class="col-lg-6"></div>
+                    <div class="col-lg-6 m--align-right">
+                        <button type="button" class="btn btn-brand  m-btn--icon m-btn--uppercase" (click)="search()">
+                            <span>
+                                <i class="la la-search"></i>
+                                <span>
+                                    Search
+                                </span>
+                            </span>
+                        </button>
+                        <button type="button" class="btn btn-default  m-btn--icon m-btn--uppercase" (click)="reset()">
+                            <span>
+                                <i class="la la-refresh"></i>
+                                <span>
+                                    Reset
+                                </span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

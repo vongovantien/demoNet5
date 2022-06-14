@@ -1,0 +1,43 @@
+<div class="unlock-shipment-wp bg-secondary p-4">
+    <div class="form-group m-form__group">
+        <h4 class="text-center text-info">Generate ID </h4>
+        <div class="m-radio-list">
+            <div class="row">
+                <div class="col-md-12">
+                    <label for="">Type</label>
+                    <div class="form-group">
+                        <ng-select class="custom" [items]="types" [(ngModel)]="selectedType" bindLabel="text"
+                            bindValue="id" [clearable]="false"></ng-select>
+                    </div>
+                </div>
+
+                <div class="col-md-12 m-animate-fade-in">
+                    <div class="form-group">
+                        <label for="" *ngIf="selectedType==1">SOA No</label>
+                        <label for="" *ngIf="selectedType==2">Settlement No</label>
+                        <label for="" *ngIf="selectedType==3">Advance No</label>
+                        <label for="" *ngIf="selectedType==4">Receipt No</label>
+                        <label for="" *ngIf="selectedType==5">CD Note</label>
+                        <textarea class="form-control" rows="10" [(ngModel)]="keyword"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row text-center">
+                <div class="col-md-12 m--margin-top-20">
+                    <button (click)="confirmPopup.show()" type="button"
+                        class="btn btn-success btn-block m-btn--icon m-btn--uppercase">
+                        <span>
+                            <span>
+                                Regenerate ID
+                            </span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<confirm-popup #confirmPopup body="Are you sure to Generate new ID ?"
+    (onSubmit)="confirmPopup.hide(); generatePaymentId()">
+</confirm-popup>

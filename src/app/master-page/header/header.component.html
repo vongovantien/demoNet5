@@ -1,0 +1,298 @@
+<div class="m-container m-container--fluid m-container--full-height">
+    <div class="m-stack m-stack--ver m-stack--desktop">
+        <div class="m-stack__item m-brand  m-brand--skin-dark ">
+            <div class="m-stack m-stack--ver m-stack--general">
+                <div class="m-stack__item m-stack__item--middle m-brand__logo">
+                    <a href="javascript:void(0)" class="m-brand__logo-wrapper" routerLink="/home/dashboard">
+                        <img alt="eFMS" src="assets/demo/default/media/img/logo/logo-web.png">
+                    </a>
+                </div>
+                <div class="m-stack__item m-stack__item--middle m-brand__tools">
+                    <a href="javascript:;" id="m_aside_left_minimize_toggle"
+                        class="m-brand__icon m-brand__toggler m-brand__toggler--left m--visible-desktop-inline-block"
+                        (click)="minimize_page_sidebar_desktop()">
+                        <span></span>
+                    </a>
+                    <a href="javascript:;" id="m_aside_left_offcanvas_toggle" (click)="minimize_page_sidebar_mobile()"
+                        class="m-brand__icon m-brand__toggler m-brand__toggler--left m--visible-tablet-and-mobile-inline-block">
+                        <span></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="m-stack__item m-stack__item--fluid m-header-head" id="m_header_nav">
+            <!-- <button class="m-aside-header-menu-mobile-close  m-aside-header-menu-mobile-close--skin-dark "
+                id="m_aside_header_menu_mobile_close_btn">
+                <i class="la la-close"></i>
+            </button> -->
+            <div class="m-header-menu">
+                <h3 class="m-subheader__title">{{pageTitle}}</h3>
+            </div>
+            <div class="m-topbar m-stack m-stack--ver m-stack--general" id="m_header_topbar">
+                <div class="m-stack__item m-topbar__nav-wrapper">
+                    <ul class="m-topbar__nav m-nav m-nav--inline">
+                        <!-------------------start search------------------------>
+                        <!-- <li class="m-nav__item m-list-search m-list-search--skin-light">
+                            <a class="m-nav__link m-dropdown__toggle" href="javascript:void(0)" data-toggle="dropdown">
+                                <span class="m-nav__link-icon">
+                                    <i class="la la-search"></i>
+                                </span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" style="padding: 0;">
+                                <div class="m-dropdown__header" style="width: 380px; padding: 20px;">
+                                    <form class="m-list-search__form">
+                                        <div class="m-list-search__form-wrapper">
+                                            <span class="m-list-search__form-input-wrapper">
+                                                <input class="m-list-search__form-input" id="m_quicksearch_input"
+                                                    autocomplete="off" placeholder="Search..." type="text" value="">
+                                            </span>
+                                            <span class="m-list-search__form-icon-close" id="m_quicksearch_close">
+                                                <i class="la la-remove">
+                                                </i>
+                                            </span>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </li> -->
+                        <!----------------end search--------------------->
+
+                        <li class="m-nav__item m-office">
+                            <a class="m-nav__link m-dropdown__toggle pointer" data-toggle="dropdown">
+                                <span class="m-nav__link-icon">
+                                    <i class="la la-building-o"></i>
+                                </span>
+                                <span class="m-nav__link-text m-name" *ngIf="!!selectedOffice">
+                                    {{selectedOffice.shortName}}
+                                </span>
+                            </a>
+                            <div class="dropdown-menu pt-0" style="min-width: 160px">
+                                <div
+                                    class="text-center font-14 font-weight-bold py-3 m-topbar__notifications-head mb-3">
+                                    <div>Offices</div>
+                                </div>
+                                <ul class="m-nav">
+                                    <li class="m-nav__item pointer" *ngFor="let office of offices; let i = index"
+                                        (click)="changeOffice(office)"
+                                        [class.m-nav__item--active]="!!selectedOffice && selectedOffice.branchNameEn == office.branchNameEn">
+                                        <a class="m-nav__link" data-toggle="modal" data-target="#change-office-modal">
+                                            <span class="m-nav__link-text">
+                                                {{office.shortName}}
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="m-nav__item m-group-dept">
+                            <a class="m-nav__link m-dropdown__toggle pointer" data-toggle="dropdown">
+                                <span class="m-nav__link-icon">
+                                    <i class="la la-users"></i>
+                                </span>
+                                <span class="m-nav__link-text m-name" *ngIf="!!selectedDepartmentGroup">
+                                    <ng-container *ngIf="selectedDepartmentGroup.type === 'BOD';else normal">BOD
+                                    </ng-container>
+                                    <ng-template #normal> {{selectedDepartmentGroup.departmentName}} -
+                                        {{selectedDepartmentGroup.groupName}} </ng-template>
+                                </span>
+                            </a>
+                            <div class="dropdown-menu pt-0" style="min-width: 160px; ">
+                                <div
+                                    class="text-center font-14 font-weight-bold py-3 m-topbar__notifications-head mb-3">
+                                    <div>Department - Group </div>
+                                </div>
+                                <ul class="m-nav">
+                                    <li class="m-nav__item pointer" *ngFor="let item of departmentGroups"
+                                        (click)="changeDepartmentGroup(item)" [class.m-nav__item--active]="!!selectedDepartmentGroup 
+                                        && selectedDepartmentGroup.departmentId === item.departmentId
+                                        && selectedDepartmentGroup.groupId === item.groupId
+                                        ">
+                                        <a class="m-nav__link" data-toggle="modal" data-target="#change-group-modal">
+                                            <ng-container *ngIf="item.type === 'BOD';else normalUser">
+                                                <span class="m-nav__link-text">
+                                                    BOD
+                                                </span>
+                                            </ng-container>
+                                            <ng-template #normalUser>
+                                                <span class="m-nav__link-text">
+                                                    {{item.departmentName}} - {{item.groupName}}
+                                                </span>
+                                            </ng-template>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="m-nav__item m-topbar__notifications">
+                            <a class="m-nav__link m-dropdown__toggle" href="javascript:void(0)" data-toggle="dropdown">
+                                <span class="m-nav__link-badge m-badge m-badge--danger"
+                                    *ngIf="!!newMssUnread">{{newMssUnread > 99 ? '+99' : newMssUnread}}</span>
+                                <span class="m-nav__link-icon">
+                                    <i class="la la-bell"></i>
+                                </span>
+                            </a>
+                            <div class="dropdown-menu" style="width: 340px; padding: 10px; border-radius: 2px; max-height:250px;
+                            overflow-y: scroll;" [ngStyle]="{'min-height.px': !!notifications.length ? 100 : 'auto'}">
+                                <div
+                                    class="text-center font-19 font-weight-bold py-3 m-topbar__notifications-head mb-3 d-flex ">
+                                    <div> User Notification </div>
+                                    <div class="btn btn-success btn-sm btn-bold btn-font-md font-weight-bold"
+                                        *ngIf="!!newMssUnread"> {{newMssUnread}} new </div>
+                                </div>
+                                <ng-container *ngIf="notifications.length; else noneData">
+                                    <div class="m-list-timeline m-list-timeline--skin-light pos-rel">
+                                        <ngx-spinner bdColor="rgba(242,222,223,0.3)" [name]="spinnerNotify"
+                                            [fullScreen]="false" type="ball-spin-clockwise" size="medium">
+                                        </ngx-spinner>
+
+                                        <div class="m-list-timeline__items ">
+                                            <div class="m-list-timeline__item pointer"
+                                                [class.m-list-timeline__item--read]="item.status !== 'New'"
+                                                *ngFor="let item of notifications; let i = index; trackBy: i">
+                                                <span
+                                                    class="m-list-timeline__badge -m-list-timeline__badge--state-success">
+                                                </span>
+                                                <div class="m-list-timeline__text">
+                                                    <div class="m-list-timeline__title" [innerHTML]="item.title"
+                                                        (click)="selectNotification(item, $event)">
+                                                    </div>
+                                                    <div class="text-left m-list-timeline__time ">
+                                                        {{item.datetimeCreated | date : 'HH:mm dd/MM'}}
+                                                    </div>
+                                                    <i class="la la-trash m--margin-right-5 m-list-timeline__icon collapse-toggle"
+                                                        (click)="deleteNotify(item,i, $event)"></i>
+                                                </div>
+                                            </div>
+                                            <ng-container *ngIf="totalItem > notifications.length">
+                                                <div
+                                                    class="text-center text-primary pointer font-13 text-underline py-3 px-3">
+                                                    <a (click)="loadMoreNotification($event)" title="Load more">Load
+                                                        More</a>
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </li>
+                        <li class="m-nav__item topbar__lang">
+                            <a class="m-nav__link m-dropdown__toggle" href="javascript:void(0)" data-toggle="dropdown">
+                                <span class="m-topbar__userpic" *ngIf="active_flag">
+                                    <img alt="eFMS" class="m--img-rounded m--marginless m--img-centered"
+                                        [src]="active_flag" />
+                                </span>
+                            </a>
+                            <div class="dropdown-menu" style="min-width: 160px">
+                                <ul class="m-nav">
+                                    <li class="m-nav__item">
+                                        <a class="m-nav__link active" href="javascript:void(0)"
+                                            (click)="changeLanguage('en')">
+                                            <span class="m-nav__link-icon" *ngIf="english_flag">
+                                                <img alt="eFMS" class="m--img-rounded m--marginless m--img-centered"
+                                                    [src]="english_flag" />
+                                            </span>
+                                            <span class="m-nav__link-text">
+                                                English
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="m-nav__item">
+                                        <a class="m-nav__link" href="javascript:void(0)" (click)="changeLanguage('vi')">
+                                            <span class="m-nav__link-icon" *ngIf="vietnam_flag">
+                                                <img alt="eFMS" class="m--img-rounded m--marginless m--img-centered"
+                                                    [src]="vietnam_flag" />
+                                            </span>
+                                            <span class="m-nav__link-text">
+                                                Vietnamese
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="m-nav__item m-topbar__user-profile">
+                            <a class="m-nav__link m-dropdown__toggle" href="javascript:void(0)" data-toggle="dropdown">
+                                <span class="m-topbar__userpic ">
+                                    <img alt="eFMS" class="m--img-rounded m--marginless m--img-centered auto_image"
+                                        [src]="currenUser.photo"
+                                        onerror="src = 'assets/app/media/img/users/user4.jpg'" />
+                                </span>
+                                <span class="m-topbar__username"
+                                    style="color: #3966b6; font-size: 16px; text-transform: capitalize; padding-left: 10px;">
+                                    {{!!currenUser ? currenUser.nameEn : null}}
+                                </span>
+                            </a>
+                            <!-- popup info account-->
+                            <div class="dropdown-menu p-0   ">
+                                <div class="m-list-timeline m-list-timeline--skin-light info-account-wrapper">
+                                    <div class="m-list-timeline__item">
+                                        <div class="bg-profile d-flex justify-content-around align-items-center p-2">
+                                            <div class="popup-account__avatar ">
+                                                <img alt="eFMS" class="img-fluid rounded-circle auto_click_image"
+                                                    [src]="currenUser.photo"
+                                                    onerror="src = 'assets/app/media/img/users/user4.jpg'" />
+                                            </div>
+                                            <div>
+                                                <h5 class="text-white mb-0" style="cursor: pointer;">
+                                                    <span class="m-topbar__username"
+                                                        style="font-size: 14px; text-transform: capitalize;">
+                                                        {{!!currenUser ? currenUser.nameEn : null}}
+                                                    </span>
+                                                </h5>
+                                                <div class="text-light font-italic text-capitalize">{{currenUser.title}}
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="icon-online">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="m-list-timeline__item pointer" (click)="viewProfile()">
+                                        <div class="flex-row-around bg-white">
+                                            <div class="flex-1 icon-custom">
+                                                <i class="la la-user"></i>
+                                            </div>
+                                            <div class="flex-6 flex-column">
+                                                <h6 style="font-weight: 600;">
+                                                    My Account
+                                                </h6>
+                                                <span class="text-muted">
+                                                    Account settings and more
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <i class="la la-angle-right" style="font-size:12px"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="m-list-timeline__item border-top">
+                                        <div class="p-4 bg-white">
+                                            <button type="button" class="btn btn-outline-info" data-toggle="modal"
+                                                data-target="#logout-modal">Sign Out</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="m-nav__item m-topbar-logout">
+                            <a class="m-nav__link" href="javascript:void(0)" data-toggle="modal"
+                                data-target="#logout-modal">
+                                <span class="m-nav__link-icon">
+                                    <i class="la la-power-off"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #noneData>
+    <div class="no-data">
+        <i class="flaticon-coins"></i>
+        <span class="no-data-text">No notification found</span>
+    </div>
+</ng-template>

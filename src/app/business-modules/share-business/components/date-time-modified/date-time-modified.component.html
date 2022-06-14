@@ -1,0 +1,11 @@
+<div class="row m--margin-top-20">
+    <div class="col-md-{{col}}">
+        <span>Created: {{timeCreated | date: 'dd/MM/yyyy HH:mm'}} by </span>
+        <span class="text-success">{{userCreated}}</span>
+    </div>
+    <div class="col-md-{{col}}">
+        <span>Modified: {{timeModified | date: 'dd/MM/yyyy HH:mm'}} by
+        </span> <span class="text-success">{{userModified}}</span>
+    </div>
+    <ng-content></ng-content>
+</div>

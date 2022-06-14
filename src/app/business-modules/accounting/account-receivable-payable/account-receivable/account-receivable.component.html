@@ -1,0 +1,54 @@
+<div class="acc-receive-payable-wrapper  m-animate-fade-in">
+    <app-sub-header> </app-sub-header>
+    <div class="m-content">
+        <div class="m-portlet__body">
+            <tabset class="custom-class-tab">
+                <tab (selectTab)="changeTabAccount('PAYMENT')">
+                    <ng-template tabHeading>
+                        <a routerLink="/home/accounting/account-receivable-payable" style="color:#6f727d">
+                            Customer/Agency Payment
+                        </a>
+                    </ng-template>
+                </tab>
+                <tab heading="AR Summary" [active]="true">
+                    <form-search-account-receivable (onSearch)="onSearchReceivable($event)">
+                    </form-search-account-receivable>
+                    <tabset class="custom-class-tab">
+                        <tab [active]="selectedSubTab === 'TRIAL_OFFICIAL'"
+                            (selectTab)="onSelectTabAccountReceivable('TRIAL_OFFICIAL')">
+                            <ng-template tabHeading>
+                                <span class="m--margin-right-10">Summary</span>
+                                <span class="badge badge-info">{{totalAr}}</span>
+                            </ng-template>
+                            <list-trial-official-account-receivable (onTotalListTrial)="onTotalAr($event)" ></list-trial-official-account-receivable>
+                        </tab>
+                        <!-- <tab [active]="selectedSubTab === 'GUARANTEED'" heading="Guaranteed"
+                            (selectTab)="onSelectTabAccountReceivable('GUARANTEED')">
+                            <list-guaranteed-account-receivable></list-guaranteed-account-receivable>
+                        </tab> -->
+                        <!-- <tab [active]="selectedSubTab === 'OTHER'" heading="Cash"
+                            (selectTab)="onSelectTabAccountReceivable('OTHER')">
+                            <list-other-account-receivable></list-other-account-receivable>
+                        </tab> -->
+                        <tab [active]="selectedSubTab === 'NO_AGREEMENT'" heading="No contract"
+                            *ngIf="menuSpecialPermission | async | specialPermission:'NoContract'"
+                            (selectTab)="onSelectTabAccountReceivable('NO_AGREEMENT')">
+                            <list-no-agreement-account-receivable></list-no-agreement-account-receivable>
+                        </tab>
+                    </tabset>
+
+
+                </tab>
+                <tab (selectTab)="changeTabAccount('HISTORY')">
+                    <ng-template tabHeading>
+                        <a routerLink="/home/accounting/account-receivable-payable/history-payment"
+                            style="color:#6f727d">
+                            Payment History
+                        </a>
+                    </ng-template>
+                </tab>
+
+            </tabset>
+        </div>
+    </div>
+</div>
